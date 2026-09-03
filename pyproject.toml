@@ -30,6 +30,7 @@ dev = [
 
 [project.scripts]
 sbol-visual-data = "sbol_visual_eval.cli:main"
+sbol-visual-eval = "sbol_visual_eval.evaluator.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/sbol_visual_eval"]

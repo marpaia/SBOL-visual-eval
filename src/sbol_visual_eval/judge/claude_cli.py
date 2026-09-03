@@ -45,11 +45,11 @@ class ClaudeCLIJudge:
         rules: list[RubricRule],
         *,
         model: str = DEFAULT_MODEL,
-        runner: Runner = _run_claude,
+        runner: Runner | None = None,
     ) -> None:
         self._rules = rules
         self._model = model
-        self._runner = runner
+        self._runner = _run_claude if runner is None else runner
 
     def command(self) -> list[str]:
         return ["claude", "-p", "--model", self._model, "--allowed-tools", "Read"]
