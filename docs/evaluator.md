@@ -108,10 +108,31 @@ Ten-paper seeded sweeps with the `claude-cli` judge
   inside mechanism/workflow figures that the panel did not count — and on
   best-practice strictness.
 
-The next calibration round has abundant free supervision: the 1,129 papers
-whose historical compatible count is zero make every figure the judge marks
-compatible a certain false positive, so the compatibility definition can be
-tuned at scale without any figure-level annotation.
+## Figure-level benchmarks from saturated counts
+
+Two benchmarks convert count supervision into exact per-figure labels, so the
+stages can be tuned without any figure-level annotation:
+
+```bash
+uv run sbol-visual-eval compatibility --sample 40   # compatibility boundary
+uv run sbol-visual-eval cascade --sample 20         # compliance + best practice
+```
+
+`compatibility` (`evaluation/compatibility.py`) draws on papers whose
+compatible stage is saturated — zero compatible figures, or every figure
+compatible. After excluding papers whose census disagrees with
+`figures_total` (their figure set is not the set the reviewers scored),
+**599 Version-of-Record papers yield 2,948 exactly labeled figures: 2,674
+certain negatives and 274 certain positives.** It judges with a
+compatibility-only prompt, so no rule evaluation is paid for, and reports
+accuracy, recall, false-positive rate, and precision.
+
+`cascade` (`evaluation/cascade_bench.py`) uses the stronger shapes: papers
+where all four counts are equal label every figure positive through the whole
+cascade (58 papers, 191 figures), and papers compliant everywhere with zero
+best-practice figures label every figure a best-practice negative. It reports
+per-stage accuracy plus the rules that block figures the panel judged
+positive — the direct evidence for the next round of interpretation notes.
 
 ## Calibration levers, in order of expected value
 
