@@ -1,0 +1,8 @@
+{
+  "reason": "server_side_article_html_challenge",
+  "recorded_at": "2026-09-03T06:26:12+00:00",
+  "retry_after_seconds": 900,
+  "retry_not_before": "2026-09-03T06:41:12+00:00",
+  "schema_version": 1,
+  "status": "pmc_access_challenge_cooldown"
+}

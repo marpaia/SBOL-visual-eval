@@ -1,0 +1,27 @@
+{
+  "attempt_history_records": 1018,
+  "attempt_history_status_counts": {
+    "downloaded": 900,
+    "failed": 118
+  },
+  "attempt_log_path": "data/reports/publisher_attempts.jsonl",
+  "attempted_this_session": 554,
+  "browser_origin": "https://pubs-acs-org.colorado.idm.oclc.org",
+  "generated_at": "2026-09-03T03:34:17+00:00",
+  "invalid_existing_artifacts": 0,
+  "invalid_replaced_archives": 0,
+  "new_records_attempted": 554,
+  "papers_total": 2802,
+  "papers_with_publisher_pdf": 900,
+  "pending_this_session": 1815,
+  "report_path": "data/reports/publisher_acquisition.csv",
+  "results_recorded": 987,
+  "security": "Authentication cookies are read from the browser or an ephemeral environment variable and are never written to corpus files or reports.",
+  "source_name": "ACS Publications via CU Boulder EZproxy",
+  "status_counts": {
+    "already_present": 433,
+    "downloaded": 467,
+    "failed": 87
+  },
+  "stopped_reason": "interrupted"
+}

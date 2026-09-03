@@ -1,0 +1,34 @@
+{
+  "attempt_history_records": 383,
+  "attempt_history_status_counts": {
+    "downloaded": 298,
+    "failed": 80,
+    "transient_challenge": 5
+  },
+  "attempt_log_path": "data/reports/pmc_web_attempts.jsonl",
+  "attempted_this_session": 0,
+  "browser_origin": "https://pmc.ncbi.nlm.nih.gov",
+  "challenge_retry_after_seconds": 878,
+  "eligibility_counts": {
+    "eligible": 296,
+    "eligible_requires_page_author_manuscript_evidence": 5,
+    "no_europepmc_pmcid": 2056,
+    "not_an_author_manuscript": 443,
+    "verified_pmc_article_pdf_present": 2
+  },
+  "eligible_author_manuscripts": 301,
+  "generated_at": "2026-09-03T06:26:35+00:00",
+  "invalid_existing_variants": 0,
+  "limitation": "The fallback stores a current public PMC author manuscript. It does not assert that this file is the edition used by the historical review.",
+  "live_html_discovery_required": 5,
+  "manifest_backed_xml_discovery": 296,
+  "papers_with_pmc_web_pdf": 298,
+  "pending_this_session": 3,
+  "report_path": "data/reports/pmc_web_acquisition.csv",
+  "results_recorded": 298,
+  "security": "The bridge accepts requests only with its ephemeral token, emits CORS permission only for the HTTPS PMC origin, and receives no PMC cookies or PMC credentials.",
+  "source_name": "NIH NLM PubMed Central public article page",
+  "status_counts": {
+    "already_present": 298
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "downloaded_or_present": 536,
+  "generated_at": "2026-09-03T02:30:44+00:00",
+  "papers_considered": 2802,
+  "policy": {
+    "allow_license_unknown": true,
+    "include_publisher": true,
+    "license_note": "OpenAlex metadata is for discovery; verify original terms before reuse."
+  },
+  "status_counts": {
+    "already_present_no_vor_upgrade": 132,
+    "already_present_other_source": 402,
+    "downloaded": 2,
+    "failed_all_candidates": 2266
+  }
+}

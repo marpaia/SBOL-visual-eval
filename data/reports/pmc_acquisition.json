@@ -1,0 +1,58 @@
+{
+  "artifact_bytes_downloaded_this_run": 0,
+  "artifact_status_counts": {
+    "already_present": 6123
+  },
+  "generated_at": "2026-09-03T03:41:46+00:00",
+  "id_converter": {
+    "batch_size": 200,
+    "batches": 15,
+    "ncbi_email_supplied": false,
+    "requested_unique_dois": 2802,
+    "response_dates": [
+      "2026-09-02 23:41:44",
+      "2026-09-02 23:41:45",
+      "2026-09-02 23:41:45",
+      "2026-09-02 23:41:46",
+      "2026-09-02 23:41:46",
+      "2026-09-02 23:41:47",
+      "2026-09-02 23:41:47",
+      "2026-09-02 23:41:48",
+      "2026-09-02 23:41:48",
+      "2026-09-02 23:41:49",
+      "2026-09-02 23:41:49",
+      "2026-09-02 23:41:49",
+      "2026-09-02 23:41:50",
+      "2026-09-02 23:41:50",
+      "2026-09-02 23:41:51"
+    ]
+  },
+  "image_media_assets_listed": 3524,
+  "limitations": [
+    "PMC omits PDF, media, and supplementary objects for non-open author manuscripts; their available XML and plain-text objects are retained instead.",
+    "PMC media_urls can include supplementary files as well as article images; is_image_asset identifies image files but does not assign historical figure IDs.",
+    "License codes are copied from current PMC package metadata and are not legal advice."
+  ],
+  "media_assets_listed": 4188,
+  "non_open_author_manuscripts_text_only": 297,
+  "packages_with_media": 446,
+  "packages_with_pdf": 447,
+  "packages_with_text": 744,
+  "packages_with_xml": 744,
+  "papers_considered": 2802,
+  "pmc_matches": 748,
+  "report_path": "data/reports/pmc_acquisition.csv",
+  "sources": {
+    "author_manuscript_documentation": "https://pmc.ncbi.nlm.nih.gov/tools/amdataset/",
+    "id_converter_url": "https://pmc.ncbi.nlm.nih.gov/tools/idconv/api/v1/articles/",
+    "pmc_bucket": "s3://pmc-oa-opendata",
+    "pmc_dataset_documentation": "https://pmc.ncbi.nlm.nih.gov/tools/pmcaws/",
+    "pmc_dataset_readme": "https://pmc-oa-opendata.s3.amazonaws.com/README.txt"
+  },
+  "status_counts": {
+    "already_present": 447,
+    "author_manuscript_text_already_present": 297,
+    "not_in_pmc": 2054,
+    "pmc_metadata_failed": 4
+  }
+}

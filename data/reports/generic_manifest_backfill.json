@@ -1,0 +1,1485 @@
+{
+  "failed": 0,
+  "manifests_considered": 211,
+  "results": [
+    {
+      "doi": "10.1021/sb300055e",
+      "local_path": "data/papers/2013/10.1021__sb300055e/paper.pdf",
+      "manifest_path": "data/papers/2013/10.1021__sb300055e/metadata.json",
+      "record_id": "doi:10.1021/sb300055e",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/sb4001118",
+      "local_path": "data/papers/2014/10.1021__sb4001118/paper.pdf",
+      "manifest_path": "data/papers/2014/10.1021__sb4001118/metadata.json",
+      "record_id": "doi:10.1021/sb4001118",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/sb400157z",
+      "local_path": "data/papers/2014/10.1021__sb400157z/paper.pdf",
+      "manifest_path": "data/papers/2014/10.1021__sb400157z/metadata.json",
+      "record_id": "doi:10.1021/sb400157z",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00034",
+      "local_path": "data/papers/2015/10.1021__acssynbio.5b00034/paper.pdf",
+      "manifest_path": "data/papers/2015/10.1021__acssynbio.5b00034/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00034",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00041",
+      "local_path": "data/papers/2015/10.1021__acssynbio.5b00041/paper.pdf",
+      "manifest_path": "data/papers/2015/10.1021__acssynbio.5b00041/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00041",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00054",
+      "local_path": "data/papers/2015/10.1021__acssynbio.5b00054/paper.pdf",
+      "manifest_path": "data/papers/2015/10.1021__acssynbio.5b00054/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00054",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00062",
+      "local_path": "data/papers/2015/10.1021__acssynbio.5b00062/paper.pdf",
+      "manifest_path": "data/papers/2015/10.1021__acssynbio.5b00062/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00062",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00133",
+      "local_path": "data/papers/2015/10.1021__acssynbio.5b00133/paper.pdf",
+      "manifest_path": "data/papers/2015/10.1021__acssynbio.5b00133/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00133",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/sb5002533",
+      "local_path": "data/papers/2015/10.1021__sb5002533/paper.pdf",
+      "manifest_path": "data/papers/2015/10.1021__sb5002533/metadata.json",
+      "record_id": "doi:10.1021/sb5002533",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00090",
+      "local_path": "data/papers/2016/10.1021__acssynbio.5b00090/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.5b00090/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00090",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00141",
+      "local_path": "data/papers/2016/10.1021__acssynbio.5b00141/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.5b00141/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00141",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00153",
+      "local_path": "data/papers/2016/10.1021__acssynbio.5b00153/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.5b00153/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00153",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00164",
+      "local_path": "data/papers/2016/10.1021__acssynbio.5b00164/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.5b00164/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00164",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00225",
+      "local_path": "data/papers/2016/10.1021__acssynbio.5b00225/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.5b00225/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00225",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00243",
+      "local_path": "data/papers/2016/10.1021__acssynbio.5b00243/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.5b00243/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00243",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.5b00275",
+      "local_path": "data/papers/2016/10.1021__acssynbio.5b00275/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.5b00275/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.5b00275",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00031",
+      "local_path": "data/papers/2016/10.1021__acssynbio.6b00031/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.6b00031/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00031",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00040",
+      "local_path": "data/papers/2016/10.1021__acssynbio.6b00040/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.6b00040/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00040",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00065",
+      "local_path": "data/papers/2016/10.1021__acssynbio.6b00065/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.6b00065/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00065",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00115",
+      "local_path": "data/papers/2016/10.1021__acssynbio.6b00115/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.6b00115/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00115",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00146",
+      "local_path": "data/papers/2016/10.1021__acssynbio.6b00146/paper.pdf",
+      "manifest_path": "data/papers/2016/10.1021__acssynbio.6b00146/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00146",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00165",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00165/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00165/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00165",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00166",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00166/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00166/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00166",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00200",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00200/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00200/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00200",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00202",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00202/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00202/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00202",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00219",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00219/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00219/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00219",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00252",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00252/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00252/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00252",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00295",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00295/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00295/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00295",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00321",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00321/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00321/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00321",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00342",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00342/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00342/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00342",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.6b00359",
+      "local_path": "data/papers/2017/10.1021__acssynbio.6b00359/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.6b00359/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.6b00359",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00057",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00057/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00057/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00057",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00088",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00088/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00088/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00088",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00105",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00105/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00105/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00105",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00111",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00111/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00111/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00111",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00150",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00150/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00150/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00150",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00167",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00167/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00167/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00167",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00169",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00169/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00169/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00169",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00174",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00174/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00174/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00174",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00177",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00177/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00177/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00177",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00192",
+      "local_path": "data/papers/2017/10.1021__acssynbio.7b00192/paper.pdf",
+      "manifest_path": "data/papers/2017/10.1021__acssynbio.7b00192/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00192",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00237",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00237/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00237/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00237",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00265",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00265/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00265/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00265",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00268",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00268/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00268/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00268",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00269",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00269/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00269/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00269",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00297",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00297/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00297/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00297",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00306",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00306/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00306/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00306",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00367",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00367/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00367/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00367",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00368",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00368/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00368/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00368",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00377",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00377/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00377/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00377",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00383",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00383/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00383/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00383",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00414",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00414/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00414/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00414",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00425",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00425/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00425/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00425",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00442",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00442/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00442/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00442",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00465",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00465/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00465/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00465",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.7b00466",
+      "local_path": "data/papers/2018/10.1021__acssynbio.7b00466/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.7b00466/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.7b00466",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00014",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00014/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00014/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00014",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00015",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00015/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00015/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00015",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00056",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00056/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00056/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00056",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00060",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00060/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00060/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00060",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00138",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00138/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00138/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00138",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00139",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00139/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00139/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00139",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00145",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00145/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00145/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00145",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00158",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00158/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00158/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00158",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00174",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00174/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00174/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00174",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00201",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00201/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00201/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00201",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00218",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00218/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00218/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00218",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00219",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00219/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00219/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00219",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00222",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00222/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00222/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00222",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00243",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00243/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00243/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00243",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00283",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00283/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00283/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00283",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00300",
+      "local_path": "data/papers/2018/10.1021__acssynbio.8b00300/paper.pdf",
+      "manifest_path": "data/papers/2018/10.1021__acssynbio.8b00300/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00300",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00166",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00166/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00166/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00166",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00326",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00326/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00326/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00326",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00398",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00398/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00398/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00398",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00406",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00406/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00406/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00406",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00440",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00440/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00440/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00440",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00454",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00454/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00454/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00454",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00457",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00457/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00457/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00457",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00480",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00480/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00480/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00480",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00484",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00484/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00484/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00484",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00503",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00503/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00503/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00503",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.8b00531",
+      "local_path": "data/papers/2019/10.1021__acssynbio.8b00531/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.8b00531/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.8b00531",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00021",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00021/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00021/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00021",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00061",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00061/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00061/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00061",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00106",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00106/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00106/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00106",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00120",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00120/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00120/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00120",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00163",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00163/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00163/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00163",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00172",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00172/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00172/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00172",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00174",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00174/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00174/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00174",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00177",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00177/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00177/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00177",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00192",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00192/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00192/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00192",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00213",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00213/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00213/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00213",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00226",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00226/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00226/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00226",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00230",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00230/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00230/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00230",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00235",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00235/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00235/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00235",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00238",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00238/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00238/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00238",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00242",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00242/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00242/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00242",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00243",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00243/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00243/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00243",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00255",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00255/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00255/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00255",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00274",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00274/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00274/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00274",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00291",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00291/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00291/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00291",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00316",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00316/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00316/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00316",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00321",
+      "local_path": "data/papers/2019/10.1021__acssynbio.9b00321/paper.pdf",
+      "manifest_path": "data/papers/2019/10.1021__acssynbio.9b00321/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00321",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00002",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00002/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00002/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00002",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00106",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00106/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00106/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00106",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00119",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00119/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00119/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00119",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00129",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00129/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00129/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00129",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00130",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00130/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00130/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00130",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00146",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00146/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00146/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00146",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00159",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00159/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00159/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00159",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00182",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00182/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00182/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00182",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00194",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00194/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00194/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00194",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00196",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00196/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00196/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00196",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00267",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00267/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00267/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00267",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00276",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00276/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00276/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00276",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00303",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00303/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00303/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00303",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00308",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00308/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00308/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00308",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00323",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00323/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00323/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00323",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00325",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00325/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00325/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00325",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00355",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00355/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00355/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00355",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00417",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00417/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00417/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00417",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00431",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00431/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00431/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00431",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00438",
+      "local_path": "data/papers/2020/10.1021__acssynbio.0c00438/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.0c00438/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00438",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00273",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00273/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00273/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00273",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00281",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00281/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00281/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00281",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00292",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00292/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00292/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00292",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00358",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00358/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00358/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00358",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00371",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00371/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00371/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00371",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00375",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00375/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00375/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00375",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00440",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00440/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00440/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00440",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00447",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00447/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00447/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00447",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00460",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00460/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00460/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00460",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00464",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00464/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00464/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00464",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00503",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00503/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00503/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00503",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.9b00505",
+      "local_path": "data/papers/2020/10.1021__acssynbio.9b00505/paper.pdf",
+      "manifest_path": "data/papers/2020/10.1021__acssynbio.9b00505/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.9b00505",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00472",
+      "local_path": "data/papers/2021/10.1021__acssynbio.0c00472/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.0c00472/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00472",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00550",
+      "local_path": "data/papers/2021/10.1021__acssynbio.0c00550/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.0c00550/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00550",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.0c00591",
+      "local_path": "data/papers/2021/10.1021__acssynbio.0c00591/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.0c00591/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.0c00591",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00024",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00024/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00024/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00024",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00034",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00034/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00034/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00034",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00044",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00044/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00044/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00044",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00068",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00068/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00068/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00068",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00080",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00080/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00080/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00080",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00090",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00090/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00090/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00090",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00136",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00136/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00136/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00136",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00161",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00161/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00161/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00161",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00183",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00183/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00183/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00183",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00214",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00214/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00214/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00214",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00227",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00227/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00227/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00227",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00267",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00267/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00267/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00267",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00281",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00281/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00281/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00281",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00297",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00297/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00297/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00297",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00329",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00329/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00329/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00329",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00339",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00339/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00339/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00339",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00440",
+      "local_path": "data/papers/2021/10.1021__acssynbio.1c00440/paper.pdf",
+      "manifest_path": "data/papers/2021/10.1021__acssynbio.1c00440/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00440",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00272",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00272/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00272/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00272",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00311",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00311/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00311/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00311",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00342",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00342/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00342/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00342",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00448",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00448/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00448/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00448",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00458",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00458/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00458/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00458",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00486",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00486/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00486/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00486",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00503",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00503/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00503/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00503",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00565",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00565/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00565/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00565",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00592",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00592/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00592/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00592",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00596",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00596/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00596/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00596",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00605",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00605/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00605/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00605",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00608",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00608/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00608/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00608",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00629",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00629/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00629/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00629",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.1c00635",
+      "local_path": "data/papers/2022/10.1021__acssynbio.1c00635/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.1c00635/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.1c00635",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00072",
+      "local_path": "data/papers/2022/10.1021__acssynbio.2c00072/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.2c00072/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00072",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00087",
+      "local_path": "data/papers/2022/10.1021__acssynbio.2c00087/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.2c00087/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00087",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00122",
+      "local_path": "data/papers/2022/10.1021__acssynbio.2c00122/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.2c00122/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00122",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00138",
+      "local_path": "data/papers/2022/10.1021__acssynbio.2c00138/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.2c00138/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00138",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00290",
+      "local_path": "data/papers/2022/10.1021__acssynbio.2c00290/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.2c00290/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00290",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00382",
+      "local_path": "data/papers/2022/10.1021__acssynbio.2c00382/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.2c00382/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00382",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00386",
+      "local_path": "data/papers/2022/10.1021__acssynbio.2c00386/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.2c00386/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00386",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00397",
+      "local_path": "data/papers/2022/10.1021__acssynbio.2c00397/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.2c00397/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00397",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00498",
+      "local_path": "data/papers/2022/10.1021__acssynbio.2c00498/paper.pdf",
+      "manifest_path": "data/papers/2022/10.1021__acssynbio.2c00498/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00498",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00339",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00339/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00339/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00339",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00425",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00425/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00425/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00425",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00441",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00441/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00441/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00441",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00477",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00477/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00477/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00477",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00611",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00611/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00611/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00611",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00618",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00618/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00618/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00618",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00658",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00658/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00658/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00658",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00669",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00669/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00669/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00669",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00685",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00685/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00685/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00685",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00689",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00689/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00689/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00689",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.2c00690",
+      "local_path": "data/papers/2023/10.1021__acssynbio.2c00690/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.2c00690/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.2c00690",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00009",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00009/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00009/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00009",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00015",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00015/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00015/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00015",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00022",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00022/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00022/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00022",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00033",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00033/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00033/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00033",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00070",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00070/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00070/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00070",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00101",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00101/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00101/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00101",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00110",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00110/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00110/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00110",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00124",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00124/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00124/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00124",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00248",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00248/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00248/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00248",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00271",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00271/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00271/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00271",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00301",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00301/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00301/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00301",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00375",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00375/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00375/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00375",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00386",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00386/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00386/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00386",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00397",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00397/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00397/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00397",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00414",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00414/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00414/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00414",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00443",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00443/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00443/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00443",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00452",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00452/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00452/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00452",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00455",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00455/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00455/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00455",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00461",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00461/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00461/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00461",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00464",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00464/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00464/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00464",
+      "status": "unchanged"
+    },
+    {
+      "doi": "10.1021/acssynbio.3c00559",
+      "local_path": "data/papers/2023/10.1021__acssynbio.3c00559/paper.pdf",
+      "manifest_path": "data/papers/2023/10.1021__acssynbio.3c00559/metadata.json",
+      "record_id": "doi:10.1021/acssynbio.3c00559",
+      "status": "unchanged"
+    }
+  ],
+  "unchanged": 211,
+  "updated": 0
+}

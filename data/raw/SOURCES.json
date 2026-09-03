@@ -1,0 +1,391 @@
+{
+  "annotations": [
+    {
+      "article_id": 30228426,
+      "bytes": 16439,
+      "content_kind": "overview",
+      "download_url": "https://ndownloader.figshare.com/files/58332948",
+      "filename": "sb5c00417_si_001.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "ff7a98067b83d8b6919b06f4d7d796db",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_001.xlsx",
+      "published_date": "2025-09-28T21:05:55Z",
+      "sha256": "6e86f31926f74bfedcfd5b7761e7e887652254b338aeaabdef6bbec0ce427778",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s001",
+      "year": null
+    },
+    {
+      "article_id": 30228429,
+      "bytes": 42852,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332951",
+      "filename": "sb5c00417_si_002.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "fd42b73c778d21929d4061be67bc7913",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_002.xlsx",
+      "published_date": "2025-09-28T21:05:57Z",
+      "sha256": "369bfe622049668bef08d48521f6005d35f238711d0bae53f2db4d96cc484290",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s002",
+      "year": 2012
+    },
+    {
+      "article_id": 30228432,
+      "bytes": 45478,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332954",
+      "filename": "sb5c00417_si_003.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "18a2b9a7aada736a6b4fe9f8df5f1fe0",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_003.xlsx",
+      "published_date": "2025-09-28T21:05:58Z",
+      "sha256": "8640843cc7cbe29ca27e28c74cdd7a4d834ecabbe2317ad46409d8fdc872c234",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s003",
+      "year": 2013
+    },
+    {
+      "article_id": 30228435,
+      "bytes": 50887,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332957",
+      "filename": "sb5c00417_si_004.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "5c5f26f4503bcd3233e630979dbfc5be",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_004.xlsx",
+      "published_date": "2025-09-28T21:05:59Z",
+      "sha256": "a6c3a1282cf6d0898ecd66a68d8182099c3da0f7136594285d336ef9267900f2",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s004",
+      "year": 2014
+    },
+    {
+      "article_id": 30228438,
+      "bytes": 55928,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332960",
+      "filename": "sb5c00417_si_005.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "ad36ce2ae8d024d8e79fc26dd479ff3b",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_005.xlsx",
+      "published_date": "2025-09-28T21:06:00Z",
+      "sha256": "0b4bfa90f4feb6e3a74a996ba9a06cbcaaa6409fb3626c7b46c28bf89fecf118",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s005",
+      "year": 2015
+    },
+    {
+      "article_id": 30228441,
+      "bytes": 56044,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332963",
+      "filename": "sb5c00417_si_006.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "3192601749e0039b9c59ec723104d471",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_006.xlsx",
+      "published_date": "2025-09-28T21:06:01Z",
+      "sha256": "b6155b7370938d44499e2db9e6c0f48214a82a37a24000f3f9696433f883b31c",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s006",
+      "year": 2016
+    },
+    {
+      "article_id": 30228444,
+      "bytes": 68638,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332966",
+      "filename": "sb5c00417_si_007.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "02b75459f572bb6bc940c532fc49ed54",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_007.xlsx",
+      "published_date": "2025-09-28T21:06:02Z",
+      "sha256": "536a5f6daebce5d8d0e9b2881b9dd55947f9dcf8627f9922e64bfa02fbd4b354",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s007",
+      "year": 2017
+    },
+    {
+      "article_id": 30228447,
+      "bytes": 71555,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332969",
+      "filename": "sb5c00417_si_008.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "2bf6e32715161bc9e0b977da902a1bde",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_008.xlsx",
+      "published_date": "2025-09-28T21:06:03Z",
+      "sha256": "860aae3126f3c73cc33061bc73ed9d2c471a2ac3d761afc6c8341bd68c6698c6",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s008",
+      "year": 2018
+    },
+    {
+      "article_id": 30228450,
+      "bytes": 69629,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332972",
+      "filename": "sb5c00417_si_009.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "3cefb63f632ee734ed5b0970a05442c4",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_009.xlsx",
+      "published_date": "2025-09-28T21:06:04Z",
+      "sha256": "c5f05bbd50d6be4f1e6a382fda47d743be190f6bb821a0e4ec9be5ce35064033",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s009",
+      "year": 2019
+    },
+    {
+      "article_id": 30228453,
+      "bytes": 74587,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332975",
+      "filename": "sb5c00417_si_010.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "d4bf3bb1a9476dc1f71343fda6f0e9f7",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_010.xlsx",
+      "published_date": "2025-09-28T21:06:05Z",
+      "sha256": "049ca66173433b628f94dd356a2d7e234d81eddd02d9d258b93c5c49c25456ef",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s010",
+      "year": 2020
+    },
+    {
+      "article_id": 30228456,
+      "bytes": 72754,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332978",
+      "filename": "sb5c00417_si_011.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "992926c6327867732e8dab1ccba04e9d",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_011.xlsx",
+      "published_date": "2025-09-28T21:06:07Z",
+      "sha256": "c8a9db63ef96b8458bcf4b760d95c3d62fe2717930099e8a733df39abe93fe30",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s011",
+      "year": 2021
+    },
+    {
+      "article_id": 30228459,
+      "bytes": 81291,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332981",
+      "filename": "sb5c00417_si_012.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "2d21bc9c1966ef0ededc6aeaa64f98fc",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_012.xlsx",
+      "published_date": "2025-09-28T21:06:08Z",
+      "sha256": "52d5de7eeff7c4f22f4a949464f3898cfcb16fcef77d2300f254d3f81d0b529d",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s012",
+      "year": 2022
+    },
+    {
+      "article_id": 30228462,
+      "bytes": 78953,
+      "content_kind": "yearly_annotations",
+      "download_url": "https://ndownloader.figshare.com/files/58332984",
+      "filename": "sb5c00417_si_013.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "98e2f191267ca343b9dada139cea729c",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_013.xlsx",
+      "published_date": "2025-09-28T21:06:09Z",
+      "sha256": "8d390c50fcc47a3177eb5083aa7dd24f9671a4a8689bc8f06d1731e3f8d55e73",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s013",
+      "year": 2023
+    },
+    {
+      "article_id": 30228465,
+      "bytes": 203771,
+      "content_kind": "sbol_visual_citations",
+      "download_url": "https://ndownloader.figshare.com/files/58332987",
+      "filename": "sb5c00417_si_014.xlsx",
+      "license": "CC BY-NC 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "md5": "756adedce47604f086e2a5ad1fb9c297",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "path": "data/raw/annotations/sb5c00417_si_014.xlsx",
+      "published_date": "2025-09-28T21:06:10Z",
+      "sha256": "3d4ad3967454d1639c11e22aad4bcd7c9f7f57b52a35d813cc8d68460bb809bf",
+      "supplement_doi": "10.1021/acssynbio.5c00417.s014",
+      "year": null
+    }
+  ],
+  "figshare_collection_id": 8059641,
+  "manifest_updated_at": "2026-09-03T02:36:39+00:00",
+  "metadata_snapshots": {
+    "crossref": {
+      "bytes": 1087713,
+      "journal_issn": "2161-5063",
+      "path": "data/raw/metadata/crossref_response.json.gz",
+      "records": 3617,
+      "request_filter": "from-pub-date:2011-01-01,until-pub-date:2024-12-31,type:journal-article",
+      "request_url": "https://api.crossref.org/journals/2161-5063/works",
+      "retrieved_at": "2026-09-02T17:33:47+00:00",
+      "sha256": "54961c1684e972a35a86b98ee97e87c1fc3d2d50eb5d1ec607aab72ac218bbbd"
+    },
+    "europepmc": {
+      "bytes": 3533012,
+      "journal_issn": "2161-5063",
+      "path": "data/raw/metadata/europepmc_response.json.gz",
+      "records": 2885,
+      "request_filter": "ISSN:2161-5063 AND FIRST_PDATE:[2012-01-01 TO 2023-12-31]",
+      "request_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
+      "retrieved_at": "2026-09-03T02:36:39+00:00",
+      "sha256": "88a75e71485d75294056c5c8628078084ab147915ddbbac0f7baa7d2ee1bed37"
+    },
+    "openalex": {
+      "bytes": 671320,
+      "journal_issn": "2161-5063",
+      "path": "data/raw/metadata/openalex_response.json.gz",
+      "records": 3208,
+      "request_filter": "primary_location.source.issn:2161-5063,from_publication_date:2012-01-01,to_publication_date:2023-12-31",
+      "request_url": "https://api.openalex.org/works",
+      "retrieved_at": "2026-09-02T17:34:14+00:00",
+      "sha256": "adde1ecf6784f34ff535c711baeb2e617c8f8430780f05cb9adf183d5b025cdc"
+    }
+  },
+  "retrieved_at": "2026-09-02T18:03:05+00:00",
+  "retrospective_doi": "10.1021/acssynbio.5c00417",
+  "rubric": {
+    "bytes": 4378,
+    "path": "data/raw/rubric/sbol_visual_diagram_rubric.txt",
+    "sha256": "095e81c20d2d6941fe9972843aef81efa451c17872e5a89776af60f6f8bd0c5b",
+    "url": "https://docs.google.com/document/d/1vK8DdeN5QbFqKy0h2uLIuuB89hU_Zlj_o41NX1BVtAY/export?format=txt"
+  },
+  "specification": {
+    "bytes": 3222302,
+    "id": "sbol_visual_3_0_strict",
+    "path": "data/raw/rubric/SBOL-Visual-3.0.pdf",
+    "sha256": "a182587476bbbfdd6b0b44d61c7eeeb01d37ba2627650bf4071554f8a9a2ea1e",
+    "url": "https://sbolstandard.org/docs/SBOL-Visual-3.0.pdf",
+    "version": "3.0"
+  },
+  "website": {
+    "files": [
+      {
+        "bytes": 19981,
+        "name": "index",
+        "path": "data/raw/website/index.html",
+        "sha256": "c6e0008d6d9248c3af0df611b1662caf504c255b43ef9c0d7cb7f5cde98e39b2",
+        "url": "https://sbolstandard.org/sbolv-10-years/"
+      },
+      {
+        "bytes": 24600,
+        "name": "guidelines",
+        "path": "data/raw/website/guidelines.html",
+        "sha256": "f216f7acb07e657caca96dfb69af5475ed8041b3b681a5ddc10356bc27d68304",
+        "url": "https://sbolstandard.org/sbolv-10-years/guidelines/"
+      },
+      {
+        "bytes": 23929,
+        "name": "2012",
+        "path": "data/raw/website/2012.html",
+        "sha256": "bba08792d4b22e9297e68c9d43d70f170fea2d121b3d6a7d761835630524e797",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2012/"
+      },
+      {
+        "bytes": 28422,
+        "name": "2013",
+        "path": "data/raw/website/2013.html",
+        "sha256": "cdfd608153bf6140faaa41f1496dce4cc4d7a15938d6ec2e4b5a68c9f1a790b6",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2013/"
+      },
+      {
+        "bytes": 28899,
+        "name": "2014",
+        "path": "data/raw/website/2014.html",
+        "sha256": "324d3369e85bde6d591b4f74018bae3bd3821c0cf3265ba2b3b6867fe9eb03ba",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2014/"
+      },
+      {
+        "bytes": 31627,
+        "name": "2015",
+        "path": "data/raw/website/2015.html",
+        "sha256": "e24690bcd45d38df274477b136da28c5d10b2703fd129de8f2ca3794cc2eaf9f",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2015/"
+      },
+      {
+        "bytes": 35935,
+        "name": "2016",
+        "path": "data/raw/website/2016.html",
+        "sha256": "e7a6113790ab73fe4ff63bd5f5b29b9e0fa3ce62f71c7fc9fbb07aabbf77d509",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2016/"
+      },
+      {
+        "bytes": 41057,
+        "name": "2017",
+        "path": "data/raw/website/2017.html",
+        "sha256": "dbde9fb095178cd53146a21f511846d51f6c069def00a7f9e426dc340da949a7",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2017/"
+      },
+      {
+        "bytes": 44511,
+        "name": "2018",
+        "path": "data/raw/website/2018.html",
+        "sha256": "d5d1c0bc66dd706e63d0bb547f0d9a052d2d4faf3ecfe4089695caf7d9a60fd4",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2018/"
+      },
+      {
+        "bytes": 40185,
+        "name": "2019",
+        "path": "data/raw/website/2019.html",
+        "sha256": "bbb9aff488f8a1b01c36d2566068675b2ad0905a352dc8171a180f05be9220ac",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2019/"
+      },
+      {
+        "bytes": 48859,
+        "name": "2020",
+        "path": "data/raw/website/2020.html",
+        "sha256": "c8a749b7a618c3202635019ea9730f44b195cd92d39195e037d5207e01ad4b93",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2020/"
+      },
+      {
+        "bytes": 59501,
+        "name": "2021",
+        "path": "data/raw/website/2021.html",
+        "sha256": "814b44875030c9e990ab6672f24fa9c06b4d2c381f85816b459ba6d72a77a5bf",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2021/"
+      },
+      {
+        "bytes": 67189,
+        "name": "2022",
+        "path": "data/raw/website/2022.html",
+        "sha256": "ec35574db567380889774bc1259bb589859b6796768896a2e3cba2b6f7ba4cd1",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2022/"
+      },
+      {
+        "bytes": 52633,
+        "name": "2023",
+        "path": "data/raw/website/2023.html",
+        "sha256": "05a63fe6077c715701fc46a52d05a1ba860352ff70f7ff94aaf211f11bb32e21",
+        "url": "https://sbolstandard.org/sbolv-10-years/acs-2023/"
+      }
+    ],
+    "license_conflict_note": "The rendered site's footer and repository LICENSE declare different terms; clarify before redistributing a derived website dataset.",
+    "rendered_site_declared_license": "CC BY-NC-ND 4.0",
+    "rendered_site_license_url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "repository": "https://github.com/SynBioDex/SbolStandardWebsite",
+    "repository_commit_at_retrieval": "98933debc17b6a61cad21b0adf61c605a5357cdc",
+    "repository_license": {
+      "declared_license": "CC0 1.0",
+      "path": "data/raw/website/repository_LICENSE.txt",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "url": "https://raw.githubusercontent.com/SynBioDex/SbolStandardWebsite/98933debc17b6a61cad21b0adf61c605a5357cdc/LICENSE"
+    }
+  }
+}

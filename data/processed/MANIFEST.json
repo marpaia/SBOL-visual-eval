@@ -1,0 +1,42 @@
+{
+  "outputs": {
+    "papers.csv": {
+      "bytes": 3487187,
+      "format": "csv",
+      "path": "data/processed/papers.csv",
+      "rows": 2802,
+      "sha256": "ca0dbdf04866ee79e372cf409efc18664fcbb85fec35208ad980a67378c99839"
+    },
+    "papers.jsonl": {
+      "bytes": 8546962,
+      "format": "jsonl",
+      "path": "data/processed/papers.jsonl",
+      "rows": 2802,
+      "sha256": "4526d54c9c918e2a545ca25683c8df035f1409316c4a93b0de22db74f6e768f0"
+    },
+    "rubric.csv": {
+      "bytes": 9940,
+      "format": "csv",
+      "path": "data/processed/rubric.csv",
+      "rows": 31,
+      "sha256": "e231211129912a4339d12df2d29abe4528235cd7bcc1f1d953f86570ebb2a073"
+    },
+    "website_tables.csv": {
+      "bytes": 276400,
+      "format": "csv",
+      "path": "data/processed/website_tables.csv",
+      "rows": 1008,
+      "sha256": "30f65290f1f17788dd30b313d47afeb2beac3ec7fef2c2ef3b9a6d00500bdfda"
+    },
+    "yearly_totals.csv": {
+      "bytes": 3334,
+      "format": "csv",
+      "path": "data/processed/yearly_totals.csv",
+      "rows": 12,
+      "sha256": "40dcd35eddf9e59aefe03b5d6f393b1871c1eb06222d0018a816255cec652ac8"
+    }
+  },
+  "schema_version": 1,
+  "source_manifest_path": "data/raw/SOURCES.json",
+  "source_manifest_sha256": "23eaf81ddd387f8095da66f4d156434b6e6369b8bf19148519443fb261ff8494"
+}

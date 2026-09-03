@@ -1,0 +1,20 @@
+{
+  "downloaded_or_present": 5,
+  "generated_at": "2026-09-03T06:05:47+00:00",
+  "papers_considered": 5,
+  "policy": {
+    "allow_license_unknown": true,
+    "include_publisher": false,
+    "scope": [
+      "10.1021/acssynbio.0c00081",
+      "10.1021/acssynbio.0c00496",
+      "10.1021/acssynbio.2c00084",
+      "10.1021/acssynbio.7b00428",
+      "10.1021/acssynbio.7b00435"
+    ],
+    "transport_note": "Only the five read-only-audited EPrints candidates whose exact URLs returned PDFs under the default Accept header were attempted."
+  },
+  "status_counts": {
+    "downloaded": 5
+  }
+}

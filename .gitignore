@@ -1,0 +1,17 @@
+.DS_Store
+.pytest_cache/
+.ruff_cache/
+.venv/
+__pycache__/
+*.py[cod]
+
+# API responses are reproducible caches, not source data.
+data/cache/
+
+# Paper PDFs can be large and have heterogeneous licenses. Keep them local.
+data/papers/
+data/figures/
+
+# Interrupted downloads.
+*.part
+
