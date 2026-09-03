@@ -1,0 +1,171 @@
+{
+  "all_pdfs": {
+    "census_errors": 0,
+    "censused": 1388,
+    "exact": 1312,
+    "exact_rate": 0.9452,
+    "mean_absolute_error": 0.183,
+    "over_count": 9,
+    "papers": 1388,
+    "under_count": 67,
+    "within_one": 1342
+  },
+  "by_year": {
+    "2012": {
+      "census_errors": 0,
+      "censused": 63,
+      "exact": 63,
+      "exact_rate": 1.0,
+      "mean_absolute_error": 0.0,
+      "over_count": 0,
+      "papers": 63,
+      "under_count": 0,
+      "within_one": 63
+    },
+    "2013": {
+      "census_errors": 0,
+      "censused": 80,
+      "exact": 78,
+      "exact_rate": 0.975,
+      "mean_absolute_error": 0.025,
+      "over_count": 0,
+      "papers": 80,
+      "under_count": 2,
+      "within_one": 80
+    },
+    "2014": {
+      "census_errors": 0,
+      "censused": 118,
+      "exact": 117,
+      "exact_rate": 0.9915,
+      "mean_absolute_error": 0.0169,
+      "over_count": 1,
+      "papers": 118,
+      "under_count": 0,
+      "within_one": 117
+    },
+    "2015": {
+      "census_errors": 0,
+      "censused": 145,
+      "exact": 136,
+      "exact_rate": 0.9379,
+      "mean_absolute_error": 0.0828,
+      "over_count": 3,
+      "papers": 145,
+      "under_count": 6,
+      "within_one": 143
+    },
+    "2016": {
+      "census_errors": 0,
+      "censused": 168,
+      "exact": 165,
+      "exact_rate": 0.9821,
+      "mean_absolute_error": 0.0179,
+      "over_count": 0,
+      "papers": 168,
+      "under_count": 3,
+      "within_one": 168
+    },
+    "2017": {
+      "census_errors": 0,
+      "censused": 242,
+      "exact": 241,
+      "exact_rate": 0.9959,
+      "mean_absolute_error": 0.0041,
+      "over_count": 0,
+      "papers": 242,
+      "under_count": 1,
+      "within_one": 242
+    },
+    "2018": {
+      "census_errors": 0,
+      "censused": 119,
+      "exact": 108,
+      "exact_rate": 0.9076,
+      "mean_absolute_error": 0.3445,
+      "over_count": 1,
+      "papers": 119,
+      "under_count": 10,
+      "within_one": 111
+    },
+    "2019": {
+      "census_errors": 0,
+      "censused": 53,
+      "exact": 38,
+      "exact_rate": 0.717,
+      "mean_absolute_error": 1.4906,
+      "over_count": 0,
+      "papers": 53,
+      "under_count": 15,
+      "within_one": 40
+    },
+    "2020": {
+      "census_errors": 0,
+      "censused": 62,
+      "exact": 48,
+      "exact_rate": 0.7742,
+      "mean_absolute_error": 0.9355,
+      "over_count": 2,
+      "papers": 62,
+      "under_count": 12,
+      "within_one": 51
+    },
+    "2021": {
+      "census_errors": 0,
+      "censused": 61,
+      "exact": 54,
+      "exact_rate": 0.8852,
+      "mean_absolute_error": 0.2459,
+      "over_count": 1,
+      "papers": 61,
+      "under_count": 6,
+      "within_one": 58
+    },
+    "2022": {
+      "census_errors": 0,
+      "censused": 126,
+      "exact": 120,
+      "exact_rate": 0.9524,
+      "mean_absolute_error": 0.1746,
+      "over_count": 0,
+      "papers": 126,
+      "under_count": 6,
+      "within_one": 122
+    },
+    "2023": {
+      "census_errors": 0,
+      "censused": 151,
+      "exact": 144,
+      "exact_rate": 0.9536,
+      "mean_absolute_error": 0.1258,
+      "over_count": 1,
+      "papers": 151,
+      "under_count": 6,
+      "within_one": 147
+    }
+  },
+  "generated_at": "2026-09-03T17:23:35+00:00",
+  "other_edition_pdfs": {
+    "census_errors": 0,
+    "censused": 131,
+    "exact": 75,
+    "exact_rate": 0.5725,
+    "mean_absolute_error": 1.7481,
+    "over_count": 2,
+    "papers": 131,
+    "under_count": 54,
+    "within_one": 89
+  },
+  "report_path": "data/reports/figure_census.csv",
+  "version_of_record_pdfs": {
+    "census_errors": 0,
+    "censused": 1257,
+    "exact": 1237,
+    "exact_rate": 0.9841,
+    "mean_absolute_error": 0.0199,
+    "over_count": 7,
+    "papers": 1257,
+    "under_count": 13,
+    "within_one": 1253
+  }
+}
