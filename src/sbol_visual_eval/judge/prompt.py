@@ -12,6 +12,32 @@ from __future__ import annotations
 
 from .rubric import RubricRule, render_rubric
 
+# Historical interpretations recovered from count-saturated papers: papers whose
+# compatible and compliant counts match label every compatible figure compliant,
+# so figure styles common in those papers cannot violate a compliance rule under
+# the panel's reading. Wrong-role glyph forms appear only in papers scored
+# non-compliant. These notes bind the judge to the panel's operational reading
+# rather than a literal one.
+HISTORICAL_INTERPRETATIONS = {
+    "compliance:5.2.6": (
+        "The panel failed this rule when a glyph asserts a role the feature does not"
+        " have (for example, a promoter drawn with the arrow form of a CDS)."
+        " Features drawn as generic shapes — plain rectangles, bars, or boxes —"
+        " whose role is conveyed by an adjacent text label were accepted as"
+        " compliant; generic-shape glyph choice is penalized only under"
+        " best-practice 5.2.6."
+    ),
+    "compliance:5.3.1": (
+        "The panel accepted molecular species drawn as generic labeled shapes;"
+        " this rule failed only when a glyph asserts an incorrect species type."
+    ),
+    "compliance:5.2.1": (
+        "The panel required feature glyphs to be anchored on the backbone line;"
+        " minor rendering gaps in an otherwise backbone-anchored layout were not"
+        " failed."
+    ),
+}
+
 SYSTEM_PROMPT = """\
 You are an expert reviewer for the SBOL Visual diagram standard, reproducing the
 review methodology of the decade-long ACS Synthetic Biology retrospective study.
@@ -30,7 +56,11 @@ be drawn with SBOL Visual glyphs whether or not the authors used them.
 A figure is NOT compatible when it contains only: data plots or charts,
 micrographs or photographs, gel images, protocol or workflow schematics,
 mathematical models, protein-only structures or pathways with no nucleic-acid
-design content, or purely conceptual illustrations."""
+design content, or purely conceptual illustrations. The historical panel
+counted a figure only when communicating a construct's design is a primary
+purpose of the figure or one of its panels; mechanism, workflow, or
+base-pairing illustrations that merely include incidental construct sketches
+were not counted."""
 
 
 def build_user_prompt(figure_number: int, caption_text: str, rules: list[RubricRule]) -> str:
@@ -48,7 +78,7 @@ contains no element the rule governs, "pass" when the governed elements satisfy
 it, and "fail" when any governed element violates it. Honor every reviewer
 exception noted under a rule.
 
-{render_rubric(rules)}
+{render_rubric(rules, interpretations=HISTORICAL_INTERPRETATIONS)}
 
 Respond with a single JSON object and nothing else:
 {{

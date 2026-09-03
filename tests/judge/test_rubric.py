@@ -43,3 +43,18 @@ def test_render_rubric_includes_rules_and_exceptions() -> None:
     assert "BEST-PRACTICE RULES" in rendered
     assert "[compliance:5.2.1] (MUST)" in rendered
     assert "Reviewer exception: Unless showing secondary structure." in rendered
+
+
+def test_render_rubric_includes_historical_interpretations() -> None:
+    rendered = render_rubric(
+        RULES, interpretations={"compliance:5.2.1": "Anchored layouts were accepted."}
+    )
+    assert "Historical interpretation: Anchored layouts were accepted." in rendered
+
+
+def test_judge_prompt_embeds_calibrated_interpretations() -> None:
+    from sbol_visual_eval.judge.prompt import build_user_prompt
+
+    prompt = build_user_prompt(1, "Figure 1. Construct.", RULES)
+    assert "Historical interpretation:" in prompt
+    assert "incidental construct sketches" in prompt

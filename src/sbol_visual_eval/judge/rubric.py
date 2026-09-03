@@ -59,20 +59,29 @@ def best_practice_rules(rules: list[RubricRule]) -> list[RubricRule]:
     return [rule for rule in rules if rule.category == BEST_PRACTICE]
 
 
-def render_rule(rule: RubricRule) -> str:
+def render_rule(rule: RubricRule, interpretation: str | None = None) -> str:
     line = f"- [{rule.rule_key}] ({rule.normative_keyword}) {rule.statement}"
     for note in rule.notes:
         line += f"\n  Reviewer exception: {note}"
+    if interpretation:
+        line += f"\n  Historical interpretation: {interpretation}"
     return line
 
 
-def render_rubric(rules: list[RubricRule]) -> str:
+def render_rubric(rules: list[RubricRule], interpretations: dict[str, str] | None = None) -> str:
     """Render both rule sections exactly as the judge prompt embeds them."""
+    interpretations = interpretations or {}
     sections = [
         "COMPLIANCE RULES (a compatible figure is compliant only if it violates none):",
-        *(render_rule(rule) for rule in compliance_rules(rules)),
+        *(
+            render_rule(rule, interpretations.get(rule.rule_key))
+            for rule in compliance_rules(rules)
+        ),
         "",
         "BEST-PRACTICE RULES (a compliant figure follows best practices only if it violates none):",
-        *(render_rule(rule) for rule in best_practice_rules(rules)),
+        *(
+            render_rule(rule, interpretations.get(rule.rule_key))
+            for rule in best_practice_rules(rules)
+        ),
     ]
     return "\n".join(sections)
