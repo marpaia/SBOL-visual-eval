@@ -184,13 +184,22 @@ def _stage_accuracy(rows: list[dict[str, Any]], stage: str) -> float:
     return round(sum(row[f"{stage}_correct"] for row in rows) / len(rows), 4)
 
 
-def _rule_failure_counts(rows: list[dict[str, Any]], expected_stage: str) -> dict[str, int]:
-    """Which rules fail on figures the panel judged positive at this stage."""
+def _rule_failure_counts(
+    rows: list[dict[str, Any]], expected_stage: str, prefix: str | None = None
+) -> dict[str, int]:
+    """Which rules fail on figures the panel judged positive at this stage.
+
+    Only rules that can actually block the stage are counted, so a
+    best-practice failure never appears as a reason a figure missed
+    compliance.
+    """
     counts: dict[str, int] = {}
     for row in rows:
         if not row[expected_stage]:
             continue
         for rule_key in str(row["failed_rules"]).split():
+            if prefix is not None and not rule_key.startswith(prefix):
+                continue
             counts[rule_key] = counts.get(rule_key, 0) + 1
     return dict(sorted(counts.items(), key=lambda item: -item[1]))
 
@@ -218,9 +227,11 @@ def run_cascade_benchmark(
         "compliant_accuracy": _stage_accuracy(judged, "compliant"),
         "best_practice_accuracy": _stage_accuracy(judged, "best_practice"),
         "expected_best_practice_figures": sum(row["expected_best_practice"] for row in judged),
-        "rules_blocking_expected_compliant": _rule_failure_counts(judged, "expected_compliant"),
+        "rules_blocking_expected_compliant": _rule_failure_counts(
+            judged, "expected_compliant", prefix="compliance:"
+        ),
         "rules_blocking_expected_best_practice": _rule_failure_counts(
-            judged, "expected_best_practice"
+            judged, "expected_best_practice", prefix="best_practice:"
         ),
         "report_path": f"data/reports/{report_stem}.csv",
     }

@@ -69,3 +69,10 @@ def test_compatibility_prompt_encodes_panel_exclusions() -> None:
     assert "design specification versus sequence" in prompt
     # The compatibility-only prompt must not pay for rule evaluation.
     assert "COMPLIANCE RULES" not in prompt
+
+
+def test_best_practice_interpretations_are_embedded() -> None:
+    from sbol_visual_eval.judge.prompt import HISTORICAL_INTERPRETATIONS
+
+    assert "best_practice:5.2.6" in HISTORICAL_INTERPRETATIONS
+    assert "conditional" in HISTORICAL_INTERPRETATIONS["best_practice:5.1.1"]

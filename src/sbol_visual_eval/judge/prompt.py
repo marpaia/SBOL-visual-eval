@@ -36,6 +36,40 @@ HISTORICAL_INTERPRETATIONS = {
         " minor rendering gaps in an otherwise backbone-anchored layout were not"
         " failed."
     ),
+    # Best-practice leniency measured on papers whose counts prove every
+    # compliant figure also followed best practices.
+    "best_practice:5.1.1": (
+        "This rule is conditional: it applies only to a diagram that shows both"
+        " single- and double-stranded constructs. Answer not_applicable when the"
+        " diagram shows only one strandedness, which is the usual case; a"
+        " single-line backbone is not a failure on its own."
+    ),
+    "best_practice:5.1.3": (
+        "The panel accepted linear backbones for constructs presented as linear"
+        " designs. Fail only when a figure asserts a plasmid or genomic-locus"
+        " context and draws it without the corresponding glyph shape, or shows"
+        " truncated context with no omitted-detail indication."
+    ),
+    "best_practice:5.2.6": (
+        "The reviewers were explicitly flexible on glyph version and accepted"
+        " stylistic variants, so a figure whose features use recognizable"
+        " SBOL-style glyph vocabulary satisfies this rule even when the shapes or"
+        " versions differ from the current RECOMMENDED set. Fail only when"
+        " features are drawn as undifferentiated generic shapes carrying no glyph"
+        " vocabulary at all."
+    ),
+    "best_practice:5.2.1": (
+        "The panel accepted ordinary backbone alignment; fail only when glyphs sit"
+        " clearly off the backbone in a way that obscures reading."
+    ),
+    "best_practice:5.3.1": (
+        "As with nucleic-acid glyphs, degenerate and stylistic molecular-species"
+        " forms were accepted; fail only when a species is drawn with no"
+        " type-bearing glyph vocabulary."
+    ),
+    "best_practice:5.1.4": (
+        "Answer not_applicable for assembly diagrams, where a bare backbone is expected."
+    ),
 }
 
 SYSTEM_PROMPT = """\

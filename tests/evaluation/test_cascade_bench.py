@@ -136,3 +136,26 @@ def test_cascade_benchmark_reports_blocking_rules(tmp_path: Path) -> None:
 
     payload = json.loads((layout.reports / "cascade_benchmark.json").read_text())
     assert payload["judge_errors"] == 0
+
+
+def test_blocking_rule_counts_are_scoped_to_their_stage(tmp_path: Path) -> None:
+    layout = _prepare_layout(tmp_path)
+    figures = cascade_figures(layout, cascade_papers(layout))
+    # A compliance failure and a best-practice failure on every figure.
+    judge = ScriptedJudge(
+        {
+            number: verdict(
+                number,
+                compatible=True,
+                failed_rules=("compliance:5.2.1", "best_practice:5.1.2"),
+            )
+            for number in (1, 2)
+        }
+    )
+
+    summary = run_cascade_benchmark(layout, judge, RULES, figures, workers=1)
+
+    # Only compliance rules can explain a missed compliant verdict, and only
+    # best-practice rules a missed best-practice verdict.
+    assert summary["rules_blocking_expected_compliant"] == {"compliance:5.2.1": 3}
+    assert summary["rules_blocking_expected_best_practice"] == {"best_practice:5.1.2": 2}
