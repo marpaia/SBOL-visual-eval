@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 import random
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Any
 
@@ -22,7 +23,7 @@ from ..corpus.util.storage import (
     write_csv,
     write_json,
 )
-from ..evaluator.pipeline import evaluate_pdf
+from ..evaluator.pipeline import PaperEvaluation, evaluate_pdf
 from ..judge.protocol import FigureJudge
 from ..judge.rubric import RubricRule
 from .groundtruth import GroundTruthPaper, ground_truth_by_doi, load_ground_truth
@@ -97,6 +98,37 @@ def sample_papers(papers: list[SweepPaper], sample: int | None, seed: int) -> li
     )
 
 
+def _evaluate_one(
+    layout: Layout,
+    judge: FigureJudge,
+    rules: list[RubricRule],
+    entry: SweepPaper,
+) -> tuple[dict[str, Any], PaperEvaluation | None]:
+    row: dict[str, Any] = {
+        "record_id": entry.paper.record_id,
+        "doi": entry.paper.doi,
+        "year": entry.paper.year,
+        "pdf_path": entry.pdf_path,
+        "pdf_is_version_of_record": entry.pdf_is_version_of_record,
+    }
+    for field in HISTORICAL_COUNT_FIELDS:
+        row[f"historical_{field}"] = getattr(entry.paper.score, field)
+    try:
+        evaluation = evaluate_pdf(layout.root / entry.pdf_path, judge, rules)
+    except Exception as error:  # noqa: BLE001 - one failed paper must not stop the sweep
+        row.update(
+            {f"predicted_{field}": "" for field in HISTORICAL_COUNT_FIELDS},
+            all_counts_exact=False,
+            evaluation_error=f"{type(error).__name__}: {error}",
+        )
+        return row, None
+    for field in HISTORICAL_COUNT_FIELDS:
+        row[f"predicted_{field}"] = getattr(evaluation.score, field)
+    row["all_counts_exact"] = evaluation.score.counts == entry.paper.score.counts
+    row["evaluation_error"] = ""
+    return row, evaluation
+
+
 def run_sweep(
     layout: Layout,
     judge: FigureJudge,
@@ -104,43 +136,25 @@ def run_sweep(
     papers: list[SweepPaper],
     *,
     report_stem: str = "evaluator_agreement",
+    workers: int = 1,
 ) -> dict[str, Any]:
     """Evaluate the given papers and write agreement and verdict reports."""
     rows: list[dict[str, Any]] = []
     pairs: list[ScoredPair] = []
     verdict_records: list[dict[str, Any]] = []
 
-    for entry in papers:
-        row: dict[str, Any] = {
-            "record_id": entry.paper.record_id,
-            "doi": entry.paper.doi,
-            "year": entry.paper.year,
-            "pdf_path": entry.pdf_path,
-            "pdf_is_version_of_record": entry.pdf_is_version_of_record,
-        }
-        for field in HISTORICAL_COUNT_FIELDS:
-            row[f"historical_{field}"] = getattr(entry.paper.score, field)
-        try:
-            evaluation = evaluate_pdf(layout.root / entry.pdf_path, judge, rules)
-        except Exception as error:  # noqa: BLE001 - one failed paper must not stop the sweep
-            row.update(
-                {f"predicted_{field}": "" for field in HISTORICAL_COUNT_FIELDS},
-                all_counts_exact=False,
-                evaluation_error=f"{type(error).__name__}: {error}",
-            )
+    with ThreadPoolExecutor(max_workers=max(workers, 1)) as pool:
+        results = pool.map(lambda entry: _evaluate_one(layout, judge, rules, entry), papers)
+        for entry, (row, evaluation) in zip(papers, results, strict=True):
             rows.append(row)
-            continue
-        for field in HISTORICAL_COUNT_FIELDS:
-            row[f"predicted_{field}"] = getattr(evaluation.score, field)
-        row["all_counts_exact"] = evaluation.score.counts == entry.paper.score.counts
-        row["evaluation_error"] = ""
-        rows.append(row)
-        pairs.append((entry.paper, evaluation.score))
-        verdict_records.append({"doi": entry.paper.doi, **evaluation.to_dict()})
-        print(
-            f"{entry.paper.doi}: predicted {evaluation.score.counts} "
-            f"historical {entry.paper.score.counts}"
-        )
+            if evaluation is None:
+                continue
+            pairs.append((entry.paper, evaluation.score))
+            verdict_records.append({"doi": entry.paper.doi, **evaluation.to_dict()})
+            print(
+                f"{entry.paper.doi}: predicted {evaluation.score.counts} "
+                f"historical {entry.paper.score.counts}"
+            )
 
     agreement = score_agreement(pairs)
     summary = {

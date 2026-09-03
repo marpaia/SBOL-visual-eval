@@ -14,7 +14,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from .parsing import parse_verdict
-from .prompt import SYSTEM_PROMPT, build_user_prompt
+from .prompt import SYSTEM_PROMPT, build_compatibility_prompt, build_user_prompt
 from .rubric import RubricRule
 from .schema import FigureContext, FigureVerdict
 
@@ -46,13 +46,20 @@ class ClaudeCLIJudge:
         *,
         model: str = DEFAULT_MODEL,
         runner: Runner | None = None,
+        compatibility_only: bool = False,
     ) -> None:
         self._rules = rules
         self._model = model
         self._runner = _run_claude if runner is None else runner
+        self._compatibility_only = compatibility_only
 
     def command(self) -> list[str]:
         return ["claude", "-p", "--model", self._model, "--allowed-tools", "Read"]
+
+    def _prompt(self, context: FigureContext) -> str:
+        if self._compatibility_only:
+            return build_compatibility_prompt(context.figure_number, context.caption_text)
+        return build_user_prompt(context.figure_number, context.caption_text, self._rules)
 
     def judge(self, context: FigureContext) -> FigureVerdict:
         with tempfile.TemporaryDirectory(prefix="sbol-judge-") as workdir:
@@ -60,8 +67,7 @@ class ClaudeCLIJudge:
             image_path.write_bytes(context.page_png)
             prompt = (
                 f"{SYSTEM_PROMPT}\n\n"
-                f"Read the manuscript page image at {image_path} first.\n\n"
-                + build_user_prompt(context.figure_number, context.caption_text, self._rules)
+                f"Read the manuscript page image at {image_path} first.\n\n" + self._prompt(context)
             )
             reply = self._runner(self.command(), prompt, Path(workdir))
         return parse_verdict(reply, context.figure_number)

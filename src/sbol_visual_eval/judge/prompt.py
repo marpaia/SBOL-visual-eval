@@ -63,6 +63,24 @@ base-pairing illustrations that merely include incidental construct sketches
 were not counted."""
 
 
+def build_compatibility_prompt(figure_number: int, caption_text: str) -> str:
+    """A compatibility-only prompt for cheap, large-scale boundary calibration."""
+    return f"""\
+The attached image is the manuscript page containing Figure {figure_number}.
+Its caption begins: "{caption_text[:600]}"
+
+Evaluate Figure {figure_number} only, considering every panel that belongs to it.
+
+{COMPATIBILITY_DEFINITION}
+
+Respond with a single JSON object and nothing else:
+{{
+  "figure_number": {figure_number},
+  "compatible": true or false,
+  "rationale": "one or two sentences"
+}}"""
+
+
 def build_user_prompt(figure_number: int, caption_text: str, rules: list[RubricRule]) -> str:
     return f"""\
 The attached image is the manuscript page containing Figure {figure_number}.

@@ -14,6 +14,11 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from ..corpus.layout import Layout
+from ..evaluation.compatibility import (
+    run_compatibility_benchmark,
+    saturated_compatibility_papers,
+    saturated_figures,
+)
 from ..evaluation.harness import run_sweep, sample_papers, sweep_papers
 from ..evaluation.reconciliation import build_figure_census
 from ..judge.rubric import load_rubric
@@ -57,6 +62,18 @@ def _argument_parser() -> argparse.ArgumentParser:
         help="also evaluate papers whose only local PDF is not the Version of Record",
     )
     evaluate.add_argument("--report-stem", default="evaluator_agreement")
+    evaluate.add_argument("--workers", type=int, default=1)
+
+    compatibility = subparsers.add_parser(
+        "compatibility",
+        help="benchmark the compatibility stage on figures labeled by saturated counts",
+    )
+    compatibility.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
+    compatibility.add_argument("--model", help="judge model override")
+    compatibility.add_argument("--sample", type=int, help="benchmark a seeded random sample")
+    compatibility.add_argument("--seed", type=int, default=7)
+    compatibility.add_argument("--workers", type=int, default=4)
+    compatibility.add_argument("--report-stem", default="compatibility_benchmark")
     return parser
 
 
@@ -95,9 +112,32 @@ def main(argv: Sequence[str] | None = None) -> None:
         if not papers:
             print("No evaluable papers matched the sweep filters", file=sys.stderr)
             raise SystemExit(1)
-        summary = run_sweep(layout, judge, rules, papers, report_stem=args.report_stem)
+        summary = run_sweep(
+            layout, judge, rules, papers, report_stem=args.report_stem, workers=args.workers
+        )
         agreement = summary["agreement"]
         print(
             f"Evaluated {summary['papers_evaluated']:,}/{summary['papers_attempted']:,} papers; "
             f"all-counts exact rate {agreement['all_counts_exact_rate']:.1%}"
+        )
+    elif args.command == "compatibility":
+        rules = load_rubric(layout)
+        judge = build_judge(args.judge, rules, args.model, compatibility_only=True)
+        papers = saturated_compatibility_papers(layout)
+        papers = sample_papers(papers, args.sample, args.seed)
+        figures = saturated_figures(layout, papers)
+        if not figures:
+            print("No saturated figures matched the benchmark filters", file=sys.stderr)
+            raise SystemExit(1)
+        summary = run_compatibility_benchmark(
+            layout,
+            judge,
+            figures,
+            workers=args.workers,
+            report_stem=args.report_stem,
+        )
+        print(
+            f"Compatibility benchmark: {summary['judged']:,} figures, "
+            f"accuracy {summary['accuracy']:.1%}, recall {summary['recall']:.1%}, "
+            f"false-positive rate {summary['false_positive_rate']:.1%}"
         )

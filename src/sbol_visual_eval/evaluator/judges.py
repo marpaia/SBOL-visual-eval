@@ -9,9 +9,17 @@ from ..judge.rubric import RubricRule
 JUDGE_BACKENDS = ("anthropic", "claude-cli")
 
 
-def build_judge(backend: str, rules: list[RubricRule], model: str | None = None) -> FigureJudge:
+def build_judge(
+    backend: str,
+    rules: list[RubricRule],
+    model: str | None = None,
+    *,
+    compatibility_only: bool = False,
+) -> FigureJudge:
     if backend == "anthropic":
-        return AnthropicAPIJudge(rules, model=model) if model else AnthropicAPIJudge(rules)
+        keywords = {"model": model} if model else {}
+        return AnthropicAPIJudge(rules, compatibility_only=compatibility_only, **keywords)
     if backend == "claude-cli":
-        return ClaudeCLIJudge(rules, model=model) if model else ClaudeCLIJudge(rules)
+        keywords = {"model": model} if model else {}
+        return ClaudeCLIJudge(rules, compatibility_only=compatibility_only, **keywords)
     raise ValueError(f"unknown judge backend {backend!r}; expected one of {JUDGE_BACKENDS}")

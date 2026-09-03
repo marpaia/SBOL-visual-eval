@@ -11,7 +11,7 @@ import base64
 from typing import Any
 
 from .parsing import parse_verdict
-from .prompt import SYSTEM_PROMPT, build_user_prompt
+from .prompt import SYSTEM_PROMPT, build_compatibility_prompt, build_user_prompt
 from .rubric import RubricRule
 from .schema import FigureContext, FigureVerdict
 
@@ -26,6 +26,7 @@ class AnthropicAPIJudge:
         model: str = DEFAULT_MODEL,
         max_tokens: int = 8000,
         client: Any | None = None,
+        compatibility_only: bool = False,
     ) -> None:
         if client is None:
             import anthropic
@@ -35,6 +36,12 @@ class AnthropicAPIJudge:
         self._rules = rules
         self._model = model
         self._max_tokens = max_tokens
+        self._compatibility_only = compatibility_only
+
+    def _prompt(self, context: FigureContext) -> str:
+        if self._compatibility_only:
+            return build_compatibility_prompt(context.figure_number, context.caption_text)
+        return build_user_prompt(context.figure_number, context.caption_text, self._rules)
 
     def judge(self, context: FigureContext) -> FigureVerdict:
         response = self._client.messages.create(
@@ -55,9 +62,7 @@ class AnthropicAPIJudge:
                         },
                         {
                             "type": "text",
-                            "text": build_user_prompt(
-                                context.figure_number, context.caption_text, self._rules
-                            ),
+                            "text": self._prompt(context),
                         },
                     ],
                 }
