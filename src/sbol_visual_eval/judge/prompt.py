@@ -82,7 +82,15 @@ The distinction the panel drew is design specification versus sequence
 annotation or laboratory cartography: count a figure when it specifies the
 composition and arrangement of an engineered construct as a design, not when
 it documents where features sit in a sequence or how a cloning product was
-assembled."""
+assembled.
+
+Apply those three exclusions to what a depiction is, not to the figure's
+overall subject. A panel that lays out an engineered construct's composition
+as a design still counts when the rest of the figure is data plots, a
+workflow, or a mechanism — judge the construct depiction on its own terms.
+Decide by asking what the construct depiction does: specify a design to
+build (compatible), or annotate a sequence, document a cloning product, or
+decorate another structure's nodes (not compatible)."""
 
 
 def build_compatibility_prompt(figure_number: int, caption_text: str) -> str:
