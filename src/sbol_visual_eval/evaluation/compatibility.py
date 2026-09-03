@@ -24,6 +24,12 @@ from ..judge.schema import FigureContext
 from .groundtruth import StageLabels, ground_truth_by_doi, load_ground_truth, saturated_labels
 from .harness import SweepPaper
 
+# The saturated-label pool is 2,674 negative and 274 positive figures. A
+# benchmark sample is enriched for positives relative to that mix, so error
+# rates are projected onto these shares before being read as a count bias.
+CORPUS_NEGATIVE_SHARE = 2674 / (2674 + 274)
+CORPUS_POSITIVE_SHARE = 274 / (2674 + 274)
+
 COMPATIBILITY_FIELDS = (
     "doi",
     "year",
@@ -146,6 +152,7 @@ def _summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     true_positives = sum(row["predicted_compatible"] for row in positives)
     false_positives = sum(row["predicted_compatible"] for row in negatives)
     predicted_positive = true_positives + false_positives
+    false_negatives = len(positives) - true_positives
     return {
         "figures": len(rows),
         "judged": len(judged),
@@ -158,6 +165,22 @@ def _summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "recall": round(true_positives / len(positives), 4) if positives else 0.0,
         "false_positive_rate": (round(false_positives / len(negatives), 4) if negatives else 0.0),
         "precision": (round(true_positives / predicted_positive, 4) if predicted_positive else 0.0),
+        # Count agreement depends on the net of both error directions, not on
+        # either rate alone: false positives and false negatives cancel in a
+        # paper's compatible count. A benchmark sample is enriched for
+        # positives relative to the corpus, so the bias is also projected onto
+        # the corpus mix, where negatives outnumber positives about ten to one.
+        "expected_positive_figures": len(positives),
+        "predicted_positive_figures": predicted_positive,
+        "net_count_bias": predicted_positive - len(positives),
+        "net_count_bias_per_100_corpus_figures": round(
+            100
+            * (
+                CORPUS_NEGATIVE_SHARE * (false_positives / len(negatives) if negatives else 0.0)
+                - CORPUS_POSITIVE_SHARE * (false_negatives / len(positives) if positives else 0.0)
+            ),
+            2,
+        ),
     }
 
 

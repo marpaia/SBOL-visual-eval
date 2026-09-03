@@ -126,3 +126,30 @@ def test_compatibility_benchmark_reports_boundary_errors(tmp_path: Path) -> None
 
     payload = json.loads((layout.reports / "compatibility_benchmark.json").read_text())
     assert payload["judge_errors"] == 0
+
+
+def test_net_count_bias_projects_onto_corpus_mix(tmp_path: Path) -> None:
+    layout = _prepare_layout(tmp_path)
+    figures = saturated_figures(layout, saturated_compatibility_papers(layout))
+    # Everything called compatible: both negatives are false positives.
+    judge = ScriptedJudge({1: verdict(1, compatible=True), 2: verdict(2, compatible=True)})
+
+    summary = run_compatibility_benchmark(layout, judge, figures, workers=1)
+
+    assert summary["expected_positive_figures"] == 1
+    assert summary["predicted_positive_figures"] == 3
+    assert summary["net_count_bias"] == 2
+    # A pure over-caller biases counts upward on the corpus mix.
+    assert summary["net_count_bias_per_100_corpus_figures"] > 0
+
+
+def test_net_count_bias_is_negative_when_over_rejecting(tmp_path: Path) -> None:
+    layout = _prepare_layout(tmp_path)
+    figures = saturated_figures(layout, saturated_compatibility_papers(layout))
+    # Everything called incompatible: the certain positive is a false negative.
+    judge = ScriptedJudge({1: verdict(1, compatible=False), 2: verdict(2, compatible=False)})
+
+    summary = run_compatibility_benchmark(layout, judge, figures, workers=1)
+
+    assert summary["net_count_bias"] == -1
+    assert summary["net_count_bias_per_100_corpus_figures"] < 0
