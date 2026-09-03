@@ -1,0 +1,17 @@
+{
+  "accuracy": 0.9695,
+  "certain_negative_figures": 168,
+  "certain_positive_figures": 29,
+  "expected_positive_figures": 29,
+  "false_positive_rate": 0.006,
+  "figures": 197,
+  "generated_at": "2026-09-03T20:45:37+00:00",
+  "judge_errors": 0,
+  "judged": 197,
+  "net_count_bias": -4,
+  "net_count_bias_per_100_corpus_figures": -1.06,
+  "precision": 0.96,
+  "predicted_positive_figures": 25,
+  "recall": 0.8276,
+  "report_path": "data/reports/compatibility_bench_final.csv"
+}
