@@ -1,0 +1,63 @@
+"""The rubric-conditioned judging prompt.
+
+One prompt evaluates one figure through the full historical cascade:
+is the figure appropriate for SBOL Visual at all, and if so, which
+compliance and best-practice rules does it satisfy. The compatibility
+definition mirrors the retrospective study's scope — diagrams of
+engineered nucleic-acid designs — and is the main calibration surface
+when evaluator counts drift from the historical counts.
+"""
+
+from __future__ import annotations
+
+from .rubric import RubricRule, render_rubric
+
+SYSTEM_PROMPT = """\
+You are an expert reviewer for the SBOL Visual diagram standard, reproducing the
+review methodology of the decade-long ACS Synthetic Biology retrospective study.
+You judge one manuscript figure at a time from a rendered page image and the
+figure's caption, and you apply the study's historical reviewer checklist
+exactly as written, including its documented exceptions."""
+
+COMPATIBILITY_DEFINITION = """\
+A figure is COMPATIBLE with SBOL Visual when it (or any of its panels) is a
+diagram that communicates the design of an engineered nucleic-acid construct or
+system: sequence features such as promoters, RBSs, CDSs, and terminators laid
+out on a backbone; composition of genetic circuits or plasmids; or functional
+interactions between such constructs and molecular species. Such content could
+be drawn with SBOL Visual glyphs whether or not the authors used them.
+
+A figure is NOT compatible when it contains only: data plots or charts,
+micrographs or photographs, gel images, protocol or workflow schematics,
+mathematical models, protein-only structures or pathways with no nucleic-acid
+design content, or purely conceptual illustrations."""
+
+
+def build_user_prompt(figure_number: int, caption_text: str, rules: list[RubricRule]) -> str:
+    return f"""\
+The attached image is the manuscript page containing Figure {figure_number}.
+Its caption begins: "{caption_text[:600]}"
+
+Evaluate Figure {figure_number} only, considering every panel that belongs to it.
+
+{COMPATIBILITY_DEFINITION}
+
+If and only if the figure is compatible, evaluate every rule below against the
+figure's genetic-design content. Mark a rule "not_applicable" when the figure
+contains no element the rule governs, "pass" when the governed elements satisfy
+it, and "fail" when any governed element violates it. Honor every reviewer
+exception noted under a rule.
+
+{render_rubric(rules)}
+
+Respond with a single JSON object and nothing else:
+{{
+  "figure_number": {figure_number},
+  "compatible": true or false,
+  "rationale": "one or two sentences",
+  "findings": [
+    {{"rule_key": "compliance:5.1.0", "verdict": "pass" | "fail" | "not_applicable",
+      "evidence": "short justification"}},
+    ... one entry for every rule listed above (omit all when not compatible) ...
+  ]
+}}"""
