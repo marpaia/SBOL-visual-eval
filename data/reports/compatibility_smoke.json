@@ -1,0 +1,13 @@
+{
+  "accuracy": 1.0,
+  "certain_negative_figures": 9,
+  "certain_positive_figures": 0,
+  "false_positive_rate": 0.0,
+  "figures": 9,
+  "generated_at": "2026-09-03T20:21:54+00:00",
+  "judge_errors": 0,
+  "judged": 9,
+  "precision": 0.0,
+  "recall": 0.0,
+  "report_path": "data/reports/compatibility_smoke.csv"
+}

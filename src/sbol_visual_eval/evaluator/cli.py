@@ -14,6 +14,7 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from ..corpus.layout import Layout
+from ..evaluation.cascade_bench import cascade_figures, cascade_papers, run_cascade_benchmark
 from ..evaluation.compatibility import (
     run_compatibility_benchmark,
     saturated_compatibility_papers,
@@ -74,6 +75,17 @@ def _argument_parser() -> argparse.ArgumentParser:
     compatibility.add_argument("--seed", type=int, default=7)
     compatibility.add_argument("--workers", type=int, default=4)
     compatibility.add_argument("--report-stem", default="compatibility_benchmark")
+
+    cascade = subparsers.add_parser(
+        "cascade",
+        help="benchmark compliance and best practice on fully entailed cascade figures",
+    )
+    cascade.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
+    cascade.add_argument("--model", help="judge model override")
+    cascade.add_argument("--sample", type=int, help="benchmark a seeded random sample")
+    cascade.add_argument("--seed", type=int, default=7)
+    cascade.add_argument("--workers", type=int, default=4)
+    cascade.add_argument("--report-stem", default="cascade_benchmark")
     return parser
 
 
@@ -140,4 +152,26 @@ def main(argv: Sequence[str] | None = None) -> None:
             f"Compatibility benchmark: {summary['judged']:,} figures, "
             f"accuracy {summary['accuracy']:.1%}, recall {summary['recall']:.1%}, "
             f"false-positive rate {summary['false_positive_rate']:.1%}"
+        )
+    elif args.command == "cascade":
+        rules = load_rubric(layout)
+        judge = build_judge(args.judge, rules, args.model)
+        papers = sample_papers(cascade_papers(layout), args.sample, args.seed)
+        figures = cascade_figures(layout, papers)
+        if not figures:
+            print("No cascade figures matched the benchmark filters", file=sys.stderr)
+            raise SystemExit(1)
+        summary = run_cascade_benchmark(
+            layout,
+            judge,
+            rules,
+            figures,
+            workers=args.workers,
+            report_stem=args.report_stem,
+        )
+        print(
+            f"Cascade benchmark: {summary['judged']:,} figures; accuracy "
+            f"compatible {summary['compatible_accuracy']:.1%}, "
+            f"compliant {summary['compliant_accuracy']:.1%}, "
+            f"best practice {summary['best_practice_accuracy']:.1%}"
         )
