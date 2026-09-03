@@ -14,12 +14,16 @@ src/sbol_visual_eval/
     provenance/        manifest vocabulary and artifact identity checks
     inventory/         per-paper local coverage reporting
     validation/        end-to-end corpus integrity checks
+  figures/             figure discovery and page rendering from manuscript PDFs
+  judge/               rubric-conditioned per-figure judgment (Claude backends)
+  evaluation/          historical ground truth, agreement metrics, sweep harnesses
+  evaluator/           the PDF-in, score-out pipeline and the sbol-visual-eval command
 data/                  the corpus itself (see data/README.md)
-docs/                  corpus build and acquisition guides
-tests/                 mirrors src/sbol_visual_eval/corpus
+docs/                  corpus build, acquisition, and evaluator guides
+tests/                 mirrors src/sbol_visual_eval
 ```
 
-Evaluation models and metrics build on top of the `corpus` package; the corpus supplies their ground truth and the local PDF/figure artifacts they run against.
+The evaluator packages build on top of `corpus`; the corpus supplies their ground truth and the local PDF/figure artifacts they run against.
 
 ## Quickstart
 
@@ -32,8 +36,15 @@ uv run pytest
 
 This acquires the raw study sources, builds the normalized corpus, and verifies every checksum with a deterministic rebuild. The released ground truth is **paper-level count supervision**, not figure-level supervision — see the [ground-truth limitation](docs/corpus.md#ground-truth-limitation) before designing any evaluation on top of it.
 
+Scoring a paper (PDF in, historical-format validation score out):
+
+```bash
+uv run sbol-visual-eval score paper.pdf
+```
+
 ## Documentation
 
+- [The learned evaluator](docs/evaluator.md) — the census → judge → aggregate cascade, supervision strategy, and how the evaluator is scored against the historical record
 - [The validation corpus](docs/corpus.md) — sources, ground-truth semantics, deterministic build and validation, and the `data/` layout
 - [Acquiring source papers](docs/acquiring-papers.md) — the license-gated PDF downloader, manifest backfill, and local coverage inventory
 - [bioRxiv predecessor preprints](docs/acquiring-biorxiv-preprints.md) — the six reviewed preprint mappings and their verification
