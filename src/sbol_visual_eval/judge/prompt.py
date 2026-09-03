@@ -60,7 +60,29 @@ design content, or purely conceptual illustrations. The historical panel
 counted a figure only when communicating a construct's design is a primary
 purpose of the figure or one of its panels; mechanism, workflow, or
 base-pairing illustrations that merely include incidental construct sketches
-were not counted."""
+were not counted.
+
+The panel also did not count these, even though each shows sequence features
+positioned along a line or circle. Judge them NOT compatible:
+
+- Annotated sequence or motif maps: a native, variant, or target sequence
+  marked up with the positions of binding sites, operators, -35/-10 boxes,
+  TATA boxes, CpG islands, transcription start sites, or target sites. These
+  report where features occur in a sequence rather than specifying a design
+  to build.
+- Cloning and vector cartography: conventional plasmid, vector, genome, or
+  locus maps whose annotations are cloning apparatus — selection markers,
+  origins, homology arms, primer-binding sites, restriction sites, insertion
+  points, cleavage sites.
+- Figures whose organizing structure is something else — a model-composition
+  graph, a signaling or metabolic pathway, a host-strain engineering
+  overview — with construct depictions attached to its nodes.
+
+The distinction the panel drew is design specification versus sequence
+annotation or laboratory cartography: count a figure when it specifies the
+composition and arrangement of an engineered construct as a design, not when
+it documents where features sit in a sequence or how a cloning product was
+assembled."""
 
 
 def build_compatibility_prompt(figure_number: int, caption_text: str) -> str:

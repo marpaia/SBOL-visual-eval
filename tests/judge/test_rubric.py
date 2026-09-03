@@ -58,3 +58,14 @@ def test_judge_prompt_embeds_calibrated_interpretations() -> None:
     prompt = build_user_prompt(1, "Figure 1. Construct.", RULES)
     assert "Historical interpretation:" in prompt
     assert "incidental construct sketches" in prompt
+
+
+def test_compatibility_prompt_encodes_panel_exclusions() -> None:
+    from sbol_visual_eval.judge.prompt import build_compatibility_prompt
+
+    prompt = build_compatibility_prompt(3, "Figure 3. A plasmid map.")
+    assert "Annotated sequence or motif maps" in prompt
+    assert "Cloning and vector cartography" in prompt
+    assert "design specification versus sequence" in prompt
+    # The compatibility-only prompt must not pay for rule evaluation.
+    assert "COMPLIANCE RULES" not in prompt

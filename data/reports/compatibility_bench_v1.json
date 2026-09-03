@@ -1,0 +1,13 @@
+{
+  "accuracy": 0.8852,
+  "certain_negative_figures": 152,
+  "certain_positive_figures": 31,
+  "false_positive_rate": 0.125,
+  "figures": 183,
+  "generated_at": "2026-09-03T20:30:21+00:00",
+  "judge_errors": 0,
+  "judged": 183,
+  "precision": 0.6042,
+  "recall": 0.9355,
+  "report_path": "data/reports/compatibility_bench_v1.csv"
+}
