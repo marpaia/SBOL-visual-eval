@@ -1,0 +1,11 @@
+record_id,doi,year,pdf_path,pdf_is_version_of_record,predicted_figures_total,predicted_figures_sbol_visual_compatible,predicted_figures_sbol_visual_compliant,predicted_figures_best_practices,historical_figures_total,historical_figures_sbol_visual_compatible,historical_figures_sbol_visual_compliant,historical_figures_best_practices,all_counts_exact,evaluation_error
+doi:10.1021/sb5002196,10.1021/sb5002196,2015,data/papers/2015/10.1021__sb5002196/publisher/paper.pdf,True,10,0,0,0,10,0,0,0,True,
+doi:10.1021/sb500302y,10.1021/sb500302y,2015,data/papers/2015/10.1021__sb500302y/publisher/paper.pdf,True,8,4,4,0,8,4,4,0,True,
+doi:10.1021/acssynbio.5b00191,10.1021/acssynbio.5b00191,2016,data/papers/2016/10.1021__acssynbio.5b00191/publisher/paper.pdf,True,4,0,0,0,4,0,0,0,True,
+doi:10.1021/acssynbio.5b00231,10.1021/acssynbio.5b00231,2017,data/papers/2017/10.1021__acssynbio.5b00231/paper.pdf,True,6,0,0,0,6,0,0,0,True,
+doi:10.1021/acssynbio.7b00302,10.1021/acssynbio.7b00302,2018,data/papers/2018/10.1021__acssynbio.7b00302/paper.pdf,True,5,2,2,0,5,2,0,0,False,
+doi:10.1021/acssynbio.0c00601,10.1021/acssynbio.0c00601,2021,data/papers/2021/10.1021__acssynbio.0c00601/paper.pdf,True,7,2,1,0,7,0,0,0,False,
+doi:10.1021/acssynbio.1c00024,10.1021/acssynbio.1c00024,2021,data/papers/2021/10.1021__acssynbio.1c00024/pmc/paper.pdf,True,6,4,4,0,6,5,5,5,False,
+doi:10.1021/acssynbio.1c00596,10.1021/acssynbio.1c00596,2022,data/papers/2022/10.1021__acssynbio.1c00596/pmc/paper.pdf,True,4,4,4,0,4,4,4,0,True,
+doi:10.1021/acssynbio.2c00027,10.1021/acssynbio.2c00027,2022,data/papers/2022/10.1021__acssynbio.2c00027/paper.pdf,True,7,3,3,0,7,0,0,0,False,
+doi:10.1021/acssynbio.2c00175,10.1021/acssynbio.2c00175,2022,data/papers/2022/10.1021__acssynbio.2c00175/paper.pdf,True,7,4,4,0,7,3,2,0,False,

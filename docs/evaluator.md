@@ -89,6 +89,30 @@ agreement is the stretch metric. Split by year when tuning — train/calibrate
 on early years and hold out recent years — since deployment means scoring
 future papers under glyph and style drift.
 
+## Measured judge agreement
+
+Ten-paper seeded sweeps with the `claude-cli` judge
+(`data/reports/evaluator_agreement_pilot*.{csv,json}` and
+`evaluator_agreement_holdout.*`):
+
+- **Calibration sample (seed 7):** the uncalibrated judge agreed exactly on
+  all four counts for 50% of papers, with compliance systematically stricter
+  than the historical panel — rule 5.2.6 read literally fails generic labeled
+  shapes that count-saturated papers prove the panel accepted. Encoding the
+  recovered interpretations (`judge/prompt.py`,
+  `HISTORICAL_INTERPRETATIONS`) raised same-sample agreement to 70%.
+- **Held-out sample (seed 21, after calibration):** `figures_total` 10/10
+  exact; compatible 6/10 exact (8/10 within one); compliant 5/10 exact (7/10
+  within one); all-counts exact 50%. The residual disagreement concentrates
+  on the compatibility boundary — the judge counts construct schematics
+  inside mechanism/workflow figures that the panel did not count — and on
+  best-practice strictness.
+
+The next calibration round has abundant free supervision: the 1,129 papers
+whose historical compatible count is zero make every figure the judge marks
+compatible a certain false positive, so the compatibility definition can be
+tuned at scale without any figure-level annotation.
+
 ## Calibration levers, in order of expected value
 
 1. **The compatibility definition** in `judge/prompt.py` — the dominant source
