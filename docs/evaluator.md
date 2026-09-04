@@ -91,22 +91,49 @@ future papers under glyph and style drift.
 
 ## Measured judge agreement
 
-Ten-paper seeded sweeps with the `claude-cli` judge
-(`data/reports/evaluator_agreement_pilot*.{csv,json}` and
-`evaluator_agreement_holdout.*`):
+Every calibration follows the same loop: run a benchmark on figures whose
+labels the counts entail, read the judge's own rationales and failed rules on
+the disagreements, encode the panel's operational reading into
+`judge/prompt.py`, and validate on data that never influenced the prompt.
+Report files for every round live under `data/reports/`.
 
-- **Calibration sample (seed 7):** the uncalibrated judge agreed exactly on
-  all four counts for 50% of papers, with compliance systematically stricter
-  than the historical panel — rule 5.2.6 read literally fails generic labeled
-  shapes that count-saturated papers prove the panel accepted. Encoding the
-  recovered interpretations (`judge/prompt.py`,
-  `HISTORICAL_INTERPRETATIONS`) raised same-sample agreement to 70%.
-- **Held-out sample (seed 21, after calibration):** `figures_total` 10/10
-  exact; compatible 6/10 exact (8/10 within one); compliant 5/10 exact (7/10
-  within one); all-counts exact 50%. The residual disagreement concentrates
-  on the compatibility boundary — the judge counts construct schematics
-  inside mechanism/workflow figures that the panel did not count — and on
-  best-practice strictness.
+**Compatibility stage** (compatibility benchmark, ~200 labeled figures per
+round):
+
+| | Accuracy | FP rate | Recall | Net count bias /100 |
+|---|---|---|---|---|
+| Uncalibrated | 88.5% | 12.5% | 93.5% | +10.74 |
+| Calibrated, fresh seed | **97.0%** | **0.6%** | 82.8% | **−1.06** |
+
+Two edits got there: encoding the panel's excluded categories (annotated
+sequence/motif maps, cloning and vector cartography, constructs decorating
+another structure's nodes), then scoping those exclusions to what a depiction
+is rather than the figure's overall subject, which recovered recall from an
+over-corrected 50%. The net-bias column is the decision metric: false
+positives and negatives cancel in a paper's count, so the benchmark projects
+both error rates onto the corpus mix (~10:1 negative:positive).
+
+**Compliance and best-practice stages** (cascade benchmark):
+
+- Compliance needed only the original interpretation notes: on held-out
+  cascade papers, compliant recall given a correct compatible verdict is
+  46/47 (98%).
+- Best practice had two distinct failure modes. Per-rule misreadings (5.2.6
+  ignoring its own "flexible on version" note, conditional 5.1.1 applied
+  unconditionally, 5.1.3 demanding plasmid glyphs for linear constructs) were
+  fixed with interpretation notes. The remainder was a diffuse
+  one-nitpick-per-figure pattern — most misses failed exactly one of the 18
+  SHOULD rules, a different rule each time — fixed by calibrating the global
+  failure threshold to the panel's conspicuous-violation bar. Together:
+  best-practice accuracy 46% → 62% on the calibration sample, **61% on
+  held-out papers** (baseline 46%), with errors now balanced in both
+  directions.
+
+**Known agreement ceiling.** The panel scored near-identical content
+differently across papers (an annotated vector map counted in one paper,
+excluded in another). Reviewers were consistent within papers — which is why
+saturation exists — but not perfectly across them, so exact agreement has a
+ceiling short of 100% and residual best-practice fuzziness is expected.
 
 ## Figure-level benchmarks from saturated counts
 
@@ -134,17 +161,22 @@ best-practice figures label every figure a best-practice negative. It reports
 per-stage accuracy plus the rules that block figures the panel judged
 positive — the direct evidence for the next round of interpretation notes.
 
-## Calibration levers, in order of expected value
+## Remaining calibration levers, in order of expected value
 
-1. **The compatibility definition** in `judge/prompt.py` — the dominant source
-   of compatible-count disagreement; tune against the saturated-label subsets
-   before touching anything else.
-2. **Per-rule strictness** — rules whose failure verdicts drive
-   compliant-count disagreement can be individually audited from
-   `evaluator_verdicts.jsonl` against papers with fully determined compliant
-   stages.
+1. **Compatible-stage recall on positive-heavy papers** — the compatibility
+   boundary is balanced corpus-wide, but fully-saturated papers still lose
+   ~20% of their figures at the compatible stage, which caps every downstream
+   stage; the 274 certain-positive figures are the tuning set.
+2. **Best-practice residual** — errors are now balanced but sizable in both
+   directions; further gains likely need larger benchmark samples or
+   disagreement adjudication rather than more prompt text.
 3. **Judge model and prompt variants** — sweep with `--model` and compare
    agreement reports; the report stem flag keeps runs side by side.
 4. **Disagreement adjudication** — papers where predicted and historical
    counts disagree are exactly where expert review is worth buying; adjudicated
-   figures become a new, separately layered figure-level ground truth.
+   figures become a new, separately layered figure-level ground truth. This is
+   also the only way past the cross-paper consistency ceiling.
+
+Calibration seeds are burned once used: paper-level seed 7, compatibility
+seeds 101 and 777, and cascade seed 55 have all influenced prompt text.
+Headline numbers must come from seeds that never did.
