@@ -160,6 +160,15 @@ contains no element the rule governs, "pass" when the governed elements satisfy
 it, and "fail" when any governed element violates it. Honor every reviewer
 exception noted under a rule.
 
+Calibrate your failure threshold to the historical panel's. The panel failed a
+rule only on a clear violation that an experienced reviewer would flag on a
+first reading of the figure; borderline observations, judgment calls, and
+details only visible under close scrutiny were recorded as pass or
+not_applicable. This matters most for the SHOULD rules: about half of all
+compliant figures met the panel's best-practice bar, and the figures that
+missed it violated a rule conspicuously — do not deny best practice over a
+single subtle imperfection hunted out of an otherwise well-drawn diagram.
+
 {render_rubric(rules, interpretations=HISTORICAL_INTERPRETATIONS)}
 
 Respond with a single JSON object and nothing else:

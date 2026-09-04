@@ -76,3 +76,11 @@ def test_best_practice_interpretations_are_embedded() -> None:
 
     assert "best_practice:5.2.6" in HISTORICAL_INTERPRETATIONS
     assert "conditional" in HISTORICAL_INTERPRETATIONS["best_practice:5.1.1"]
+
+
+def test_judge_prompt_calibrates_failure_threshold() -> None:
+    from sbol_visual_eval.judge.prompt import build_user_prompt
+
+    prompt = build_user_prompt(1, "Figure 1. Construct.", RULES)
+    assert "failure threshold" in prompt
+    assert "clear violation" in prompt

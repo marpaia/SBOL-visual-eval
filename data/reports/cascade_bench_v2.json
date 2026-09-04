@@ -1,22 +1,33 @@
 {
-  "best_practice_accuracy": 0.5556,
-  "compatible_accuracy": 0.5926,
-  "compliant_accuracy": 0.4074,
-  "expected_best_practice_figures": 21,
+  "best_practice_accuracy": 0.5217,
+  "compatible_accuracy": 0.7971,
+  "compliant_accuracy": 0.6812,
+  "expected_best_practice_figures": 51,
   "figures": 69,
-  "generated_at": "2026-09-03T21:33:48+00:00",
-  "judge_errors": 42,
-  "judged": 27,
+  "generated_at": "2026-09-04T02:56:43+00:00",
+  "judge_errors": 0,
+  "judged": 69,
   "report_path": "data/reports/cascade_bench_v2.csv",
   "rules_blocking_expected_best_practice": {
+    "best_practice:5.1.1": 5,
     "best_practice:5.1.2": 1,
-    "best_practice:5.1.3": 1,
+    "best_practice:5.1.3": 6,
+    "best_practice:5.1.4": 1,
+    "best_practice:5.2.2": 1,
+    "best_practice:5.2.4": 1,
+    "best_practice:5.2.6": 1,
     "best_practice:5.3.1": 1,
-    "best_practice:5.4.1": 1,
-    "best_practice:5.4.2": 4
+    "best_practice:5.3.3": 1,
+    "best_practice:5.4.1": 2,
+    "best_practice:5.4.2": 5,
+    "best_practice:5.4.4": 1,
+    "best_practice:5.5.1": 2
   },
   "rules_blocking_expected_compliant": {
-    "compliance:5.2.6": 1,
-    "compliance:5.4.2": 4
+    "compliance:5.2.6": 3,
+    "compliance:5.4.2": 2,
+    "compliance:5.4.4": 1,
+    "compliance:5.4.6": 2,
+    "compliance:5.5.2": 1
   }
 }
