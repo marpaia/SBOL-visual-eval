@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import subprocess
 import tempfile
+import time
 from collections.abc import Callable
 from pathlib import Path
 
@@ -21,22 +22,35 @@ from .schema import FigureContext, FigureVerdict
 DEFAULT_MODEL = "opus"
 DEFAULT_TIMEOUT_SECONDS = 600
 
+# Sustained parallel sweeps intermittently hit throttling, which surfaces as a
+# bare nonzero exit; without retries one throttling window fails half a run.
+RETRY_ATTEMPTS = 4
+RETRY_DELAYS_SECONDS = (15.0, 60.0, 180.0)
+
 Runner = Callable[[list[str], str, Path], str]
 
 
 def _run_claude(command: list[str], prompt: str, cwd: Path) -> str:
-    completed = subprocess.run(
-        command,
-        input=prompt,
-        cwd=cwd,
-        capture_output=True,
-        text=True,
-        timeout=DEFAULT_TIMEOUT_SECONDS,
-        check=False,
-    )
-    if completed.returncode != 0:
-        raise RuntimeError(f"claude CLI failed ({completed.returncode}): {completed.stderr[:500]}")
-    return completed.stdout
+    last_error = ""
+    for attempt in range(RETRY_ATTEMPTS):
+        completed = subprocess.run(
+            command,
+            input=prompt,
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            timeout=DEFAULT_TIMEOUT_SECONDS,
+            check=False,
+        )
+        if completed.returncode == 0:
+            return completed.stdout
+        last_error = (
+            f"claude CLI failed ({completed.returncode}):"
+            f" stderr={completed.stderr[:300]!r} stdout={completed.stdout[:300]!r}"
+        )
+        if attempt < len(RETRY_DELAYS_SECONDS):
+            time.sleep(RETRY_DELAYS_SECONDS[attempt])
+    raise RuntimeError(last_error)
 
 
 class ClaudeCLIJudge:

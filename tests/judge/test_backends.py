@@ -79,3 +79,43 @@ def test_claude_cli_judge_writes_image_and_parses_reply() -> None:
     assert command[:2] == ["claude", "-p"]
     assert "page.png" in prompt
     assert "compliance:5.2.1" in prompt
+
+
+def test_claude_cli_runner_retries_transient_failures(monkeypatch) -> None:
+    from sbol_visual_eval.judge import claude_cli
+
+    attempts = []
+
+    class Completed:
+        def __init__(self, returncode: int) -> None:
+            self.returncode = returncode
+            self.stdout = VERDICT_JSON if returncode == 0 else ""
+            self.stderr = ""
+
+    def fake_run(command, **kwargs):
+        attempts.append(command)
+        return Completed(returncode=1 if len(attempts) < 3 else 0)
+
+    monkeypatch.setattr(claude_cli.subprocess, "run", fake_run)
+    monkeypatch.setattr(claude_cli.time, "sleep", lambda seconds: None)
+
+    reply = claude_cli._run_claude(["claude", "-p"], "prompt", Path("."))
+    assert len(attempts) == 3
+    assert VERDICT_JSON in reply
+
+
+def test_claude_cli_runner_raises_after_exhausting_retries(monkeypatch) -> None:
+    import pytest
+
+    from sbol_visual_eval.judge import claude_cli
+
+    class Completed:
+        returncode = 1
+        stdout = "limit reached"
+        stderr = ""
+
+    monkeypatch.setattr(claude_cli.subprocess, "run", lambda command, **kwargs: Completed())
+    monkeypatch.setattr(claude_cli.time, "sleep", lambda seconds: None)
+
+    with pytest.raises(RuntimeError, match="limit reached"):
+        claude_cli._run_claude(["claude", "-p"], "prompt", Path("."))
