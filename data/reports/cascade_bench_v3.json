@@ -1,0 +1,26 @@
+{
+  "best_practice_accuracy": 0.6232,
+  "compatible_accuracy": 0.7826,
+  "compliant_accuracy": 0.7246,
+  "expected_best_practice_figures": 51,
+  "figures": 69,
+  "generated_at": "2026-09-04T03:24:08+00:00",
+  "judge_errors": 0,
+  "judged": 69,
+  "report_path": "data/reports/cascade_bench_v3.csv",
+  "rules_blocking_expected_best_practice": {
+    "best_practice:5.1.1": 3,
+    "best_practice:5.1.3": 1,
+    "best_practice:5.1.4": 1,
+    "best_practice:5.2.2": 2,
+    "best_practice:5.2.6": 1,
+    "best_practice:5.4.1": 1,
+    "best_practice:5.4.2": 2,
+    "best_practice:5.5.1": 1
+  },
+  "rules_blocking_expected_compliant": {
+    "compliance:5.2.6": 1,
+    "compliance:5.4.2": 2,
+    "compliance:5.4.6": 1
+  }
+}
