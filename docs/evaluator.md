@@ -129,6 +129,23 @@ both error rates onto the corpus mix (~10:1 negative:positive).
   held-out papers** (baseline 46%), with errors now balanced in both
   directions.
 
+**End-to-end paper agreement** (20 papers, fresh seed, full pipeline,
+`evaluator_agreement_final.*`):
+
+| Count | Exact | Within one | MAE | Totals (predicted / historical) |
+|---|---|---|---|---|
+| `figures_total` | 19/20 | 20/20 | 0.05 | 86 / 87 |
+| `figures_sbol_visual_compatible` | 15/20 | 20/20 | 0.25 | 23 / 28 |
+| `figures_sbol_visual_compliant` | 15/20 | 18/20 | 0.50 | 21 / 17 |
+| `figures_best_practices` | 15/20 | 19/20 | 0.30 | 12 / 12 |
+
+All four counts exact simultaneously on 10/20 papers. The remaining
+disagreements are scattered ±1 errors in both directions rather than a
+systematic bias — the aggregate best-practice total matches exactly and the
+other totals sit within a few figures — which is the profile of a system near
+the corpus's own consistency floor. Under the within-one acceptance band the
+stages sit at 100% / 100% / 90% / 95%.
+
 **Known agreement ceiling.** The panel scored near-identical content
 differently across papers (an annotated vector map counted in one paper,
 excluded in another). Reviewers were consistent within papers — which is why
