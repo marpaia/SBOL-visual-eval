@@ -162,6 +162,14 @@ validate, but its false-positive count bias does not. The profile therefore
 remains explicitly selectable with `--era-conditioned`; the default evaluator
 continues to use the lower-bias prose profile.
 
+Whole-paper and selective-voting modes are rejected by their paired calibration
+benchmarks and remain opt-in. Whole-paper era-v3 judging on 40 papers / 165
+figures lowers accuracy from 95.8% to 92.1%, exact paper counts from 85.0% to
+77.5%, and worsens projected bias from +3.20 to +4.44 per 100. Selective k=3
+voting on 20 papers / 78 figures leaves the 98.7% figure accuracy and 95.0%
+paper-count exact rate unchanged: five initially borderline figures consume ten
+extra verdicts (+12.8% calls) without changing a call.
+
 **Compliance and best-practice stages** (cascade benchmark):
 
 - Compliance needed only the original interpretation notes: on held-out
