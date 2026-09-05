@@ -384,6 +384,50 @@ def _grouped_summaries(rows: list[dict[str, Any]], field: str) -> dict[str, dict
     return {value: _summary([row for row in rows if str(row[field]) == value]) for value in values}
 
 
+def _paper_count_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    rows_by_doi: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        rows_by_doi[str(row["doi"])].append(row)
+    complete = [
+        paper_rows
+        for paper_rows in rows_by_doi.values()
+        if all(not row["judge_error"] for row in paper_rows)
+    ]
+    errors = [
+        sum(bool(row["predicted_compatible"]) for row in paper_rows)
+        - sum(bool(row["expected_compatible"]) for row in paper_rows)
+        for paper_rows in complete
+    ]
+    exact = sum(error == 0 for error in errors)
+    within_one = sum(abs(error) <= 1 for error in errors)
+    return {
+        "papers": len(rows_by_doi),
+        "fully_judged_papers": len(complete),
+        "exact": exact,
+        "exact_rate": round(exact / len(complete), 4) if complete else 0.0,
+        "within_one": within_one,
+        "within_one_rate": round(within_one / len(complete), 4) if complete else 0.0,
+        "mae": round(sum(abs(error) for error in errors) / len(complete), 4) if complete else 0.0,
+        "expected_total": sum(
+            bool(row["expected_compatible"]) for paper_rows in complete for row in paper_rows
+        ),
+        "predicted_total": sum(
+            bool(row["predicted_compatible"]) for paper_rows in complete for row in paper_rows
+        ),
+        "net_count_bias": sum(errors),
+    }
+
+
+def _grouped_paper_count_summaries(
+    rows: list[dict[str, Any]], field: str
+) -> dict[str, dict[str, Any]]:
+    values = sorted({str(row[field]) for row in rows})
+    return {
+        value: _paper_count_summary([row for row in rows if str(row[field]) == value])
+        for value in values
+    }
+
+
 def _checkpoint_rows(
     path: Path,
     figures: list[SaturatedFigure],
@@ -534,6 +578,11 @@ def run_compatibility_benchmark(
         "by_year": _grouped_summaries(rows, "year"),
         "by_era": _grouped_summaries(rows, "era"),
         "by_partition": _grouped_summaries(rows, "benchmark_partition"),
+        "paper_count_agreement": _paper_count_summary(rows),
+        "paper_count_agreement_by_era": _grouped_paper_count_summaries(rows, "era"),
+        "paper_count_agreement_by_partition": _grouped_paper_count_summaries(
+            rows, "benchmark_partition"
+        ),
         "report_path": f"data/reports/{report_stem}.csv",
     }
     if callable(sampling_statistics):

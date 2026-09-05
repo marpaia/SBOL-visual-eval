@@ -184,6 +184,20 @@ def test_compatibility_benchmark_reports_boundary_errors(tmp_path: Path) -> None
 
     payload = json.loads((layout.reports / "compatibility_benchmark.json").read_text())
     assert payload["judge_errors"] == 0
+    assert payload["paper_count_agreement"] == {
+        "papers": 2,
+        "fully_judged_papers": 2,
+        "exact": 1,
+        "exact_rate": 0.5,
+        "within_one": 1,
+        "within_one_rate": 0.5,
+        "mae": 1.0,
+        "expected_total": 1,
+        "predicted_total": 3,
+        "net_count_bias": 2,
+    }
+    assert set(payload["paper_count_agreement_by_era"]) == {"2014-2016"}
+    assert set(payload["paper_count_agreement_by_partition"]) == {"unassigned"}
 
 
 def test_net_count_bias_projects_onto_corpus_mix(tmp_path: Path) -> None:
