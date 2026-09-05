@@ -5,7 +5,12 @@ import json
 from pathlib import Path
 
 from sbol_visual_eval.corpus.layout import Layout
-from sbol_visual_eval.evaluation.harness import run_sweep, sample_papers, sweep_papers
+from sbol_visual_eval.evaluation.harness import (
+    exclude_reported_sweep_papers,
+    run_sweep,
+    sample_papers,
+    sweep_papers,
+)
 
 from ..evaluator.helpers import ScriptedJudge, verdict
 from ..figures.helpers import build_fixture_pdf
@@ -78,6 +83,17 @@ def test_sample_papers_is_deterministic(tmp_path: Path) -> None:
     assert sample_papers(papers, 5, seed=7) == papers
 
 
+def test_exclude_reported_sweep_papers_uses_doi_column(tmp_path: Path) -> None:
+    layout = _prepare_layout(tmp_path)
+    papers = sweep_papers(layout, version_of_record_only=False)
+    report = tmp_path / "prior.csv"
+    report.write_text("doi,metric\n10.1/a,1\n", encoding="utf-8")
+
+    remaining = exclude_reported_sweep_papers(papers, [report])
+
+    assert [entry.paper.doi for entry in remaining] == ["10.1/b"]
+
+
 def test_run_sweep_scores_and_writes_reports(tmp_path: Path) -> None:
     layout = _prepare_layout(tmp_path)
     papers = sweep_papers(layout, version_of_record_only=False)
@@ -88,11 +104,18 @@ def test_run_sweep_scores_and_writes_reports(tmp_path: Path) -> None:
         }
     )
 
-    summary = run_sweep(layout, judge, RULES, papers)
+    summary = run_sweep(
+        layout,
+        judge,
+        RULES,
+        papers,
+        benchmark_definition={"partition": "test"},
+    )
 
     assert summary["papers_evaluated"] == 2
     assert summary["evaluation_errors"] == 0
     assert summary["prompt_profile"] == "historical_2025_prose_v1"
+    assert summary["benchmark_definition"] == {"partition": "test"}
     agreement = summary["agreement"]
     assert agreement["papers"] == 2
     assert agreement["counts"]["figures_total"]["exact"] == 2

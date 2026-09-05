@@ -79,6 +79,7 @@ as version-noise, with `source_version` retained per artifact.
 uv run sbol-visual-eval evaluate --sample 25 --judge claude-cli
 uv run sbol-visual-eval evaluate --years 2023            # temporal holdout
 uv run sbol-visual-eval evaluate --sample 25 --seed 2718 --resume
+uv run sbol-visual-eval evaluate --sample 25 --exclude-report data/reports/prior.csv
 ```
 
 Sweeps pair each evaluated paper with its historical counts and write
@@ -88,12 +89,18 @@ verdicts for audit). Papers whose historical counts are internally
 inconsistent (`requires_adjudication`, the 2020 invariant violation) are
 excluded from scoring, matching `GroundTruthPaper.scoreable`.
 
+Repeatable `--exclude-report` options remove every DOI in prior benchmark CSVs
+before seeded sampling. The JSON report records those exclusions with the
+sample seed, year filter, and edition policy so a validation cohort can be
+shown to be paper-disjoint from every calibration or provider-selection run.
+
 Every judge-backed sweep records its prompt profile, judging mode, backend, and
-model in the JSON summary. End-to-end, compatibility, and cascade sweeps write append-only
-ignored checkpoints while they run; `--resume` reuses only successful rows
-whose paper identity, entailed labels, prompt profile, and judging mode still
-match. An error-free report removes its checkpoint; an error-bearing report
-retains the checkpoint and can also recover successful rows from its CSV.
+model in the JSON summary. End-to-end, compatibility, and cascade sweeps write
+append-only ignored checkpoints while they run; `--resume` reuses only
+successful rows whose paper identity, entailed labels, prompt profile, and
+judging mode still match. An error-free report removes its checkpoint; an
+error-bearing report retains the checkpoint and can also recover successful
+rows from its CSV.
 
 Because the ground truth is one reviewer panel, target agreement bands rather
 than exactness everywhere: within-one count agreement and reproduction of the

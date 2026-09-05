@@ -101,6 +101,20 @@ def sample_papers(papers: list[SweepPaper], sample: int | None, seed: int) -> li
     )
 
 
+def exclude_reported_sweep_papers(
+    papers: list[SweepPaper], report_paths: list[Path]
+) -> list[SweepPaper]:
+    """Remove every paper DOI present in prior benchmark CSV reports."""
+    excluded_dois = set()
+    for path in report_paths:
+        with path.open(newline="", encoding="utf-8") as handle:
+            reader = csv.DictReader(handle)
+            if reader.fieldnames is None or "doi" not in reader.fieldnames:
+                raise ValueError(f"exclusion report lacks a doi column: {path}")
+            excluded_dois.update(row["doi"] for row in reader if row["doi"])
+    return [entry for entry in papers if entry.paper.doi not in excluded_dois]
+
+
 def _evaluate_one(
     layout: Layout,
     judge: FigureJudge,
@@ -193,6 +207,7 @@ def run_sweep(
     whole_paper: bool = False,
     prompt_profile: str = COMPATIBILITY_PROMPT_PROFILE,
     resume: bool = False,
+    benchmark_definition: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evaluate the given papers and write agreement and verdict reports."""
     checkpoint_path = layout.reports / f"{report_stem}.checkpoint.jsonl"
@@ -273,6 +288,8 @@ def run_sweep(
     judge_metadata = getattr(judge, "metadata", None)
     if callable(judge_metadata):
         summary["judge"] = judge_metadata()
+    if benchmark_definition is not None:
+        summary["benchmark_definition"] = benchmark_definition
 
     write_csv(layout.reports / f"{report_stem}.csv", rows, EVALUATOR_AGREEMENT_FIELDS)
     write_json(layout.reports / f"{report_stem}.json", summary)

@@ -25,7 +25,12 @@ from ..evaluation.compatibility import (
     saturated_figures,
 )
 from ..evaluation.compatibility_compare import compare_compatibility_reports
-from ..evaluation.harness import run_sweep, sample_papers, sweep_papers
+from ..evaluation.harness import (
+    exclude_reported_sweep_papers,
+    run_sweep,
+    sample_papers,
+    sweep_papers,
+)
 from ..evaluation.reconciliation import build_figure_census
 from ..judge.exemplars import load_compatibility_exemplars
 from ..judge.prompt import (
@@ -96,6 +101,13 @@ def _argument_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--sample", type=int, help="evaluate a seeded random sample")
     evaluate.add_argument("--seed", type=int, default=7)
     evaluate.add_argument("--years", type=int, nargs="*")
+    evaluate.add_argument(
+        "--exclude-report",
+        action="append",
+        type=Path,
+        default=[],
+        help="exclude every paper present in this benchmark CSV; repeatable",
+    )
     evaluate.add_argument(
         "--include-other-editions",
         action="store_true",
@@ -246,6 +258,11 @@ def main(argv: Sequence[str] | None = None) -> None:
             version_of_record_only=not args.include_other_editions,
             years=tuple(args.years) if args.years else None,
         )
+        exclusion_paths = [
+            path.resolve() if path.is_absolute() else (layout.root / path).resolve()
+            for path in args.exclude_report
+        ]
+        papers = exclude_reported_sweep_papers(papers, exclusion_paths)
         papers = sample_papers(papers, args.sample, args.seed)
         if not papers:
             print("No evaluable papers matched the sweep filters", file=sys.stderr)
@@ -260,6 +277,13 @@ def main(argv: Sequence[str] | None = None) -> None:
             whole_paper=args.whole_paper,
             prompt_profile=_prompt_profile(args),
             resume=args.resume,
+            benchmark_definition={
+                "sample_papers": args.sample,
+                "sample_seed": args.seed,
+                "years": args.years,
+                "version_of_record_only": not args.include_other_editions,
+                "excluded_reports": [layout.display_path(path) for path in exclusion_paths],
+            },
         )
         agreement = summary["agreement"]
         print(
