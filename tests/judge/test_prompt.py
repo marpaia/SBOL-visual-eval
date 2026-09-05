@@ -28,6 +28,7 @@ def test_early_era_prompt_uses_measured_conventional_boundary() -> None:
     assert "PUBLICATION ERA: 2013 (2012-2013)" in prompt
     assert "restriction sites, primers, markers" in prompt
     assert "strand/domain interaction" in prompt
+    assert "protein/domain variant" in prompt
 
 
 def test_middle_era_guidance_is_available_to_full_cascade_prompt() -> None:
@@ -41,6 +42,7 @@ def test_middle_era_guidance_is_available_to_full_cascade_prompt() -> None:
 
     assert "PUBLICATION ERA: 2015 (2014-2016)" in prompt
     assert "genome-editing" in prompt
+    assert "specific engineered DNA" in prompt
     assert "compliance:5.2.1" in prompt
 
 

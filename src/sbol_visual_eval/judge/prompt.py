@@ -16,7 +16,7 @@ from .rubric import RubricRule, render_rubric
 from .schema import CompatibilityExemplar, CompatibilityExemplarSpec, FigureContext
 
 COMPATIBILITY_PROMPT_PROFILE = "historical_2025_prose_v1"
-ERA_COMPATIBILITY_PROMPT_PROFILE = "historical_2025_era_v2"
+ERA_COMPATIBILITY_PROMPT_PROFILE = "historical_2025_era_v3"
 BORDERLINE_PROMPT_PROFILE = "borderline_vote_v1"
 
 # These references come only from the calibration side of the paper-level,
@@ -221,27 +221,32 @@ boundary rather than asking only whether a modern SBOL rendering is possible:
   or assembly diagram when that physical cartography is a central subject of
   the figure, even when its labels are restriction sites, primers, markers,
   origins, homology arms, or insertion points.
-- Do not count abstract gene-circuit topology, strand/domain interaction
-  diagrams, protein-fusion block diagrams, or small construct sketches
-  embedded in data or mechanism panels merely because they could be
-  translated into SBOL Visual.
-- Primary-purpose still controls: a small plasmid or construct inset in a
-  micrograph or plot does not become compatible under the cartography rule."""
+- Also count a concrete depiction that identifies the specific engineered
+  construct, protein/domain variant, or assembly measured in an experiment,
+  even when it is a small schematic beside a plot or inside a mechanism panel.
+  These concrete experimental designs remain countable without a
+  primary-purpose or nucleic-acid-only requirement.
+- Do not count purely abstract gene-circuit topology, generic logic or model
+  diagrams, or strand/domain interaction mechanisms whose nodes do not depict
+  the concrete physical design of the experimental material."""
         era = "2012-2013"
     elif publication_year <= 2016:
         policy = """\
 For 2014-2016 papers, reproduce the panel's visually conventional boundary:
 
-- Count a conventional plasmid, vector, genome, locus, cloning, genome-editing,
-  or assembly diagram when that physical cartography or construction process
-  is a central subject of the figure, even when it emphasizes restriction
-  sites, primers, markers, origins, homology arms, or insertion points.
+- Count a conventional plasmid, vector, cloning, genome-editing, or assembly
+  diagram when that physical cartography or construction process is a central
+  subject of the figure, even when it emphasizes restriction sites, primers,
+  markers, origins, homology arms, or insertion points.
+- Also count a concrete construct or reporter-cassette schematic that
+  identifies the specific engineered DNA measured in a plot, workflow, or
+  signaling mechanism, even when the depiction is small. The historical
+  boundary treats those experimental-design identifiers more leniently than
+  abstract models.
 - Do not count abstract gene-circuit or model topology, DNA
-  strand-displacement domain diagrams, or small construct schematics embedded
-  in plots or mechanisms merely because they describe engineered material or
-  could be translated into SBOL Visual.
-- Primary-purpose still controls: an incidental construct inset does not
-  become compatible under the cartography rule."""
+  strand-displacement domain diagrams, or an annotated native sequence or
+  locus that shows target positions but no composition of the engineered
+  construct."""
         era = "2014-2016"
     elif publication_year <= 2023:
         policy = """\

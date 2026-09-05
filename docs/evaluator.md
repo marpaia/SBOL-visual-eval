@@ -144,6 +144,24 @@ include cross-paper inconsistencies around vector cartography and protein-only
 designs. The generated adjudication layer contains all 199 scored
 evaluator-versus-history disagreements and leaves the historical layer intact.
 
+Era conditioning is measured as an opt-in profile. Seed 101 is the burned
+calibration cohort; seed 20260905 selects 30 papers (126 figures) from the
+paper-disjoint holdout and is opened only after the era-v3 wording is frozen:
+
+| Profile and cohort | Accuracy | FP rate | Recall | Net count bias /100 | Paper-count exact |
+|---|---:|---:|---:|---:|---:|
+| Paired prose, calibration | 81.2% | 5.0% | 60.0% | +0.82 | 62.5% |
+| Era v2, calibration | 83.0% | 1.0% | 58.5% | −2.95 | 72.5% |
+| Era v3, calibration | 95.8% | 4.0% | 95.4% | +3.20 | 85.0% |
+| Paired prose, fresh holdout | 82.5% | 9.5% | 66.7% | +5.54 | 66.7% |
+| Era v3, fresh holdout | 92.1% | 10.7% | 97.6% | +9.50 | 80.0% |
+
+Era v3 fixes 15 and regresses three figure calls on the fresh cohort; exact
+paper counts rise by six and regress by two. Its recall and exact-count gains
+validate, but its false-positive count bias does not. The profile therefore
+remains explicitly selectable with `--era-conditioned`; the default evaluator
+continues to use the lower-bias prose profile.
+
 **Compliance and best-practice stages** (cascade benchmark):
 
 - Compliance needed only the original interpretation notes: on held-out
