@@ -19,6 +19,7 @@ from typing import Any
 from ..corpus.layout import Layout
 from ..corpus.util.storage import utc_now, write_csv, write_json
 from ..figures import census_pdf, render_page_png, scope_for_pdf
+from ..judge.prompt import COMPATIBILITY_PROMPT_PROFILE
 from ..judge.protocol import FigureJudge
 from ..judge.rubric import RubricRule
 from ..judge.schema import FigureContext
@@ -214,6 +215,7 @@ def run_cascade_benchmark(
     *,
     workers: int = 4,
     report_stem: str = "cascade_benchmark",
+    prompt_profile: str = COMPATIBILITY_PROMPT_PROFILE,
 ) -> dict[str, Any]:
     """Judge each labeled figure and report per-stage accuracy and blocking rules."""
     with ThreadPoolExecutor(max_workers=workers) as pool:
@@ -225,6 +227,7 @@ def run_cascade_benchmark(
         "figures": len(rows),
         "judged": len(judged),
         "judge_errors": len(rows) - len(judged),
+        "prompt_profile": prompt_profile,
         "compatible_accuracy": _stage_accuracy(judged, "compatible"),
         "compliant_accuracy": _stage_accuracy(judged, "compliant"),
         "best_practice_accuracy": _stage_accuracy(judged, "best_practice"),

@@ -37,6 +37,17 @@ from .judges import JUDGE_BACKENDS, build_judge
 from .pipeline import evaluate_pdf
 
 
+def _prompt_profile(args: argparse.Namespace) -> str:
+    profile = (
+        ERA_COMPATIBILITY_PROMPT_PROFILE if args.era_conditioned else COMPATIBILITY_PROMPT_PROFILE
+    )
+    if args.few_shot:
+        profile += f"+{COMPATIBILITY_EXEMPLAR_PROFILE}"
+    if args.self_consistency > 1:
+        profile += f"+{BORDERLINE_PROMPT_PROFILE}"
+    return profile
+
+
 def _argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -228,6 +239,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             report_stem=args.report_stem,
             workers=args.workers,
             whole_paper=args.whole_paper,
+            prompt_profile=_prompt_profile(args),
         )
         agreement = summary["agreement"]
         print(
@@ -267,15 +279,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             report_stem=args.report_stem,
             resume=args.resume,
             whole_paper=args.whole_paper,
-            prompt_profile=(
-                (
-                    ERA_COMPATIBILITY_PROMPT_PROFILE
-                    if args.era_conditioned
-                    else COMPATIBILITY_PROMPT_PROFILE
-                )
-                + (f"+{COMPATIBILITY_EXEMPLAR_PROFILE}" if args.few_shot else "")
-                + (f"+{BORDERLINE_PROMPT_PROFILE}" if args.self_consistency > 1 else "")
-            ),
+            prompt_profile=_prompt_profile(args),
         )
         print(
             f"Compatibility benchmark: {summary['judged']:,} figures, "
@@ -305,6 +309,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             figures,
             workers=args.workers,
             report_stem=args.report_stem,
+            prompt_profile=_prompt_profile(args),
         )
         print(
             f"Cascade benchmark: {summary['judged']:,} figures; accuracy "

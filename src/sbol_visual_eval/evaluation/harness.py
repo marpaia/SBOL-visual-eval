@@ -24,6 +24,7 @@ from ..corpus.util.storage import (
     write_json,
 )
 from ..evaluator.pipeline import PaperEvaluation, evaluate_pdf
+from ..judge.prompt import COMPATIBILITY_PROMPT_PROFILE
 from ..judge.protocol import FigureJudge
 from ..judge.rubric import RubricRule
 from .groundtruth import GroundTruthPaper, ground_truth_by_doi, load_ground_truth
@@ -145,6 +146,7 @@ def run_sweep(
     report_stem: str = "evaluator_agreement",
     workers: int = 1,
     whole_paper: bool = False,
+    prompt_profile: str = COMPATIBILITY_PROMPT_PROFILE,
 ) -> dict[str, Any]:
     """Evaluate the given papers and write agreement and verdict reports."""
     rows: list[dict[str, Any]] = []
@@ -173,6 +175,7 @@ def run_sweep(
         "papers_evaluated": len(pairs),
         "evaluation_errors": len(papers) - len(pairs),
         "judging_mode": "whole_paper" if whole_paper else "per_figure",
+        "prompt_profile": prompt_profile,
         "agreement": agreement.to_dict(),
         "report_path": f"data/reports/{report_stem}.csv",
     }

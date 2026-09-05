@@ -92,6 +92,7 @@ def test_run_sweep_scores_and_writes_reports(tmp_path: Path) -> None:
 
     assert summary["papers_evaluated"] == 2
     assert summary["evaluation_errors"] == 0
+    assert summary["prompt_profile"] == "historical_2025_prose_v1"
     agreement = summary["agreement"]
     assert agreement["papers"] == 2
     assert agreement["counts"]["figures_total"]["exact"] == 2

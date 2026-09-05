@@ -122,6 +122,7 @@ def test_cascade_benchmark_reports_blocking_rules(tmp_path: Path) -> None:
     summary = run_cascade_benchmark(layout, judge, RULES, figures, workers=1)
 
     assert summary["judged"] == 3
+    assert summary["prompt_profile"] == "historical_2025_prose_v1"
     assert summary["compatible_accuracy"] == 1.0
     assert summary["compliant_accuracy"] == 1.0
     # Two all-positive figures wrongly denied best practice; the BP-negative is right.
