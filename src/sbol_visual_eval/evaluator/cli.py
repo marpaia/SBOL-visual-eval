@@ -23,6 +23,7 @@ from ..evaluation.compatibility import (
     saturated_compatibility_papers,
     saturated_figures,
 )
+from ..evaluation.compatibility_compare import compare_compatibility_reports
 from ..evaluation.harness import run_sweep, sample_papers, sweep_papers
 from ..evaluation.reconciliation import build_figure_census
 from ..judge.exemplars import load_compatibility_exemplars
@@ -169,6 +170,14 @@ def _argument_parser() -> argparse.ArgumentParser:
     )
     adjudicate.add_argument("report", type=Path, help="compatibility benchmark CSV")
     adjudicate.add_argument("--output-dir", type=Path)
+
+    compare = subparsers.add_parser(
+        "compare-compatibility",
+        help="compare paired compatibility benchmark reports",
+    )
+    compare.add_argument("baseline", type=Path)
+    compare.add_argument("candidate", type=Path)
+    compare.add_argument("--output", type=Path)
     return parser
 
 
@@ -330,4 +339,26 @@ def main(argv: Sequence[str] | None = None) -> None:
         print(
             f"Adjudication artifact: {summary['disagreements']:,} disagreements at "
             f"{summary['review_path']}"
+        )
+    elif args.command == "compare-compatibility":
+        baseline_path = (
+            args.baseline if args.baseline.is_absolute() else layout.root / args.baseline
+        )
+        candidate_path = (
+            args.candidate if args.candidate.is_absolute() else layout.root / args.candidate
+        )
+        output_path = args.output
+        if output_path is not None and not output_path.is_absolute():
+            output_path = layout.root / output_path
+        summary = compare_compatibility_reports(
+            layout,
+            baseline_path,
+            candidate_path,
+            output_path=output_path,
+        )
+        baseline_exact = summary["baseline"]["paper_count_agreement"]["exact_rate"]
+        candidate_exact = summary["candidate"]["paper_count_agreement"]["exact_rate"]
+        print(
+            f"Compatibility comparison: {summary['figures']:,} figures; saturated-paper "
+            f"exact rate {baseline_exact:.1%} -> {candidate_exact:.1%}"
         )
