@@ -195,6 +195,10 @@ figures lowers accuracy from 95.8% to 92.1%, exact paper counts from 85.0% to
 voting on 20 papers / 78 figures leaves the 98.7% figure accuracy and 95.0%
 paper-count exact rate unchanged: five initially borderline figures consume ten
 extra verdicts (+12.8% calls) without changing a call.
+The Codex voting profile is also rejected on the paired 20-paper / 78-figure
+calibration cohort. One initially borderline figure consumes two extra
+verdicts, while the profile fixes no baseline calls, regresses two, lowers
+accuracy from 97.4% to 94.9%, and lowers exact paper counts from 90.0% to 80.0%.
 
 **Codex/ChatGPT compatibility stage.** The authenticated `codex-cli` backend
 is evaluated with its default `gpt-5.6-sol` model against the same image and
