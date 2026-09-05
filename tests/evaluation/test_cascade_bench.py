@@ -139,6 +139,60 @@ def test_cascade_benchmark_reports_blocking_rules(tmp_path: Path) -> None:
     assert payload["judge_errors"] == 0
 
 
+def test_cascade_benchmark_resumes_successful_figures(tmp_path: Path) -> None:
+    layout = _prepare_layout(tmp_path)
+    figures = cascade_figures(layout, cascade_papers(layout))
+
+    class OneFigureFails:
+        def judge(self, context):
+            if "Plain" in context.caption_text:
+                raise RuntimeError("temporary judge failure")
+            return verdict(
+                context.figure_number,
+                compatible=True,
+                passed_rules=("compliance:5.2.1", "best_practice:5.1.2"),
+            )
+
+    first = run_cascade_benchmark(
+        layout,
+        OneFigureFails(),
+        RULES,
+        figures,
+        workers=1,
+        report_stem="resumable_cascade",
+    )
+
+    assert first["judged"] == 2
+    assert first["judge_errors"] == 1
+    assert (layout.reports / "resumable_cascade.checkpoint.jsonl").exists()
+
+    replacement = ScriptedJudge(
+        {
+            1: verdict(
+                1,
+                compatible=True,
+                passed_rules=("compliance:5.2.1",),
+                failed_rules=("best_practice:5.1.2",),
+            )
+        }
+    )
+    second = run_cascade_benchmark(
+        layout,
+        replacement,
+        RULES,
+        figures,
+        workers=1,
+        report_stem="resumable_cascade",
+        resume=True,
+    )
+
+    assert second["resumed_figures"] == 2
+    assert second["judged"] == 3
+    assert second["judge_errors"] == 0
+    assert len(replacement.contexts) == 1
+    assert not (layout.reports / "resumable_cascade.checkpoint.jsonl").exists()
+
+
 def test_blocking_rule_counts_are_scoped_to_their_stage(tmp_path: Path) -> None:
     layout = _prepare_layout(tmp_path)
     figures = cascade_figures(layout, cascade_papers(layout))

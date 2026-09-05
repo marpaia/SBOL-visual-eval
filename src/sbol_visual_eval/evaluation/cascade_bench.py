@@ -12,8 +12,10 @@ compatibility boundary.
 from __future__ import annotations
 
 import csv
-from concurrent.futures import ThreadPoolExecutor
+import json
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from ..corpus.layout import Layout
@@ -29,6 +31,8 @@ from .harness import SweepPaper
 CASCADE_FIELDS = (
     "doi",
     "year",
+    "prompt_profile",
+    "self_consistency_samples",
     "figure_number",
     "expected_compatible",
     "expected_compliant",
@@ -133,11 +137,18 @@ def cascade_figures(layout: Layout, papers: list[SweepPaper]) -> list[CascadeFig
 
 
 def _judge_figure(
-    layout: Layout, judge: FigureJudge, rules: list[RubricRule], figure: CascadeFigure
+    layout: Layout,
+    judge: FigureJudge,
+    rules: list[RubricRule],
+    figure: CascadeFigure,
+    prompt_profile: str,
+    self_consistency_samples: int,
 ) -> dict[str, Any]:
     row: dict[str, Any] = {
         "doi": figure.doi,
         "year": figure.year,
+        "prompt_profile": prompt_profile,
+        "self_consistency_samples": self_consistency_samples,
         "figure_number": figure.figure_number,
         "expected_compatible": figure.expected_compatible,
         "expected_compliant": figure.expected_compliant,
@@ -207,6 +218,38 @@ def _rule_failure_counts(
     return dict(sorted(counts.items(), key=lambda item: -item[1]))
 
 
+def _checkpoint_rows(
+    path: Path,
+    figures: list[CascadeFigure],
+    *,
+    prompt_profile: str,
+    self_consistency_samples: int,
+) -> dict[tuple[str, int], dict[str, Any]]:
+    if not path.exists():
+        return {}
+    requested = {(figure.doi, figure.figure_number): figure for figure in figures}
+    rows = {}
+    with path.open(encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            key = (str(row["doi"]), int(row["figure_number"]))
+            figure = requested.get(key)
+            if (
+                figure is not None
+                and int(row["year"]) == figure.year
+                and str(row.get("prompt_profile", COMPATIBILITY_PROMPT_PROFILE)) == prompt_profile
+                and int(row.get("self_consistency_samples", 1)) == self_consistency_samples
+                and bool(row["expected_compatible"]) is figure.expected_compatible
+                and bool(row["expected_compliant"]) is figure.expected_compliant
+                and bool(row["expected_best_practice"]) is figure.expected_best_practice
+                and not row.get("judge_error")
+            ):
+                rows[key] = row
+    return rows
+
+
 def run_cascade_benchmark(
     layout: Layout,
     judge: FigureJudge,
@@ -216,10 +259,55 @@ def run_cascade_benchmark(
     workers: int = 4,
     report_stem: str = "cascade_benchmark",
     prompt_profile: str = COMPATIBILITY_PROMPT_PROFILE,
+    resume: bool = False,
 ) -> dict[str, Any]:
     """Judge each labeled figure and report per-stage accuracy and blocking rules."""
-    with ThreadPoolExecutor(max_workers=workers) as pool:
-        rows = list(pool.map(lambda figure: _judge_figure(layout, judge, rules, figure), figures))
+    checkpoint_path = layout.reports / f"{report_stem}.checkpoint.jsonl"
+    sampling_statistics = getattr(judge, "sampling_statistics", None)
+    self_consistency_samples = (
+        int(sampling_statistics()["samples"]) if callable(sampling_statistics) else 1
+    )
+    completed = (
+        _checkpoint_rows(
+            checkpoint_path,
+            figures,
+            prompt_profile=prompt_profile,
+            self_consistency_samples=self_consistency_samples,
+        )
+        if resume
+        else {}
+    )
+    if not resume:
+        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        checkpoint_path.write_text("", encoding="utf-8")
+    resumed_figures = len(completed)
+    remaining = [
+        figure for figure in figures if (figure.doi, figure.figure_number) not in completed
+    ]
+    with (
+        checkpoint_path.open("a", encoding="utf-8") as checkpoint,
+        ThreadPoolExecutor(max_workers=max(workers, 1)) as pool,
+    ):
+        futures = {
+            pool.submit(
+                _judge_figure,
+                layout,
+                judge,
+                rules,
+                figure,
+                prompt_profile,
+                self_consistency_samples,
+            ): figure
+            for figure in remaining
+        }
+        for future in as_completed(futures):
+            figure = futures[future]
+            row = future.result()
+            completed[(figure.doi, figure.figure_number)] = row
+            checkpoint.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            checkpoint.flush()
+
+    rows = [completed[(figure.doi, figure.figure_number)] for figure in figures]
 
     judged = [row for row in rows if not row["judge_error"]]
     summary = {
@@ -227,6 +315,7 @@ def run_cascade_benchmark(
         "figures": len(rows),
         "judged": len(judged),
         "judge_errors": len(rows) - len(judged),
+        "resumed_figures": resumed_figures,
         "prompt_profile": prompt_profile,
         "compatible_accuracy": _stage_accuracy(judged, "compatible"),
         "compliant_accuracy": _stage_accuracy(judged, "compliant"),
@@ -240,9 +329,10 @@ def run_cascade_benchmark(
         ),
         "report_path": f"data/reports/{report_stem}.csv",
     }
-    sampling_statistics = getattr(judge, "sampling_statistics", None)
     if callable(sampling_statistics):
         summary["self_consistency"] = sampling_statistics()
     write_csv(layout.reports / f"{report_stem}.csv", rows, CASCADE_FIELDS)
     write_json(layout.reports / f"{report_stem}.json", summary)
+    if len(judged) == len(rows):
+        checkpoint_path.unlink(missing_ok=True)
     return summary

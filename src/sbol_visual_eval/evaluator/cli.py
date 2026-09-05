@@ -164,6 +164,7 @@ def _argument_parser() -> argparse.ArgumentParser:
     cascade.add_argument("--seed", type=int, default=7)
     cascade.add_argument("--workers", type=int, default=4)
     cascade.add_argument("--report-stem", default="cascade_benchmark")
+    cascade.add_argument("--resume", action="store_true", help="resume successful judgments")
 
     adjudicate = subparsers.add_parser(
         "adjudicate",
@@ -321,6 +322,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             workers=args.workers,
             report_stem=args.report_stem,
             prompt_profile=_prompt_profile(args),
+            resume=args.resume,
         )
         print(
             f"Cascade benchmark: {summary['judged']:,} figures; accuracy "
