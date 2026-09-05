@@ -4,10 +4,13 @@ import base64
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
+import pytest
+
 from sbol_visual_eval.judge.anthropic_api import AnthropicAPIJudge
-from sbol_visual_eval.judge.claude_cli import ClaudeCLIJudge
+from sbol_visual_eval.judge.claude_cli import ClaudeCLIJudge, _run_claude
 from sbol_visual_eval.judge.schema import CompatibilityExemplar, FigureContext
 
 from .helpers import RULES
@@ -152,6 +155,51 @@ def test_claude_cli_judge_writes_image_and_parses_reply() -> None:
     assert command[:2] == ["claude", "-p"]
     assert "page.png" in prompt
     assert "compliance:5.2.1" in prompt
+
+
+def test_claude_cli_does_not_retry_explicit_terminal_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    calls = []
+
+    def run(*args, **kwargs):
+        calls.append((args, kwargs))
+        return SimpleNamespace(
+            returncode=1,
+            stderr="",
+            stdout="You've hit your session limit · resets 12:50pm",
+        )
+
+    monkeypatch.setattr("sbol_visual_eval.judge.claude_cli.subprocess.run", run)
+    monkeypatch.setattr(
+        "sbol_visual_eval.judge.claude_cli.time.sleep",
+        lambda delay: pytest.fail(f"terminal failure slept for {delay}"),
+    )
+
+    with pytest.raises(RuntimeError, match="session limit"):
+        _run_claude(["claude", "-p"], "prompt", tmp_path)
+
+    assert len(calls) == 1
+
+
+def test_claude_cli_retries_unclassified_exit_one(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    results = iter(
+        (
+            SimpleNamespace(returncode=1, stderr="", stdout=""),
+            SimpleNamespace(returncode=0, stderr="", stdout="ok"),
+        )
+    )
+    delays = []
+    monkeypatch.setattr(
+        "sbol_visual_eval.judge.claude_cli.subprocess.run",
+        lambda *args, **kwargs: next(results),
+    )
+    monkeypatch.setattr("sbol_visual_eval.judge.claude_cli.time.sleep", delays.append)
+
+    assert _run_claude(["claude", "-p"], "prompt", tmp_path) == "ok"
+    assert delays == [15.0]
 
 
 def test_claude_cli_judge_writes_image_backed_exemplars() -> None:

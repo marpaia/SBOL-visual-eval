@@ -35,6 +35,10 @@ DEFAULT_TIMEOUT_SECONDS = 600
 RETRY_ATTEMPTS = 4
 RETRY_DELAYS_SECONDS = (15.0, 60.0, 180.0)
 PARSE_RETRY_ATTEMPTS = 2
+NON_RETRYABLE_FAILURE_MARKERS = (
+    "you've hit your session limit",
+    "safeguards flagged this message",
+)
 
 Runner = Callable[[list[str], str, Path], str]
 
@@ -57,6 +61,9 @@ def _run_claude(command: list[str], prompt: str, cwd: Path) -> str:
             f"claude CLI failed ({completed.returncode}):"
             f" stderr={completed.stderr[:300]!r} stdout={completed.stdout[:300]!r}"
         )
+        combined_output = f"{completed.stderr}\n{completed.stdout}".casefold()
+        if any(marker in combined_output for marker in NON_RETRYABLE_FAILURE_MARKERS):
+            break
         if attempt < len(RETRY_DELAYS_SECONDS):
             time.sleep(RETRY_DELAYS_SECONDS[attempt])
     raise RuntimeError(last_error)
