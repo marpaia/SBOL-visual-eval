@@ -119,7 +119,14 @@ def test_cascade_benchmark_reports_blocking_rules(tmp_path: Path) -> None:
         }
     )
 
-    summary = run_cascade_benchmark(layout, judge, RULES, figures, workers=1)
+    summary = run_cascade_benchmark(
+        layout,
+        judge,
+        RULES,
+        figures,
+        workers=1,
+        benchmark_definition={"sample_seed": 17},
+    )
 
     assert summary["judged"] == 3
     assert summary["prompt_profile"] == "historical_2025_prose_v1"
@@ -128,6 +135,7 @@ def test_cascade_benchmark_reports_blocking_rules(tmp_path: Path) -> None:
     # Two all-positive figures wrongly denied best practice; the BP-negative is right.
     assert summary["best_practice_accuracy"] == round(1 / 3, 4)
     assert summary["expected_best_practice_figures"] == 2
+    assert summary["benchmark_definition"] == {"sample_seed": 17}
     assert summary["rules_blocking_expected_best_practice"] == {"best_practice:5.1.2": 2}
 
     with (layout.reports / "cascade_benchmark.csv").open(newline="", encoding="utf-8") as handle:
@@ -137,6 +145,7 @@ def test_cascade_benchmark_reports_blocking_rules(tmp_path: Path) -> None:
 
     payload = json.loads((layout.reports / "cascade_benchmark.json").read_text())
     assert payload["judge_errors"] == 0
+    assert payload["benchmark_definition"] == {"sample_seed": 17}
 
 
 def test_cascade_benchmark_judges_each_paper_in_one_call(tmp_path: Path) -> None:

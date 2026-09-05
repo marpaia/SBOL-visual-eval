@@ -95,7 +95,9 @@ sample seed, year filter, and edition policy so a validation cohort can be
 shown to be paper-disjoint from every calibration or provider-selection run.
 
 Every judge-backed sweep records its prompt profile, judging mode, backend, and
-model in the JSON summary. End-to-end, compatibility, and cascade sweeps write
+model in the JSON summary. Cascade summaries also record their sampled paper
+count, seed, and VOR-only policy rather than relying on report filenames for
+cohort provenance. End-to-end, compatibility, and cascade sweeps write
 append-only ignored checkpoints while they run; `--resume` reuses only
 successful rows whose paper identity, entailed labels, prompt profile, and
 judging mode still match. An error-free report removes its checkpoint; an

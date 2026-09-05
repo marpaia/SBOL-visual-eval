@@ -407,6 +407,11 @@ def main(argv: Sequence[str] | None = None) -> None:
             prompt_profile=_prompt_profile(args),
             resume=args.resume,
             whole_paper=args.whole_paper,
+            benchmark_definition={
+                "sample_papers": args.sample,
+                "sample_seed": args.seed,
+                "version_of_record_only": True,
+            },
         )
         print(
             f"Cascade benchmark: {summary['judged']:,} figures; accuracy "

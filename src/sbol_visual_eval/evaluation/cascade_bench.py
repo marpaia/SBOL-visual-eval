@@ -332,6 +332,7 @@ def run_cascade_benchmark(
     prompt_profile: str = COMPATIBILITY_PROMPT_PROFILE,
     resume: bool = False,
     whole_paper: bool = False,
+    benchmark_definition: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Judge labeled figures and report per-stage accuracy and blocking rules."""
     checkpoint_path = layout.reports / f"{report_stem}.checkpoint.jsonl"
@@ -441,6 +442,8 @@ def run_cascade_benchmark(
     judge_metadata = getattr(judge, "metadata", None)
     if callable(judge_metadata):
         summary["judge"] = judge_metadata()
+    if benchmark_definition is not None:
+        summary["benchmark_definition"] = benchmark_definition
     write_csv(layout.reports / f"{report_stem}.csv", rows, CASCADE_FIELDS)
     write_json(layout.reports / f"{report_stem}.json", summary)
     if len(judged) == len(rows):

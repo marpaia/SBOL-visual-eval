@@ -1,4 +1,9 @@
 {
+  "benchmark_definition": {
+    "sample_papers": 10,
+    "sample_seed": 20260967,
+    "version_of_record_only": true
+  },
   "best_practice_accuracy": 0.7353,
   "compatible_accuracy": 0.9412,
   "compliant_accuracy": 0.7941,
