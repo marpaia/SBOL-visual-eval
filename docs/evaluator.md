@@ -265,6 +265,14 @@ rubric call produces the same 93.3% / 93.3% / 66.7% result. It neither recovers
 the remaining compatibility miss nor preserves best-practice accuracy, so
 `--staged` also remains experimental.
 
+**End-to-end provider comparison.** These independently sampled fresh cohorts
+are operational measurements rather than a paired model comparison:
+
+| Provider/model | Fresh papers | All four exact | Total exact / within one | Compatible exact / within one | Compliant exact / within one | Best practice exact / within one |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Claude Opus | 20 | **50%** | 95% / **100%** | 75% / **100%** | 75% / 90% | 75% / 95% |
+| Codex `gpt-5.6-sol` | 25 | 28% | **96%** / 96% | 72% / 96% | 60% / **96%** | 36% / 84% |
+
 **Claude end-to-end paper agreement** (20 papers, fresh seed, full pipeline,
 `evaluator_agreement_final.*`):
 
