@@ -81,6 +81,20 @@ def test_claude_cli_judge_writes_image_and_parses_reply() -> None:
     assert "compliance:5.2.1" in prompt
 
 
+def test_claude_cli_judge_retries_unparseable_reply() -> None:
+    replies = iter(("I cannot assess this image.", VERDICT_JSON))
+    calls = []
+
+    def runner(command: list[str], prompt: str, cwd: Path) -> str:
+        calls.append((command, prompt, cwd))
+        return next(replies)
+
+    judge = ClaudeCLIJudge(RULES, runner=runner)
+
+    assert judge.judge(CONTEXT).compatible
+    assert len(calls) == 2
+
+
 def test_claude_cli_runner_retries_transient_failures(monkeypatch) -> None:
     from sbol_visual_eval.judge import claude_cli
 

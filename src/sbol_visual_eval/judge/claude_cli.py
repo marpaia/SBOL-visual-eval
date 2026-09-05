@@ -14,7 +14,7 @@ import time
 from collections.abc import Callable
 from pathlib import Path
 
-from .parsing import parse_verdict
+from .parsing import JudgeParseError, parse_verdict
 from .prompt import SYSTEM_PROMPT, build_compatibility_prompt, build_user_prompt
 from .rubric import RubricRule
 from .schema import FigureContext, FigureVerdict
@@ -26,6 +26,7 @@ DEFAULT_TIMEOUT_SECONDS = 600
 # bare nonzero exit; without retries one throttling window fails half a run.
 RETRY_ATTEMPTS = 4
 RETRY_DELAYS_SECONDS = (15.0, 60.0, 180.0)
+PARSE_RETRY_ATTEMPTS = 2
 
 Runner = Callable[[list[str], str, Path], str]
 
@@ -83,5 +84,15 @@ class ClaudeCLIJudge:
                 f"{SYSTEM_PROMPT}\n\n"
                 f"Read the manuscript page image at {image_path} first.\n\n" + self._prompt(context)
             )
-            reply = self._runner(self.command(), prompt, Path(workdir))
-        return parse_verdict(reply, context.figure_number)
+            last_error: JudgeParseError | None = None
+            for _ in range(PARSE_RETRY_ATTEMPTS):
+                reply = self._runner(self.command(), prompt, Path(workdir))
+                try:
+                    return parse_verdict(reply, context.figure_number)
+                except JudgeParseError as error:
+                    last_error = error
+        assert last_error is not None
+        raise JudgeParseError(
+            f"judge returned no parseable verdict after {PARSE_RETRY_ATTEMPTS} attempts: "
+            f"{last_error}"
+        )
