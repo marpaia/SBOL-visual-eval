@@ -318,6 +318,48 @@ def test_compatibility_benchmark_resumes_successful_checkpoint_rows(tmp_path: Pa
     assert not checkpoint_path.exists()
 
 
+def test_compatibility_benchmark_preserves_errors_and_resumes_from_report(
+    tmp_path: Path,
+) -> None:
+    layout = _prepare_layout(tmp_path)
+    figures = saturated_figures(layout, saturated_compatibility_papers(layout))
+
+    class OneFailureJudge:
+        def judge(self, context):
+            if context.figure_number == 2:
+                raise RuntimeError("temporary failure")
+            return verdict(context.figure_number, compatible=False)
+
+    first = run_compatibility_benchmark(
+        layout,
+        OneFailureJudge(),
+        figures,
+        workers=1,
+        report_stem="report_resume",
+    )
+
+    checkpoint_path = layout.reports / "report_resume.checkpoint.jsonl"
+    assert first["judge_errors"] == 1
+    assert checkpoint_path.exists()
+
+    # A completed CSV remains a recovery source when its checkpoint is unavailable.
+    checkpoint_path.unlink()
+    judge = ScriptedJudge({2: verdict(2, compatible=False)})
+    second = run_compatibility_benchmark(
+        layout,
+        judge,
+        figures,
+        workers=1,
+        report_stem="report_resume",
+        resume=True,
+    )
+
+    assert second["resumed_figures"] == 2
+    assert second["judge_errors"] == 0
+    assert len(judge.contexts) == 1
+    assert not checkpoint_path.exists()
+
+
 def test_compatibility_benchmark_does_not_resume_a_different_prompt_profile(
     tmp_path: Path,
 ) -> None:

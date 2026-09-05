@@ -464,7 +464,18 @@ def _grouped_paper_count_summaries(
     }
 
 
-def _checkpoint_rows(
+def _boolean(value: Any, *, field: str) -> bool:
+    if isinstance(value, bool):
+        return value
+    normalized = str(value).strip().casefold()
+    if normalized == "true":
+        return True
+    if normalized == "false":
+        return False
+    raise ValueError(f"invalid boolean {value!r} in {field}")
+
+
+def _resume_rows(
     path: Path,
     figures: list[SaturatedFigure],
     judging_mode: str,
@@ -475,13 +486,17 @@ def _checkpoint_rows(
         return {}
     requested = {(figure.doi, figure.figure_number): figure for figure in figures}
     rows: dict[tuple[str, int], dict[str, Any]] = {}
-    with path.open(encoding="utf-8") as handle:
-        for line in handle:
-            if not line.strip():
-                continue
-            row = json.loads(line)
+    with path.open(newline="" if path.suffix == ".csv" else None, encoding="utf-8") as handle:
+        source_rows = (
+            csv.DictReader(handle)
+            if path.suffix == ".csv"
+            else (json.loads(line) for line in handle if line.strip())
+        )
+        for source_row in source_rows:
+            row = dict(source_row)
             key = (str(row["doi"]), int(row["figure_number"]))
             figure = requested.get(key)
+            expected_compatible = _boolean(row["expected_compatible"], field="expected_compatible")
             if (
                 figure is not None
                 and int(row["year"]) == figure.year
@@ -490,9 +505,19 @@ def _checkpoint_rows(
                 and str(row.get("prompt_profile", COMPATIBILITY_PROMPT_PROFILE)) == prompt_profile
                 and str(row.get("judging_mode", "per_figure")) == judging_mode
                 and int(row.get("self_consistency_samples", 1)) == self_consistency_samples
-                and bool(row["expected_compatible"]) is figure.expected_compatible
+                and expected_compatible is figure.expected_compatible
                 and not row.get("judge_error")
             ):
+                row.update(
+                    year=int(row["year"]),
+                    figure_number=int(row["figure_number"]),
+                    expected_compatible=expected_compatible,
+                    predicted_compatible=_boolean(
+                        row["predicted_compatible"], field="predicted_compatible"
+                    ),
+                    correct=_boolean(row["correct"], field="correct"),
+                    self_consistency_samples=int(row.get("self_consistency_samples", 1)),
+                )
                 rows[key] = row
     return rows
 
@@ -510,22 +535,24 @@ def run_compatibility_benchmark(
 ) -> dict[str, Any]:
     """Judge each labeled figure with a resumable checkpoint and report accuracy."""
     checkpoint_path = layout.reports / f"{report_stem}.checkpoint.jsonl"
+    report_path = layout.reports / f"{report_stem}.csv"
     judging_mode = "whole_paper" if whole_paper else "per_figure"
     sampling_statistics = getattr(judge, "sampling_statistics", None)
     self_consistency_samples = (
         int(sampling_statistics()["samples"]) if callable(sampling_statistics) else 1
     )
-    completed = (
-        _checkpoint_rows(
-            checkpoint_path,
-            figures,
-            judging_mode,
-            self_consistency_samples,
-            prompt_profile,
-        )
-        if resume
-        else {}
-    )
+    completed: dict[tuple[str, int], dict[str, Any]] = {}
+    if resume:
+        for source_path in (report_path, checkpoint_path):
+            completed.update(
+                _resume_rows(
+                    source_path,
+                    figures,
+                    judging_mode,
+                    self_consistency_samples,
+                    prompt_profile,
+                )
+            )
     if not resume:
         checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
         checkpoint_path.write_text("", encoding="utf-8")
@@ -623,7 +650,8 @@ def run_compatibility_benchmark(
     }
     if callable(sampling_statistics):
         summary["self_consistency"] = sampling_statistics()
-    write_csv(layout.reports / f"{report_stem}.csv", rows, COMPATIBILITY_FIELDS)
+    write_csv(report_path, rows, COMPATIBILITY_FIELDS)
     write_json(layout.reports / f"{report_stem}.json", summary)
-    checkpoint_path.unlink(missing_ok=True)
+    if all(not row["judge_error"] for row in rows):
+        checkpoint_path.unlink(missing_ok=True)
     return summary
