@@ -159,6 +159,20 @@ def sample_saturated_figures(
     return [figure for figure in figures if figure.doi in sampled_dois]
 
 
+def exclude_reported_papers(
+    figures: list[SaturatedFigure], report_paths: list[Path]
+) -> list[SaturatedFigure]:
+    """Exclude every paper identity present in prior compatibility reports."""
+    excluded_dois: set[str] = set()
+    for path in report_paths:
+        with path.open(newline="", encoding="utf-8") as handle:
+            reader = csv.DictReader(handle)
+            if "doi" not in (reader.fieldnames or ()):
+                raise ValueError(f"compatibility exclusion report lacks doi column: {path}")
+            excluded_dois.update(str(row["doi"]) for row in reader if row["doi"])
+    return [figure for figure in figures if figure.doi not in excluded_dois]
+
+
 def saturated_compatibility_papers(
     layout: Layout, *, expected: bool | None = None
 ) -> list[SweepPaper]:
@@ -532,6 +546,7 @@ def run_compatibility_benchmark(
     resume: bool = False,
     whole_paper: bool = False,
     prompt_profile: str = COMPATIBILITY_PROMPT_PROFILE,
+    benchmark_definition: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Judge each labeled figure with a resumable checkpoint and report accuracy."""
     checkpoint_path = layout.reports / f"{report_stem}.checkpoint.jsonl"
@@ -650,6 +665,8 @@ def run_compatibility_benchmark(
     }
     if callable(sampling_statistics):
         summary["self_consistency"] = sampling_statistics()
+    if benchmark_definition is not None:
+        summary["benchmark_definition"] = benchmark_definition
     write_csv(report_path, rows, COMPATIBILITY_FIELDS)
     write_json(layout.reports / f"{report_stem}.json", summary)
     if all(not row["judge_error"] for row in rows):

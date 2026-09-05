@@ -18,6 +18,7 @@ from ..evaluation.adjudication import build_compatibility_adjudication
 from ..evaluation.cascade_bench import cascade_figures, cascade_papers, run_cascade_benchmark
 from ..evaluation.compatibility import (
     assign_era_stratified_partitions,
+    exclude_reported_papers,
     run_compatibility_benchmark,
     sample_saturated_figures,
     saturated_compatibility_papers,
@@ -133,6 +134,13 @@ def _argument_parser() -> argparse.ArgumentParser:
         help="paper-level holdout fraction within each era and label stratum",
     )
     compatibility.add_argument("--split-seed", type=int, default=20260904)
+    compatibility.add_argument(
+        "--exclude-report",
+        action="append",
+        type=Path,
+        default=[],
+        help="exclude every paper present in this compatibility CSV; repeatable",
+    )
     compatibility.add_argument(
         "--partition",
         choices=("all", "calibration", "holdout"),
@@ -279,6 +287,11 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
         if args.partition != "all":
             figures = [figure for figure in figures if figure.benchmark_partition == args.partition]
+        exclusion_paths = [
+            path.resolve() if path.is_absolute() else (layout.root / path).resolve()
+            for path in args.exclude_report
+        ]
+        figures = exclude_reported_papers(figures, exclusion_paths)
         figures = sample_saturated_figures(figures, args.sample, args.seed)
         if not figures:
             print("No saturated figures matched the benchmark filters", file=sys.stderr)
@@ -292,6 +305,14 @@ def main(argv: Sequence[str] | None = None) -> None:
             resume=args.resume,
             whole_paper=args.whole_paper,
             prompt_profile=_prompt_profile(args),
+            benchmark_definition={
+                "partition": args.partition,
+                "sample_papers": args.sample,
+                "sample_seed": args.seed,
+                "split_seed": args.split_seed,
+                "holdout_fraction": args.holdout_fraction,
+                "excluded_reports": [layout.display_path(path) for path in exclusion_paths],
+            },
         )
         print(
             f"Compatibility benchmark: {summary['judged']:,} figures, "

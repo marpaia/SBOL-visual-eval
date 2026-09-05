@@ -9,6 +9,7 @@ from sbol_visual_eval.evaluation.compatibility import (
     SaturatedFigure,
     assign_era_stratified_partitions,
     compatibility_era,
+    exclude_reported_papers,
     run_compatibility_benchmark,
     sample_saturated_figures,
     saturated_compatibility_papers,
@@ -210,13 +211,41 @@ def test_sampling_balances_era_and_label_strata() -> None:
     }
 
 
+def test_exclude_reported_papers_removes_whole_papers(tmp_path: Path) -> None:
+    figures = [
+        SaturatedFigure(
+            doi=f"10.1/{paper}",
+            year=2015,
+            pdf_path="paper.pdf",
+            figure_number=figure_number,
+            caption_text="Figure.",
+            page_number=1,
+            expected_compatible=False,
+        )
+        for paper in ("keep", "exclude")
+        for figure_number in (1, 2)
+    ]
+    report_path = tmp_path / "prior.csv"
+    report_path.write_text("doi,figure_number\n10.1/exclude,1\n", encoding="utf-8")
+
+    remaining = exclude_reported_papers(figures, [report_path])
+
+    assert {figure.doi for figure in remaining} == {"10.1/keep"}
+
+
 def test_compatibility_benchmark_reports_boundary_errors(tmp_path: Path) -> None:
     layout = _prepare_layout(tmp_path)
     figures = saturated_figures(layout, saturated_compatibility_papers(layout))
     # Judge marks everything compatible: perfect recall, worst false-positive rate.
     judge = ScriptedJudge({1: verdict(1, compatible=True), 2: verdict(2, compatible=True)})
 
-    summary = run_compatibility_benchmark(layout, judge, figures, workers=1)
+    summary = run_compatibility_benchmark(
+        layout,
+        judge,
+        figures,
+        workers=1,
+        benchmark_definition={"partition": "test"},
+    )
 
     assert summary["figures"] == 3
     assert summary["judged"] == 3
@@ -225,6 +254,7 @@ def test_compatibility_benchmark_reports_boundary_errors(tmp_path: Path) -> None
     assert summary["recall"] == 1.0
     assert summary["false_positive_rate"] == 1.0
     assert summary["accuracy"] == round(1 / 3, 4)
+    assert summary["benchmark_definition"] == {"partition": "test"}
     assert set(summary["by_era"]) == {"2014-2016"}
     assert set(summary["by_year"]) == {"2015", "2016"}
 

@@ -233,7 +233,10 @@ agreement after reaggregating predictions by saturated paper. The default
 paper-level split is fixed by `--split-seed 20260904`, stratified within
 2012–2013, 2014–2016, and 2017–2023 by entailed label, and never divides a
 paper between calibration and holdout. `--sample` runs after partitioning and
-balances papers across the available era × label strata.
+balances papers across the available era × label strata. Repeatable
+`--exclude-report` arguments remove every paper present in earlier
+compatibility CSVs before sampling; the JSON summary records the partition,
+split seed, sample seed and size, holdout fraction, and exclusion reports.
 
 `cascade` (`evaluation/cascade_bench.py`) uses the stronger shapes: papers
 where all four counts are equal label every figure positive through the whole
