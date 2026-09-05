@@ -15,9 +15,14 @@ from collections.abc import Callable
 from pathlib import Path
 
 from .parsing import JudgeParseError, parse_verdict
-from .prompt import SYSTEM_PROMPT, build_compatibility_prompt, build_user_prompt
+from .prompt import (
+    SYSTEM_PROMPT,
+    build_compatibility_prompt,
+    build_user_prompt,
+    render_compatibility_exemplar,
+)
 from .rubric import RubricRule
-from .schema import FigureContext, FigureVerdict
+from .schema import CompatibilityExemplar, FigureContext, FigureVerdict
 
 DEFAULT_MODEL = "opus"
 DEFAULT_TIMEOUT_SECONDS = 600
@@ -62,11 +67,13 @@ class ClaudeCLIJudge:
         model: str = DEFAULT_MODEL,
         runner: Runner | None = None,
         compatibility_only: bool = False,
+        exemplars: tuple[CompatibilityExemplar, ...] = (),
     ) -> None:
         self._rules = rules
         self._model = model
         self._runner = _run_claude if runner is None else runner
         self._compatibility_only = compatibility_only
+        self._exemplars = exemplars
 
     def command(self) -> list[str]:
         return ["claude", "-p", "--model", self._model, "--allowed-tools", "Read"]
@@ -78,15 +85,33 @@ class ClaudeCLIJudge:
 
     def judge(self, context: FigureContext) -> FigureVerdict:
         with tempfile.TemporaryDirectory(prefix="sbol-judge-") as workdir:
-            image_path = Path(workdir) / "page.png"
+            workdir_path = Path(workdir)
+            image_path = workdir_path / "page.png"
             image_path.write_bytes(context.page_png)
-            prompt = (
-                f"{SYSTEM_PROMPT}\n\n"
-                f"Read the manuscript page image at {image_path} first.\n\n" + self._prompt(context)
+            reference_prompts = []
+            for index, exemplar in enumerate(self._exemplars, start=1):
+                reference_path = workdir_path / f"reference-{index}.png"
+                reference_path.write_bytes(exemplar.page_png)
+                reference_prompts.append(
+                    f"Read the historical reference image at {reference_path}.\n"
+                    f"{render_compatibility_exemplar(exemplar)}\n"
+                )
+            references = "\n".join(reference_prompts)
+            if references:
+                references = (
+                    "Use these image-backed historical labels as calibration examples. "
+                    "Do not return verdicts for them.\n\n"
+                    f"{references}\n"
+                )
+                target_instruction = f"Read the target manuscript page image at {image_path} first."
+            else:
+                target_instruction = f"Read the manuscript page image at {image_path} first."
+            prompt = f"{SYSTEM_PROMPT}\n\n{references}{target_instruction}\n\n" + self._prompt(
+                context
             )
             last_error: JudgeParseError | None = None
             for _ in range(PARSE_RETRY_ATTEMPTS):
-                reply = self._runner(self.command(), prompt, Path(workdir))
+                reply = self._runner(self.command(), prompt, workdir_path)
                 try:
                     return parse_verdict(reply, context.figure_number)
                 except JudgeParseError as error:

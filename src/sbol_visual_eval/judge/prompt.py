@@ -11,6 +11,7 @@ when evaluator counts drift from the historical counts.
 from __future__ import annotations
 
 from .rubric import RubricRule, render_rubric
+from .schema import CompatibilityExemplar
 
 # Historical interpretations recovered from count-saturated papers: papers whose
 # compatible and compliant counts match label every compatible figure compliant,
@@ -125,6 +126,17 @@ workflow, or a mechanism — judge the construct depiction on its own terms.
 Decide by asking what the construct depiction does: specify a design to
 build (compatible), or annotate a sequence, document a cloning product, or
 decorate another structure's nodes (not compatible)."""
+
+
+def render_compatibility_exemplar(exemplar: CompatibilityExemplar) -> str:
+    """Render the historical label paired with one reference image."""
+    expected = "COMPATIBLE" if exemplar.expected_compatible else "NOT compatible"
+    return (
+        f"Historical reference {exemplar.identifier}, published {exemplar.publication_year}, "
+        f"Figure {exemplar.figure_number}. Its caption begins: "
+        f'"{exemplar.caption_text[:600]}"\n'
+        f"The historical verdict is {expected}. {exemplar.rationale}"
+    )
 
 
 def build_compatibility_prompt(figure_number: int, caption_text: str) -> str:

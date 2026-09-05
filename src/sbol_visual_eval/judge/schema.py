@@ -63,3 +63,16 @@ class FigureContext:
     caption_text: str
     page_png: bytes
     publication_year: int | None = None
+
+
+@dataclass(frozen=True)
+class CompatibilityExemplar:
+    """One image-backed historical compatibility reference shown to a judge."""
+
+    identifier: str
+    publication_year: int
+    figure_number: int
+    caption_text: str
+    expected_compatible: bool
+    rationale: str
+    page_png: bytes

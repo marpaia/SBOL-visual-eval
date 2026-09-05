@@ -8,7 +8,7 @@ from typing import Any
 
 from sbol_visual_eval.judge.anthropic_api import AnthropicAPIJudge
 from sbol_visual_eval.judge.claude_cli import ClaudeCLIJudge
-from sbol_visual_eval.judge.schema import FigureContext
+from sbol_visual_eval.judge.schema import CompatibilityExemplar, FigureContext
 
 from .helpers import RULES
 
@@ -22,6 +22,15 @@ VERDICT_JSON = json.dumps(
 )
 
 CONTEXT = FigureContext(figure_number=1, caption_text="Figure 1. Construct.", page_png=b"png-bytes")
+EXEMPLAR = CompatibilityExemplar(
+    identifier="certain-negative",
+    publication_year=2016,
+    figure_number=2,
+    caption_text="Figure 2. Reference.",
+    expected_compatible=False,
+    rationale="The construct sketch is incidental to a data panel.",
+    page_png=b"reference-png",
+)
 
 
 @dataclass
@@ -63,6 +72,20 @@ def test_anthropic_judge_sends_image_and_prompt_and_parses_verdict() -> None:
     assert "compliance:5.2.1" in text_block["text"]
 
 
+def test_anthropic_judge_sends_image_backed_exemplars_before_target() -> None:
+    client = _StubClient()
+    judge = AnthropicAPIJudge(RULES, client=client, exemplars=(EXEMPLAR,))
+
+    assert judge.judge(CONTEXT).compatible
+    reference_image, reference_text, target_image, target_text = client.messages.requests[0][
+        "messages"
+    ][0]["content"]
+    assert reference_image["source"]["data"] == base64.standard_b64encode(b"reference-png").decode()
+    assert "historical verdict is NOT compatible" in reference_text["text"]
+    assert target_image["source"]["data"] == base64.standard_b64encode(b"png-bytes").decode()
+    assert "Figure 1" in target_text["text"]
+
+
 def test_claude_cli_judge_writes_image_and_parses_reply() -> None:
     calls: list[tuple[list[str], str, Path]] = []
 
@@ -79,6 +102,18 @@ def test_claude_cli_judge_writes_image_and_parses_reply() -> None:
     assert command[:2] == ["claude", "-p"]
     assert "page.png" in prompt
     assert "compliance:5.2.1" in prompt
+
+
+def test_claude_cli_judge_writes_image_backed_exemplars() -> None:
+    def runner(command: list[str], prompt: str, cwd: Path) -> str:
+        assert (cwd / "reference-1.png").read_bytes() == b"reference-png"
+        assert "historical verdict is NOT compatible" in prompt
+        assert "Do not return verdicts for them" in prompt
+        return VERDICT_JSON
+
+    judge = ClaudeCLIJudge(RULES, runner=runner, exemplars=(EXEMPLAR,))
+
+    assert judge.judge(CONTEXT).compatible
 
 
 def test_claude_cli_judge_retries_unparseable_reply() -> None:
