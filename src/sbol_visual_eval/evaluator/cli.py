@@ -35,8 +35,11 @@ from ..evaluation.reconciliation import build_figure_census
 from ..judge.exemplars import load_compatibility_exemplars
 from ..judge.prompt import (
     BORDERLINE_PROMPT_PROFILE,
+    CASCADE_EXEMPLAR_PROFILE,
+    CASCADE_EXEMPLAR_SPECS,
     CODEX_THRESHOLD_PROMPT_PROFILE,
     COMPATIBILITY_EXEMPLAR_PROFILE,
+    COMPATIBILITY_EXEMPLAR_SPECS,
     COMPATIBILITY_PROMPT_PROFILE,
     ERA_COMPATIBILITY_PROMPT_PROFILE,
 )
@@ -51,11 +54,23 @@ def _prompt_profile(args: argparse.Namespace, *, compatibility_only: bool = Fals
     )
     if args.few_shot:
         profile += f"+{COMPATIBILITY_EXEMPLAR_PROFILE}"
+    if not compatibility_only and getattr(args, "cascade_few_shot", False):
+        profile += f"+{CASCADE_EXEMPLAR_PROFILE}"
     if args.self_consistency > 1:
         profile += f"+{BORDERLINE_PROMPT_PROFILE}"
     if args.judge == "codex-cli" and not compatibility_only:
         profile += f"+{CODEX_THRESHOLD_PROMPT_PROFILE}"
     return profile
+
+
+def _load_exemplars(layout: Layout, args: argparse.Namespace, *, compatibility_only: bool = False):
+    cascade_few_shot = not compatibility_only and getattr(args, "cascade_few_shot", False)
+    if not args.few_shot and not cascade_few_shot:
+        return ()
+    specs = COMPATIBILITY_EXEMPLAR_SPECS if args.few_shot else ()
+    if cascade_few_shot:
+        specs += CASCADE_EXEMPLAR_SPECS
+    return load_compatibility_exemplars(layout, specs)
 
 
 def _argument_parser() -> argparse.ArgumentParser:
@@ -74,6 +89,11 @@ def _argument_parser() -> argparse.ArgumentParser:
     score.add_argument("--model", help="judge model override")
     score.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     score.add_argument("--few-shot", action="store_true", help="use calibrated image references")
+    score.add_argument(
+        "--cascade-few-shot",
+        action="store_true",
+        help="use exact downstream-stage image references",
+    )
     score.add_argument(
         "--era-conditioned", action="store_true", help="apply publication-era policy"
     )
@@ -98,6 +118,11 @@ def _argument_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--model", help="judge model override")
     evaluate.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     evaluate.add_argument("--few-shot", action="store_true", help="use calibrated image references")
+    evaluate.add_argument(
+        "--cascade-few-shot",
+        action="store_true",
+        help="use exact downstream-stage image references",
+    )
     evaluate.add_argument(
         "--era-conditioned", action="store_true", help="apply publication-era policy"
     )
@@ -181,6 +206,11 @@ def _argument_parser() -> argparse.ArgumentParser:
     cascade.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     cascade.add_argument("--few-shot", action="store_true", help="use calibrated image references")
     cascade.add_argument(
+        "--cascade-few-shot",
+        action="store_true",
+        help="use exact downstream-stage image references",
+    )
+    cascade.add_argument(
         "--era-conditioned", action="store_true", help="apply publication-era policy"
     )
     cascade.add_argument("--sample", type=int, help="benchmark a seeded random sample")
@@ -219,7 +249,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         if args.era_conditioned and args.publication_year is None:
             raise SystemExit("--publication-year is required with --era-conditioned")
         rules = load_rubric(layout)
-        exemplars = load_compatibility_exemplars(layout) if args.few_shot else ()
+        exemplars = _load_exemplars(layout, args)
         judge = build_judge(
             args.judge,
             rules,
@@ -252,7 +282,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
     elif args.command == "evaluate":
         rules = load_rubric(layout)
-        exemplars = load_compatibility_exemplars(layout) if args.few_shot else ()
+        exemplars = _load_exemplars(layout, args)
         judge = build_judge(
             args.judge,
             rules,
@@ -300,7 +330,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
     elif args.command == "compatibility":
         rules = load_rubric(layout)
-        exemplars = load_compatibility_exemplars(layout) if args.few_shot else ()
+        exemplars = _load_exemplars(layout, args, compatibility_only=True)
         judge = build_judge(
             args.judge,
             rules,
@@ -353,7 +383,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
     elif args.command == "cascade":
         rules = load_rubric(layout)
-        exemplars = load_compatibility_exemplars(layout) if args.few_shot else ()
+        exemplars = _load_exemplars(layout, args)
         judge = build_judge(
             args.judge,
             rules,

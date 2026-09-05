@@ -87,6 +87,53 @@ COMPATIBILITY_EXEMPLAR_SPECS = (
     ),
 )
 
+# These downstream references use only full-cascade entailment. Equal total,
+# compatible, compliant, and best-practice counts make every figure positive;
+# total == compatible == compliant with zero best-practice figures makes every
+# figure a certain downstream negative. The labels do not assert which rule the
+# panel would cite.
+CASCADE_EXEMPLAR_PROFILE = "cascade_boundary_pages_v1"
+CASCADE_EXEMPLAR_SPECS = (
+    CompatibilityExemplarSpec(
+        identifier="10.1021/acssynbio.1c00596",
+        publication_year=2022,
+        figure_number=2,
+        caption_text=(
+            "Figure 2. Schematic overview of a weighted sum operation utilizing three "
+            "unique inputs and their corresponding weights."
+        ),
+        expected_compatible=True,
+        expected_compliant=True,
+        expected_best_practice=False,
+        rationale=(
+            "The saturated historical counts entail that this construct schematic is "
+            "compatible and compliant but does not satisfy every best-practice rule. "
+            "No particular failed rule is supplied as ground truth."
+        ),
+        pdf_path="data/papers/2022/10.1021__acssynbio.1c00596/pmc/paper.pdf",
+        pdf_sha256="a46faa1c8f2f910517ccc85c74bc6ba657a7ccf40c10f2730334882456c406f2",
+        page_number=4,
+    ),
+    CompatibilityExemplarSpec(
+        identifier="10.1021/acssynbio.2c00668",
+        publication_year=2023,
+        figure_number=2,
+        caption_text=(
+            "Figure 2. Effect of in-liposome CADGE on the phenotypic output of a reporter gene."
+        ),
+        expected_compatible=True,
+        expected_compliant=True,
+        expected_best_practice=True,
+        rationale=(
+            "The saturated historical counts entail that the design schematic in this "
+            "data-dominated figure is compatible, compliant, and follows best practices."
+        ),
+        pdf_path="data/papers/2023/10.1021__acssynbio.2c00668/paper.pdf",
+        pdf_sha256="676b9e076fa67e3e320885713a2121583fa75d5b3750c49b5b2f96e49e882060",
+        page_number=4,
+    ),
+)
+
 # Historical interpretations recovered from count-saturated papers: papers whose
 # compatible and compliant counts match label every compatible figure compliant,
 # so figure styles common in those papers cannot violate a compliance rule under
@@ -306,12 +353,25 @@ def _borderline_property(request_borderline: bool, *, indent: int) -> str:
 
 def render_compatibility_exemplar(exemplar: CompatibilityExemplar) -> str:
     """Render the historical label paired with one reference image."""
-    expected = "COMPATIBLE" if exemplar.expected_compatible else "NOT compatible"
+    if exemplar.expected_compliant is None and exemplar.expected_best_practice is None:
+        expected = "COMPATIBLE" if exemplar.expected_compatible else "NOT compatible"
+        label_sentence = f"The historical verdict is {expected}."
+    else:
+        labels = ["COMPATIBLE" if exemplar.expected_compatible else "NOT COMPATIBLE"]
+        if exemplar.expected_compliant is not None:
+            labels.append("COMPLIANT" if exemplar.expected_compliant else "NOT COMPLIANT")
+        if exemplar.expected_best_practice is not None:
+            labels.append(
+                "FOLLOWS BEST PRACTICES"
+                if exemplar.expected_best_practice
+                else "DOES NOT FOLLOW ALL BEST PRACTICES"
+            )
+        label_sentence = f"The historical cascade labels are {'; '.join(labels)}."
     return (
         f"Historical reference {exemplar.identifier}, published {exemplar.publication_year}, "
         f"Figure {exemplar.figure_number}. Its caption begins: "
         f'"{exemplar.caption_text[:600]}"\n'
-        f"The historical verdict is {expected}. {exemplar.rationale}"
+        f"{label_sentence} {exemplar.rationale}"
     )
 
 

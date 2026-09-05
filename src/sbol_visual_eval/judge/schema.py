@@ -69,7 +69,7 @@ class FigureContext:
 
 @dataclass(frozen=True)
 class CompatibilityExemplar:
-    """One image-backed historical compatibility reference shown to a judge."""
+    """One image-backed historical cascade reference shown to a judge."""
 
     identifier: str
     publication_year: int
@@ -78,11 +78,13 @@ class CompatibilityExemplar:
     expected_compatible: bool
     rationale: str
     page_png: bytes
+    expected_compliant: bool | None = None
+    expected_best_practice: bool | None = None
 
 
 @dataclass(frozen=True)
 class CompatibilityExemplarSpec:
-    """A checksum-pinned corpus page carrying an entailed historical label."""
+    """A checksum-pinned corpus page carrying entailed historical labels."""
 
     identifier: str
     publication_year: int
@@ -93,3 +95,5 @@ class CompatibilityExemplarSpec:
     pdf_path: str
     pdf_sha256: str
     page_number: int
+    expected_compliant: bool | None = None
+    expected_best_practice: bool | None = None

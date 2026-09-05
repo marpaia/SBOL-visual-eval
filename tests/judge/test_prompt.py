@@ -4,8 +4,9 @@ from sbol_visual_eval.judge.prompt import (
     build_compatibility_paper_prompt,
     build_compatibility_prompt,
     build_user_prompt,
+    render_compatibility_exemplar,
 )
-from sbol_visual_eval.judge.schema import FigureContext
+from sbol_visual_eval.judge.schema import CompatibilityExemplar, FigureContext
 
 from .helpers import RULES
 
@@ -72,3 +73,22 @@ def test_voting_prompt_requests_an_explicit_borderline_flag() -> None:
 
     assert 'Set "borderline" to true only' in prompt
     assert '"borderline": true or false,' in prompt
+
+
+def test_cascade_exemplar_reports_only_entailed_stage_labels() -> None:
+    exemplar = CompatibilityExemplar(
+        identifier="10.1/example",
+        publication_year=2022,
+        figure_number=2,
+        caption_text="Figure 2. Construct.",
+        expected_compatible=True,
+        rationale="No individual failed rule is supplied.",
+        page_png=b"png",
+        expected_compliant=True,
+        expected_best_practice=False,
+    )
+
+    rendered = render_compatibility_exemplar(exemplar)
+
+    assert "COMPATIBLE; COMPLIANT; DOES NOT FOLLOW ALL BEST PRACTICES" in rendered
+    assert "No individual failed rule is supplied" in rendered

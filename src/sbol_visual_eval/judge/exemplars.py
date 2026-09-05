@@ -1,4 +1,4 @@
-"""Load image-backed compatibility references from the local corpus."""
+"""Load image-backed historical references from the local corpus."""
 
 from __future__ import annotations
 
@@ -38,6 +38,8 @@ def load_compatibility_exemplars(
                 expected_compatible=spec.expected_compatible,
                 rationale=spec.rationale,
                 page_png=render_page_png(pdf_path, spec.page_number),
+                expected_compliant=spec.expected_compliant,
+                expected_best_practice=spec.expected_best_practice,
             )
         )
     return tuple(exemplars)

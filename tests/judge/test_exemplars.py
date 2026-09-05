@@ -42,6 +42,8 @@ def test_exemplar_loader_verifies_pdf_and_renders_pinned_page(
 
     assert exemplars[0].page_png == b"reference image"
     assert exemplars[0].expected_compatible is False
+    assert exemplars[0].expected_compliant is None
+    assert exemplars[0].expected_best_practice is None
     assert rendered == [(pdf_path, 3)]
 
 

@@ -51,6 +51,17 @@ def test_codex_threshold_profile_applies_only_to_full_rubric_commands() -> None:
     assert cli._prompt_profile(args) == "historical_2025_era_v3+codex_panel_threshold_v1"
     assert cli._prompt_profile(args, compatibility_only=True) == "historical_2025_era_v3"
 
+    few_shot_args = cli._argument_parser().parse_args(
+        ["cascade", "--judge", "codex-cli", "--few-shot", "--cascade-few-shot"]
+    )
+    assert cli._prompt_profile(few_shot_args) == (
+        "historical_2025_prose_v1+boundary_pages_v2+"
+        "cascade_boundary_pages_v1+codex_panel_threshold_v1"
+    )
+    assert cli._prompt_profile(few_shot_args, compatibility_only=True) == (
+        "historical_2025_prose_v1+boundary_pages_v2"
+    )
+
 
 def test_score_requires_publication_year_for_era_conditioning(tmp_path: Path) -> None:
     with pytest.raises(SystemExit, match="--publication-year is required"):

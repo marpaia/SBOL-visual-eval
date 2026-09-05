@@ -250,6 +250,10 @@ calibration, so this transfer comparison is diagnostic rather than fresh
 validation. Whole-paper Codex judging on the 15-figure calibration cohort
 changes the per-figure 93.3% / 93.3% / 93.3% result to 93.3% / 73.3% / 40.0%:
 the calls become more internally uniform but less historically accurate.
+Two full-cascade image references selected from different exact-label papers
+also fail to transfer to this cohort: compatibility and compliance remain at
+93.3%, while best-practice accuracy falls to 66.7%. They remain available only
+through the experimental `--cascade-few-shot` switch.
 
 **Claude end-to-end paper agreement** (20 papers, fresh seed, full pipeline,
 `evaluator_agreement_final.*`):
@@ -339,6 +343,10 @@ switches select independently measurable alternatives:
 - `--few-shot` renders four checksum-pinned, count-entailed calibration pages
   from local corpus PDFs and supplies their positive and negative labels as
   image-backed references. The images are not copied into the repository.
+- `--cascade-few-shot` adds two checksum-pinned figures whose saturated counts
+  entail their compatible, compliant, and best-practice labels. It supplies no
+  invented rule-level failure label and remains disabled by default because
+  the transfer benchmark regresses.
 - `--whole-paper` sends every unique page image and caption from one paper in
   one request and requires one verdict per censused figure.
 - `--self-consistency 3` asks for an explicit borderline flag and draws two
