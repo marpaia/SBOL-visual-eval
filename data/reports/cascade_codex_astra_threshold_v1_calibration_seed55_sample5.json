@@ -1,0 +1,19 @@
+{
+  "best_practice_accuracy": 0.6,
+  "compatible_accuracy": 0.9333,
+  "compliant_accuracy": 0.9333,
+  "expected_best_practice_figures": 9,
+  "figures": 15,
+  "generated_at": "2026-09-05T17:11:05+00:00",
+  "judge": {
+    "backend": "codex-cli",
+    "model": "gpt-6-astra"
+  },
+  "judge_errors": 0,
+  "judged": 15,
+  "prompt_profile": "historical_2025_era_v3+codex_panel_threshold_v1",
+  "report_path": "data/reports/cascade_codex_astra_threshold_v1_calibration_seed55_sample5.csv",
+  "resumed_figures": 0,
+  "rules_blocking_expected_best_practice": {},
+  "rules_blocking_expected_compliant": {}
+}

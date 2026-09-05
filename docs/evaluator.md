@@ -215,6 +215,13 @@ per-figure calls on this cohort and take longer, so per-figure judging remains
 the operational mode. The image exemplars also regress the paired Codex
 calibration result and remain opt-in.
 
+A model sweep on the burned cohorts rejects `gpt-6-astra` for this task. It
+reaches 94.9% compatibility accuracy, 93.8% recall, and 85.0% exact paper
+counts on the paired calibration cohort, below `gpt-5.6-sol` at 97.4%, 100.0%,
+and 90.0%. With the full-rubric threshold, both models reach 93.3%
+compatibility and compliance accuracy on the 15-figure cascade cohort, while
+`gpt-6-astra` drops best-practice accuracy from 93.3% to 60.0%.
+
 **Compliance and best-practice stages** (cascade benchmark):
 
 - Compliance needed only the original interpretation notes: on held-out
