@@ -1,0 +1,11 @@
+{
+  "decisions_path": "data/adjudicated/compatibility_full_pool_baseline/decisions.csv",
+  "disagreements": 199,
+  "generated_at": "2026-09-05T14:10:30+00:00",
+  "historical_layer_modified": false,
+  "judge_errors_excluded": 6,
+  "review_path": "data/adjudicated/compatibility_full_pool_baseline/index.html",
+  "schema_version": 1,
+  "source_report": "data/reports/compatibility_full_pool_baseline.csv",
+  "source_rows": 2948
+}

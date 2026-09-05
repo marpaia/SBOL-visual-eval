@@ -90,3 +90,23 @@ def test_compare_reports_rejects_partial_papers(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="every baseline figure"):
         compare_compatibility_reports(Layout(tmp_path), baseline_path, candidate_path)
+
+
+def test_compare_reports_ignores_baseline_errors_outside_candidate_papers(
+    tmp_path: Path,
+) -> None:
+    baseline_path = tmp_path / "baseline.csv"
+    candidate_path = tmp_path / "candidate.csv"
+    _write_report(
+        baseline_path,
+        [
+            _row("10.1/a", 1, False, False),
+            {**_row("10.1/b", 1, False, False), "judge_error": "provider refused"},
+        ],
+    )
+    _write_report(candidate_path, [_row("10.1/a", 1, False, False)])
+
+    summary = compare_compatibility_reports(Layout(tmp_path), baseline_path, candidate_path)
+
+    assert summary["figures"] == 1
+    assert summary["papers"] == 1

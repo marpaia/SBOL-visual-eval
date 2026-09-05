@@ -87,7 +87,8 @@ Every judge-backed sweep records its prompt profile and judging mode in the
 JSON summary. End-to-end, compatibility, and cascade sweeps write append-only
 ignored checkpoints while they run; `--resume` reuses only successful rows
 whose paper identity, entailed labels, prompt profile, and judging mode still
-match. A completed report removes its checkpoint.
+match. An error-free report removes its checkpoint; an error-bearing report
+retains the checkpoint and can also recover successful rows from its CSV.
 
 Because the ground truth is one reviewer panel, target agreement bands rather
 than exactness everywhere: within-one count agreement and reproduction of the
@@ -119,6 +120,29 @@ is rather than the figure's overall subject, which recovered recall from an
 over-corrected 50%. The net-bias column is the decision metric: false
 positives and negatives cancel in a paper's count, so the benchmark projects
 both error rates onto the corpus mix (~10:1 negative:positive).
+
+The full-pool prose baseline (`compatibility_full_pool_baseline.*`) attempts all
+2,948 count-entailed VOR figures with the `claude-cli` Opus judge. Opus returns
+verdicts for 2,942 figures; its safeguards refuse six pages from one
+botulinum-neurotoxin paper. Metrics exclude those six provider errors:
+
+| Publication era | Judged / attempted | Accuracy | FP rate | Recall | Net count bias /100 | Paper-count exact |
+|---|---:|---:|---:|---:|---:|---:|
+| 2012–2013 | 318 / 318 | 90.3% | 5.3% | 55.6% | +0.69 | 79.0% |
+| 2014–2016 | 993 / 993 | 92.4% | 5.6% | 67.1% | +1.99 | 80.2% |
+| 2017–2023 | 1,631 / 1,637 | 94.4% | 3.5% | 75.3% | +0.92 | 85.1% |
+| **All eras** | **2,942 / 2,948** | **93.2%** | **4.4%** | **70.4%** | **+1.26** | **82.8%** |
+
+Across all 592 fully judged saturated papers, compatible-count agreement is
+82.8% exact, 92.4% within one, and 0.336 MAE. The disagreements establish a
+real era effect, but not a one-direction leniency rule. Early and middle
+positives include conventional cloning/vector cartography, concrete construct
+insets beside data, and some protein/domain designs, while negatives include
+abstract circuit topology and strand/domain mechanisms that appear equally
+translatable under a modern definition. Recent disagreements are smaller and
+include cross-paper inconsistencies around vector cartography and protein-only
+designs. The generated adjudication layer contains all 199 scored
+evaluator-versus-history disagreements and leaves the historical layer intact.
 
 **Compliance and best-practice stages** (cascade benchmark):
 

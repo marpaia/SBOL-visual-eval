@@ -23,17 +23,23 @@ def _boolean(value: Any, *, field: str) -> bool:
     raise ValueError(f"invalid boolean {value!r} in {field}")
 
 
-def _load_report(path: Path) -> dict[tuple[str, int], dict[str, Any]]:
+def _load_report(
+    path: Path, *, allow_errors: bool = False
+) -> dict[tuple[str, int], dict[str, Any]]:
     rows = {}
     with path.open(newline="", encoding="utf-8") as handle:
         for source_row in csv.DictReader(handle):
             key = (source_row["doi"], int(source_row["figure_number"]))
             if key in rows:
                 raise ValueError(f"duplicate compatibility row for {key[0]} Figure {key[1]}")
-            if source_row.get("judge_error"):
+            if source_row.get("judge_error") and not allow_errors:
                 raise ValueError(f"compatibility report contains a judge error for {key}")
             expected = _boolean(source_row["expected_compatible"], field="expected_compatible")
-            predicted = _boolean(source_row["predicted_compatible"], field="predicted_compatible")
+            predicted = (
+                _boolean(source_row["predicted_compatible"], field="predicted_compatible")
+                if not source_row.get("judge_error")
+                else False
+            )
             rows[key] = {
                 **source_row,
                 "year": int(source_row["year"]),
@@ -67,7 +73,7 @@ def compare_compatibility_reports(
     output_path: Path | None = None,
 ) -> dict[str, Any]:
     """Compare candidate judgments with the same baseline figures and labels."""
-    baseline = _load_report(baseline_path)
+    baseline = _load_report(baseline_path, allow_errors=True)
     candidate = _load_report(candidate_path)
     missing = sorted(set(candidate) - set(baseline))
     if missing:
@@ -77,6 +83,9 @@ def compare_compatibility_reports(
     baseline_scope = {key: row for key, row in baseline.items() if key[0] in candidate_dois}
     if set(baseline_scope) != set(candidate):
         raise ValueError("candidate report does not contain every baseline figure for its papers")
+    baseline_errors = [key for key, row in baseline_scope.items() if row["judge_error"]]
+    if baseline_errors:
+        raise ValueError(f"baseline report contains a judge error for {baseline_errors[0]}")
 
     keys = sorted(candidate)
     for key in keys:
