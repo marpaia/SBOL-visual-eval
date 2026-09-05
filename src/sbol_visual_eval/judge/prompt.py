@@ -13,7 +13,76 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 from .rubric import RubricRule, render_rubric
-from .schema import CompatibilityExemplar, FigureContext
+from .schema import CompatibilityExemplar, CompatibilityExemplarSpec, FigureContext
+
+COMPATIBILITY_PROMPT_PROFILE = "historical_2025_prose_v1"
+
+# These references come only from the calibration side of the paper-level,
+# era-stratified split. Each label follows deductively from a saturated paper
+# count. Images render from checksum-pinned local corpus PDFs at runtime rather
+# than being copied into the source tree.
+COMPATIBILITY_EXEMPLAR_PROFILE = "boundary_pages_v1"
+COMPATIBILITY_EXEMPLAR_SPECS = (
+    CompatibilityExemplarSpec(
+        identifier="10.1021/acssynbio.5b00124",
+        publication_year=2016,
+        figure_number=1,
+        caption_text="Figure 1. CIDAR MoClo overview: basic assembly strategy.",
+        expected_compatible=True,
+        rationale=(
+            "The early historical panel included this conventional physical construct and "
+            "modular-assembly cartography."
+        ),
+        pdf_path=("data/papers/2016/10.1021__acssynbio.5b00124/publisher/paper.pdf"),
+        pdf_sha256="8d198020b8d8cae0dce05337ed547aa0633499450ddfbfc27508fe38912aaa68",
+        page_number=2,
+    ),
+    CompatibilityExemplarSpec(
+        identifier="10.1021/acssynbio.6b00009",
+        publication_year=2016,
+        figure_number=1,
+        caption_text=("Figure 1. Example of a buffered four-domain DNA strand-displacement gate."),
+        expected_compatible=False,
+        rationale=(
+            "The panel excluded this abstract domain-level strand-displacement mechanism "
+            "despite its DNA circuit-design language."
+        ),
+        pdf_path=("data/papers/2016/10.1021__acssynbio.6b00009/publisher/paper.pdf"),
+        pdf_sha256="d71f1b3d5bf85fe65165afb392b59b423d30947aa0ab3433b46c33d0f4e76fcf",
+        page_number=3,
+    ),
+    CompatibilityExemplarSpec(
+        identifier="10.1021/acssynbio.3c00375",
+        publication_year=2023,
+        figure_number=2,
+        caption_text=(
+            "Figure 2. Model suggests that differential affinities of scRNA and sgRNA are "
+            "a problem."
+        ),
+        expected_compatible=True,
+        rationale=(
+            "The panel included the visible promoter-reporter circuit design embedded in "
+            "this modeling-and-data figure."
+        ),
+        pdf_path="data/papers/2023/10.1021__acssynbio.3c00375/pmc/paper.pdf",
+        pdf_sha256="4abb64c13e5988475d07371121e6373d9d4424404f41868c144f2229f9d8259d",
+        page_number=3,
+    ),
+    CompatibilityExemplarSpec(
+        identifier="10.1021/acssynbio.3c00124",
+        publication_year=2023,
+        figure_number=1,
+        caption_text="Figure 1. Genome-Integration Module Workflow.",
+        expected_compatible=False,
+        rationale=(
+            "The panel excluded this cloning and genome-integration workflow even though "
+            "it depicts plasmid backbones and transcription-unit cassettes."
+        ),
+        pdf_path="data/papers/2023/10.1021__acssynbio.3c00124/pmc/paper.pdf",
+        pdf_sha256="72cc92e8795f6777636b445f7744793410d26ebb30f3ad50902028ba2272ba6d",
+        page_number=2,
+    ),
+)
 
 # Historical interpretations recovered from count-saturated papers: papers whose
 # compatible and compliant counts match label every compatible figure compliant,

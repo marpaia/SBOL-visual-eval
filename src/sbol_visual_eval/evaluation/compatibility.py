@@ -30,6 +30,7 @@ from ..corpus.util.storage import (
     write_json,
 )
 from ..figures import census_pdf, render_page_png, scope_for_pdf
+from ..judge.prompt import COMPATIBILITY_PROMPT_PROFILE
 from ..judge.protocol import FigureJudge
 from ..judge.schema import FigureContext
 from .groundtruth import StageLabels, ground_truth_by_doi, load_ground_truth, saturated_labels
@@ -46,6 +47,7 @@ COMPATIBILITY_FIELDS = (
     "year",
     "era",
     "benchmark_partition",
+    "prompt_profile",
     "judging_mode",
     "self_consistency_samples",
     "figure_number",
@@ -234,8 +236,9 @@ def _judge_figure(
     judge: FigureJudge,
     figure: SaturatedFigure,
     self_consistency_samples: int,
+    prompt_profile: str,
 ) -> dict[str, Any]:
-    row = _base_row(figure, "per_figure", self_consistency_samples)
+    row = _base_row(figure, "per_figure", self_consistency_samples, prompt_profile)
     try:
         context = FigureContext(
             figure_number=figure.figure_number,
@@ -251,13 +254,17 @@ def _judge_figure(
 
 
 def _base_row(
-    figure: SaturatedFigure, judging_mode: str, self_consistency_samples: int
+    figure: SaturatedFigure,
+    judging_mode: str,
+    self_consistency_samples: int,
+    prompt_profile: str,
 ) -> dict[str, Any]:
     return {
         "doi": figure.doi,
         "year": figure.year,
         "era": compatibility_era(figure.year),
         "benchmark_partition": figure.benchmark_partition,
+        "prompt_profile": prompt_profile,
         "judging_mode": judging_mode,
         "self_consistency_samples": self_consistency_samples,
         "figure_number": figure.figure_number,
@@ -295,8 +302,12 @@ def _judge_paper(
     judge: FigureJudge,
     figures: list[SaturatedFigure],
     self_consistency_samples: int,
+    prompt_profile: str,
 ) -> list[dict[str, Any]]:
-    rows = [_base_row(figure, "whole_paper", self_consistency_samples) for figure in figures]
+    rows = [
+        _base_row(figure, "whole_paper", self_consistency_samples, prompt_profile)
+        for figure in figures
+    ]
     try:
         judge_paper = getattr(judge, "judge_paper", None)
         if not callable(judge_paper):
@@ -378,6 +389,7 @@ def _checkpoint_rows(
     figures: list[SaturatedFigure],
     judging_mode: str,
     self_consistency_samples: int,
+    prompt_profile: str,
 ) -> dict[tuple[str, int], dict[str, Any]]:
     if not path.exists():
         return {}
@@ -395,6 +407,7 @@ def _checkpoint_rows(
                 and int(row["year"]) == figure.year
                 and str(row["era"]) == compatibility_era(figure.year)
                 and str(row["benchmark_partition"]) == figure.benchmark_partition
+                and str(row.get("prompt_profile", COMPATIBILITY_PROMPT_PROFILE)) == prompt_profile
                 and str(row.get("judging_mode", "per_figure")) == judging_mode
                 and int(row.get("self_consistency_samples", 1)) == self_consistency_samples
                 and bool(row["expected_compatible"]) is figure.expected_compatible
@@ -413,6 +426,7 @@ def run_compatibility_benchmark(
     report_stem: str = "compatibility_benchmark",
     resume: bool = False,
     whole_paper: bool = False,
+    prompt_profile: str = COMPATIBILITY_PROMPT_PROFILE,
 ) -> dict[str, Any]:
     """Judge each labeled figure with a resumable checkpoint and report accuracy."""
     checkpoint_path = layout.reports / f"{report_stem}.checkpoint.jsonl"
@@ -427,6 +441,7 @@ def run_compatibility_benchmark(
             figures,
             judging_mode,
             self_consistency_samples,
+            prompt_profile,
         )
         if resume
         else {}
@@ -459,6 +474,7 @@ def run_compatibility_benchmark(
                     judge,
                     paper_figures,
                     self_consistency_samples,
+                    prompt_profile,
                 ): paper_figures
                 for paper_figures in remaining_papers
             }
@@ -487,6 +503,7 @@ def run_compatibility_benchmark(
                     judge,
                     figure,
                     self_consistency_samples,
+                    prompt_profile,
                 ): figure
                 for figure in remaining
             }
@@ -506,12 +523,14 @@ def run_compatibility_benchmark(
     for row in rows:
         row.setdefault("judging_mode", judging_mode)
         row.setdefault("self_consistency_samples", self_consistency_samples)
+        row.setdefault("prompt_profile", prompt_profile)
 
     summary = {
         "generated_at": utc_now(),
         **_summary(rows),
         "resumed_figures": resumed_figures,
         "judging_mode": judging_mode,
+        "prompt_profile": prompt_profile,
         "by_year": _grouped_summaries(rows, "year"),
         "by_era": _grouped_summaries(rows, "era"),
         "by_partition": _grouped_summaries(rows, "benchmark_partition"),

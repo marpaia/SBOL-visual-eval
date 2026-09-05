@@ -78,3 +78,18 @@ class CompatibilityExemplar:
     expected_compatible: bool
     rationale: str
     page_png: bytes
+
+
+@dataclass(frozen=True)
+class CompatibilityExemplarSpec:
+    """A checksum-pinned corpus page carrying an entailed historical label."""
+
+    identifier: str
+    publication_year: int
+    figure_number: int
+    caption_text: str
+    expected_compatible: bool
+    rationale: str
+    pdf_path: str
+    pdf_sha256: str
+    page_number: int

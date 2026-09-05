@@ -251,6 +251,48 @@ def test_compatibility_benchmark_resumes_successful_checkpoint_rows(tmp_path: Pa
     assert not checkpoint_path.exists()
 
 
+def test_compatibility_benchmark_does_not_resume_a_different_prompt_profile(
+    tmp_path: Path,
+) -> None:
+    layout = _prepare_layout(tmp_path)
+    figures = saturated_figures(layout, saturated_compatibility_papers(layout))
+    checkpoint_path = layout.reports / "profile_changed.checkpoint.jsonl"
+    checkpoint_path.write_text(
+        json.dumps(
+            {
+                "doi": "10.1/neg",
+                "year": 2015,
+                "era": "2014-2016",
+                "benchmark_partition": "unassigned",
+                "prompt_profile": "earlier_profile",
+                "figure_number": 2,
+                "expected_compatible": False,
+                "predicted_compatible": False,
+                "correct": True,
+                "rationale": "checkpointed",
+                "judge_error": "",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    judge = ScriptedJudge({1: verdict(1, compatible=False), 2: verdict(2, compatible=False)})
+
+    summary = run_compatibility_benchmark(
+        layout,
+        judge,
+        figures,
+        workers=1,
+        report_stem="profile_changed",
+        resume=True,
+        prompt_profile="new_profile",
+    )
+
+    assert summary["resumed_figures"] == 0
+    assert summary["prompt_profile"] == "new_profile"
+    assert len(judge.contexts) == 3
+
+
 def test_compatibility_benchmark_can_schedule_one_call_per_paper(tmp_path: Path) -> None:
     layout = _prepare_layout(tmp_path)
     figures = saturated_figures(layout, saturated_compatibility_papers(layout))
