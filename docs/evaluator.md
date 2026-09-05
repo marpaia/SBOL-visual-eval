@@ -73,6 +73,7 @@ as version-noise, with `source_version` retained per artifact.
 ```bash
 uv run sbol-visual-eval evaluate --sample 25 --judge claude-cli
 uv run sbol-visual-eval evaluate --years 2023            # temporal holdout
+uv run sbol-visual-eval evaluate --sample 25 --seed 2718 --resume
 ```
 
 Sweeps pair each evaluated paper with its historical counts and write
@@ -81,6 +82,12 @@ summary), and `evaluator_verdicts.jsonl` (complete per-figure, per-rule
 verdicts for audit). Papers whose historical counts are internally
 inconsistent (`requires_adjudication`, the 2020 invariant violation) are
 excluded from scoring, matching `GroundTruthPaper.scoreable`.
+
+Every judge-backed sweep records its prompt profile and judging mode in the
+JSON summary. End-to-end, compatibility, and cascade sweeps write append-only
+ignored checkpoints while they run; `--resume` reuses only successful rows
+whose paper identity, entailed labels, prompt profile, and judging mode still
+match. A completed report removes its checkpoint.
 
 Because the ground truth is one reviewer panel, target agreement bands rather
 than exactness everywhere: within-one count agreement and reproduction of the
@@ -158,8 +165,10 @@ Two benchmarks convert count supervision into exact per-figure labels, so the
 stages can be tuned without any figure-level annotation:
 
 ```bash
-uv run sbol-visual-eval compatibility --sample 40   # compatibility boundary
-uv run sbol-visual-eval cascade --sample 20         # compliance + best practice
+uv run sbol-visual-eval compatibility --workers 6 --resume
+uv run sbol-visual-eval compatibility --partition calibration --sample 40
+uv run sbol-visual-eval compatibility --partition holdout
+uv run sbol-visual-eval cascade --sample 20 --resume
 ```
 
 `compatibility` (`evaluation/compatibility.py`) draws on papers whose
@@ -169,7 +178,12 @@ compatible. After excluding papers whose census disagrees with
 **599 Version-of-Record papers yield 2,948 exactly labeled figures: 2,674
 certain negatives and 274 certain positives.** It judges with a
 compatibility-only prompt, so no rule evaluation is paid for, and reports
-accuracy, recall, false-positive rate, and precision.
+accuracy, recall, false-positive rate, precision, count bias, and exact/within-one
+agreement after reaggregating predictions by saturated paper. The default
+paper-level split is fixed by `--split-seed 20260904`, stratified within
+2012–2013, 2014–2016, and 2017–2023 by entailed label, and never divides a
+paper between calibration and holdout. `--sample` runs after partitioning and
+balances papers across the available era × label strata.
 
 `cascade` (`evaluation/cascade_bench.py`) uses the stronger shapes: papers
 where all four counts are equal label every figure positive through the whole
@@ -177,6 +191,56 @@ cascade (58 papers, 191 figures), and papers compliant everywhere with zero
 best-practice figures label every figure a best-practice negative. It reports
 per-stage accuracy plus the rules that block figures the panel judged
 positive — the direct evidence for the next round of interpretation notes.
+
+## Judge experiment modes
+
+The default evaluator retains the prose-only, per-figure profile. Explicit
+switches select independently measurable alternatives:
+
+- `--era-conditioned` supplies the paper's publication year and applies the
+  measured historical boundary for its review era.
+- `--few-shot` renders four checksum-pinned, count-entailed calibration pages
+  from local corpus PDFs and supplies their positive and negative labels as
+  image-backed references. The images are not copied into the repository.
+- `--whole-paper` sends every unique page image and caption from one paper in
+  one request and requires one verdict per censused figure.
+- `--self-consistency 3` asks for an explicit borderline flag and draws two
+  additional samples only for an initially borderline figure. Whole-paper
+  mode resamples the paper call but replaces only its initially borderline
+  verdicts.
+
+Both judge backends implement the same image-reference and whole-paper
+contracts. Compatibility report checkpoints include the prompt profile,
+judging mode, and requested self-consistency sample count, so incompatible
+variants cannot be mixed by `--resume`.
+
+Paired candidate reports are compared only when their figure identities,
+entailed labels, and full paper membership match:
+
+```bash
+uv run sbol-visual-eval compare-compatibility \
+  data/reports/compatibility_full_pool_baseline.csv \
+  data/reports/compatibility_era_holdout.csv
+```
+
+The comparison JSON reports fixed and regressed figure calls, saturated-paper
+exact transitions, MAE, and net count bias for the shared paper set.
+
+## Expert adjudication layer
+
+`adjudicate` builds a local HTML gallery for exact-label compatibility
+disagreements without changing the historical corpus:
+
+```bash
+uv run sbol-visual-eval adjudicate \
+  data/reports/compatibility_full_pool_baseline.csv
+```
+
+Each row contains the rendered figure page, historical entailed verdict,
+evaluator verdict, and rationale, plus blank expert decision and notes fields.
+Expert decisions live under `data/adjudicated/`; regeneration preserves
+reviewed rows and refuses to drop them. Rendered page images and HTML remain
+gitignored because source-paper licenses vary.
 
 ## Remaining calibration levers, in order of expected value
 
