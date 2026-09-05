@@ -55,3 +55,33 @@ def test_evaluate_pdf_runs_census_render_judge_and_aggregation(tmp_path: Path) -
     assert payload["figures"][0]["compliant"] is True
     assert payload["figures"][1]["compatible"] is False
     assert payload["has_compatible_figures"] is True
+
+
+def test_evaluate_pdf_can_judge_the_whole_paper_in_one_call(tmp_path: Path) -> None:
+    pdf_path = build_fixture_pdf(
+        tmp_path / "paper.pdf",
+        [[(72, 300, "Figure 1. Circuit.", True), (72, 600, "Figure 2. Plot.", True)]],
+    )
+
+    class PaperJudge(ScriptedJudge):
+        def __init__(self) -> None:
+            super().__init__(
+                {
+                    1: verdict(1, compatible=True),
+                    2: verdict(2, compatible=False),
+                }
+            )
+            self.paper_calls = 0
+
+        def judge_paper(self, contexts):
+            self.paper_calls += 1
+            self.contexts.extend(contexts)
+            return tuple(self._verdicts[context.figure_number] for context in contexts)
+
+    judge = PaperJudge()
+
+    evaluation = evaluate_pdf(pdf_path, judge, RULES, whole_paper=True)
+
+    assert evaluation.score == PaperScore(2, 1, 1, 1)
+    assert judge.paper_calls == 1
+    assert [context.figure_number for context in judge.contexts] == [1, 2]

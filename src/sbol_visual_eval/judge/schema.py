@@ -63,6 +63,7 @@ class FigureContext:
     caption_text: str
     page_png: bytes
     publication_year: int | None = None
+    page_number: int | None = None
 
 
 @dataclass(frozen=True)

@@ -76,18 +76,31 @@ def evaluate_pdf(
     *,
     scope: PageScope | None = None,
     publication_year: int | None = None,
+    whole_paper: bool = False,
 ) -> PaperEvaluation:
     """Evaluate one manuscript PDF through the full cascade."""
     census = census_pdf(pdf_path, scope if scope is not None else scope_for_pdf(pdf_path))
-    verdicts = []
-    for caption in census.captions:
-        context = FigureContext(
+    contexts = tuple(
+        FigureContext(
             figure_number=caption.figure_number,
             caption_text=caption.text,
             page_png=render_page_png(pdf_path, caption.page_number),
             publication_year=publication_year,
+            page_number=caption.page_number,
         )
-        verdicts.append(judge.judge(context))
+        for caption in census.captions
+    )
+    if whole_paper:
+        judge_paper = getattr(judge, "judge_paper", None)
+        if not callable(judge_paper):
+            raise TypeError("judge does not support whole-paper evaluation")
+        verdicts = list(judge_paper(contexts))
+    else:
+        verdicts = [judge.judge(context) for context in contexts]
+
+    expected_numbers = [context.figure_number for context in contexts]
+    if [verdict.figure_number for verdict in verdicts] != expected_numbers:
+        raise ValueError("judge returned figures that do not match the paper census")
     return PaperEvaluation(
         pdf_path=pdf_path,
         score=score_from_verdicts(census.figure_count, verdicts, rules),

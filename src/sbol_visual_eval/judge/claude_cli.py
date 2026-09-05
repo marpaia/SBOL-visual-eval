@@ -14,10 +14,13 @@ import time
 from collections.abc import Callable
 from pathlib import Path
 
-from .parsing import JudgeParseError, parse_verdict
+from .parsing import JudgeParseError, parse_verdict, parse_verdicts
 from .prompt import (
+    PAPER_SYSTEM_PROMPT,
     SYSTEM_PROMPT,
+    build_compatibility_paper_prompt,
     build_compatibility_prompt,
+    build_paper_user_prompt,
     build_user_prompt,
     render_compatibility_exemplar,
 )
@@ -83,26 +86,36 @@ class ClaudeCLIJudge:
             return build_compatibility_prompt(context.figure_number, context.caption_text)
         return build_user_prompt(context.figure_number, context.caption_text, self._rules)
 
+    def _paper_prompt(self, contexts: tuple[FigureContext, ...]) -> str:
+        if self._compatibility_only:
+            return build_compatibility_paper_prompt(contexts)
+        return build_paper_user_prompt(contexts, self._rules)
+
+    def _reference_prompt(self, workdir: Path) -> str:
+        reference_prompts = []
+        for index, exemplar in enumerate(self._exemplars, start=1):
+            reference_path = workdir / f"reference-{index}.png"
+            reference_path.write_bytes(exemplar.page_png)
+            reference_prompts.append(
+                f"Read the historical reference image at {reference_path}.\n"
+                f"{render_compatibility_exemplar(exemplar)}\n"
+            )
+        references = "\n".join(reference_prompts)
+        if not references:
+            return ""
+        return (
+            "Use these image-backed historical labels as calibration examples. "
+            "Do not return verdicts for them.\n\n"
+            f"{references}\n"
+        )
+
     def judge(self, context: FigureContext) -> FigureVerdict:
         with tempfile.TemporaryDirectory(prefix="sbol-judge-") as workdir:
             workdir_path = Path(workdir)
             image_path = workdir_path / "page.png"
             image_path.write_bytes(context.page_png)
-            reference_prompts = []
-            for index, exemplar in enumerate(self._exemplars, start=1):
-                reference_path = workdir_path / f"reference-{index}.png"
-                reference_path.write_bytes(exemplar.page_png)
-                reference_prompts.append(
-                    f"Read the historical reference image at {reference_path}.\n"
-                    f"{render_compatibility_exemplar(exemplar)}\n"
-                )
-            references = "\n".join(reference_prompts)
+            references = self._reference_prompt(workdir_path)
             if references:
-                references = (
-                    "Use these image-backed historical labels as calibration examples. "
-                    "Do not return verdicts for them.\n\n"
-                    f"{references}\n"
-                )
                 target_instruction = f"Read the target manuscript page image at {image_path} first."
             else:
                 target_instruction = f"Read the manuscript page image at {image_path} first."
@@ -120,4 +133,50 @@ class ClaudeCLIJudge:
         raise JudgeParseError(
             f"judge returned no parseable verdict after {PARSE_RETRY_ATTEMPTS} attempts: "
             f"{last_error}"
+        )
+
+    def judge_paper(self, contexts: tuple[FigureContext, ...]) -> tuple[FigureVerdict, ...]:
+        if not contexts:
+            return ()
+        with tempfile.TemporaryDirectory(prefix="sbol-paper-judge-") as workdir:
+            workdir_path = Path(workdir)
+            references = self._reference_prompt(workdir_path)
+            page_groups: dict[int | str, list[FigureContext]] = {}
+            for context in contexts:
+                page_key: int | str = (
+                    context.page_number
+                    if context.page_number is not None
+                    else f"figure-{context.figure_number}"
+                )
+                page_groups.setdefault(page_key, []).append(context)
+
+            image_prompts = []
+            for page_key, page_contexts in page_groups.items():
+                image_path = workdir_path / f"paper-page-{page_key}.png"
+                image_path.write_bytes(page_contexts[0].page_png)
+                figures = ", ".join(str(context.figure_number) for context in page_contexts)
+                image_prompts.append(
+                    f"Read target manuscript page image {image_path}; it contains "
+                    f"Figure(s) {figures}."
+                )
+
+            prompt = (
+                f"{PAPER_SYSTEM_PROMPT}\n\n{references}"
+                + "\n".join(image_prompts)
+                + "\n\n"
+                + self._paper_prompt(contexts)
+            )
+            last_error: JudgeParseError | None = None
+            for _ in range(PARSE_RETRY_ATTEMPTS):
+                reply = self._runner(self.command(), prompt, workdir_path)
+                try:
+                    return parse_verdicts(
+                        reply, tuple(context.figure_number for context in contexts)
+                    )
+                except JudgeParseError as error:
+                    last_error = error
+        assert last_error is not None
+        raise JudgeParseError(
+            f"judge returned no parseable whole-paper verdict after "
+            f"{PARSE_RETRY_ATTEMPTS} attempts: {last_error}"
         )

@@ -10,10 +10,13 @@ from __future__ import annotations
 import base64
 from typing import Any
 
-from .parsing import parse_verdict
+from .parsing import parse_verdict, parse_verdicts
 from .prompt import (
+    PAPER_SYSTEM_PROMPT,
     SYSTEM_PROMPT,
+    build_compatibility_paper_prompt,
     build_compatibility_prompt,
+    build_paper_user_prompt,
     build_user_prompt,
     render_compatibility_exemplar,
 )
@@ -50,15 +53,13 @@ class AnthropicAPIJudge:
             return build_compatibility_prompt(context.figure_number, context.caption_text)
         return build_user_prompt(context.figure_number, context.caption_text, self._rules)
 
+    def _paper_prompt(self, contexts: tuple[FigureContext, ...]) -> str:
+        if self._compatibility_only:
+            return build_compatibility_paper_prompt(contexts)
+        return build_paper_user_prompt(contexts, self._rules)
+
     def judge(self, context: FigureContext) -> FigureVerdict:
-        content = []
-        for exemplar in self._exemplars:
-            content.extend(
-                [
-                    self._image_block(exemplar.page_png),
-                    {"type": "text", "text": render_compatibility_exemplar(exemplar)},
-                ]
-            )
+        content = self._exemplar_content()
         content.extend(
             [
                 self._image_block(context.page_png),
@@ -78,6 +79,47 @@ class AnthropicAPIJudge:
         )
         reply = "".join(block.text for block in response.content if block.type == "text")
         return parse_verdict(reply, context.figure_number)
+
+    def judge_paper(self, contexts: tuple[FigureContext, ...]) -> tuple[FigureVerdict, ...]:
+        if not contexts:
+            return ()
+        content = self._exemplar_content()
+        page_groups: dict[int | str, list[FigureContext]] = {}
+        for context in contexts:
+            page_key: int | str = (
+                context.page_number
+                if context.page_number is not None
+                else f"figure-{context.figure_number}"
+            )
+            page_groups.setdefault(page_key, []).append(context)
+        for page_contexts in page_groups.values():
+            figures = ", ".join(str(context.figure_number) for context in page_contexts)
+            content.extend(
+                [
+                    self._image_block(page_contexts[0].page_png),
+                    {"type": "text", "text": f"Target page containing Figure(s) {figures}."},
+                ]
+            )
+        content.append({"type": "text", "text": self._paper_prompt(contexts)})
+        response = self._client.messages.create(
+            model=self._model,
+            max_tokens=max(self._max_tokens, 32000),
+            system=PAPER_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": content}],
+        )
+        reply = "".join(block.text for block in response.content if block.type == "text")
+        return parse_verdicts(reply, tuple(context.figure_number for context in contexts))
+
+    def _exemplar_content(self) -> list[dict[str, Any]]:
+        content = []
+        for exemplar in self._exemplars:
+            content.extend(
+                [
+                    self._image_block(exemplar.page_png),
+                    {"type": "text", "text": render_compatibility_exemplar(exemplar)},
+                ]
+            )
+        return content
 
     @staticmethod
     def _image_block(page_png: bytes) -> dict[str, Any]:

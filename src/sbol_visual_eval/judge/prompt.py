@@ -10,8 +10,10 @@ when evaluator counts drift from the historical counts.
 
 from __future__ import annotations
 
+from collections.abc import Sequence
+
 from .rubric import RubricRule, render_rubric
-from .schema import CompatibilityExemplar
+from .schema import CompatibilityExemplar, FigureContext
 
 # Historical interpretations recovered from count-saturated papers: papers whose
 # compatible and compliant counts match label every compatible figure compliant,
@@ -79,6 +81,13 @@ review methodology of the decade-long ACS Synthetic Biology retrospective study.
 You judge one manuscript figure at a time from a rendered page image and the
 figure's caption, and you apply the study's historical reviewer checklist
 exactly as written, including its documented exceptions."""
+
+PAPER_SYSTEM_PROMPT = """\
+You are an expert reviewer for the SBOL Visual diagram standard, reproducing the
+review methodology of the decade-long ACS Synthetic Biology retrospective study.
+You review every manuscript figure under one consistent paper-level standard,
+return a separate verdict for each figure, and apply the study's historical
+reviewer checklist exactly as written, including its documented exceptions."""
 
 COMPATIBILITY_DEFINITION = """\
 A figure is COMPATIBLE with SBOL Visual when it (or any of its panels) is a
@@ -157,6 +166,42 @@ Respond with a single JSON object and nothing else:
 }}"""
 
 
+def _paper_figure_list(contexts: Sequence[FigureContext]) -> str:
+    lines = []
+    for context in contexts:
+        page = f", manuscript page {context.page_number}" if context.page_number is not None else ""
+        lines.append(
+            f'- Figure {context.figure_number}{page}; caption begins: "{context.caption_text[:600]}"'
+        )
+    return "\n".join(lines)
+
+
+def build_compatibility_paper_prompt(contexts: Sequence[FigureContext]) -> str:
+    """A compatibility-only prompt that applies one standard across a paper."""
+    figures = _paper_figure_list(contexts)
+    return f"""\
+The attached images are the manuscript pages containing these figures:
+{figures}
+
+Evaluate every listed figure, considering every panel that belongs to it. Apply
+one consistent historical-review standard across the paper, while returning a
+separate verdict and rationale for each figure.
+
+{COMPATIBILITY_DEFINITION}
+
+Respond with a single JSON object and nothing else:
+{{
+  "figures": [
+    {{
+      "figure_number": integer,
+      "compatible": true or false,
+      "rationale": "one or two sentences"
+    }}
+    ... one entry for every listed figure, in listed order ...
+  ]
+}}"""
+
+
 def build_user_prompt(figure_number: int, caption_text: str, rules: list[RubricRule]) -> str:
     return f"""\
 The attached image is the manuscript page containing Figure {figure_number}.
@@ -192,5 +237,54 @@ Respond with a single JSON object and nothing else:
     {{"rule_key": "compliance:5.1.0", "verdict": "pass" | "fail" | "not_applicable",
       "evidence": "short justification"}},
     ... one entry for every rule listed above (omit all when not compatible) ...
+  ]
+}}"""
+
+
+def build_paper_user_prompt(contexts: Sequence[FigureContext], rules: list[RubricRule]) -> str:
+    """A full-cascade prompt that applies one standard across a paper."""
+    figures = _paper_figure_list(contexts)
+    return f"""\
+The attached images are the manuscript pages containing these figures:
+{figures}
+
+Evaluate every listed figure, considering every panel that belongs to it. Apply
+one consistent historical-review standard across the paper, while returning a
+separate verdict and rationale for each figure.
+
+{COMPATIBILITY_DEFINITION}
+
+If and only if a figure is compatible, evaluate every rule below against that
+figure's genetic-design content. Mark a rule "not_applicable" when the figure
+contains no element the rule governs, "pass" when the governed elements satisfy
+it, and "fail" when any governed element violates it. Honor every reviewer
+exception noted under a rule.
+
+Calibrate your failure threshold to the historical panel's. The panel failed a
+rule only on a clear violation that an experienced reviewer would flag on a
+first reading of the figure; borderline observations, judgment calls, and
+details only visible under close scrutiny were recorded as pass or
+not_applicable. This matters most for the SHOULD rules: about half of all
+compliant figures met the panel's best-practice bar, and the figures that missed
+it violated a rule conspicuously — do not deny best practice over a single
+subtle imperfection hunted out of an otherwise well-drawn diagram.
+
+{render_rubric(rules, interpretations=HISTORICAL_INTERPRETATIONS)}
+
+Respond with a single JSON object and nothing else:
+{{
+  "figures": [
+    {{
+      "figure_number": integer,
+      "compatible": true or false,
+      "rationale": "one or two sentences",
+      "findings": [
+        {{"rule_key": "compliance:5.1.0",
+          "verdict": "pass" | "fail" | "not_applicable",
+          "evidence": "short justification"}}
+        ... one entry for every rule listed above (omit all when not compatible) ...
+      ]
+    }}
+    ... one entry for every listed figure, in listed order ...
   ]
 }}"""

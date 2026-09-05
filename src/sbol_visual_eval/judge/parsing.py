@@ -31,8 +31,7 @@ def _extract_json_object(reply: str) -> dict[str, Any]:
     raise JudgeParseError("no JSON object found in judge reply")
 
 
-def parse_verdict(reply: str, figure_number: int) -> FigureVerdict:
-    payload = _extract_json_object(reply)
+def _verdict_from_payload(payload: dict[str, Any], figure_number: int) -> FigureVerdict:
     if "compatible" not in payload:
         raise JudgeParseError("judge reply lacks a 'compatible' field")
 
@@ -58,3 +57,36 @@ def parse_verdict(reply: str, figure_number: int) -> FigureVerdict:
         rationale=str(payload.get("rationale", "")),
         findings=tuple(findings),
     )
+
+
+def parse_verdict(reply: str, figure_number: int) -> FigureVerdict:
+    return _verdict_from_payload(_extract_json_object(reply), figure_number)
+
+
+def parse_verdicts(reply: str, figure_numbers: tuple[int, ...]) -> tuple[FigureVerdict, ...]:
+    """Parse one whole-paper response and require exactly the requested figures."""
+    payload = _extract_json_object(reply)
+    entries = payload.get("figures")
+    if not isinstance(entries, list):
+        raise JudgeParseError("whole-paper judge reply lacks a 'figures' list")
+
+    verdicts_by_number: dict[int, FigureVerdict] = {}
+    for entry in entries:
+        if not isinstance(entry, dict) or "figure_number" not in entry:
+            raise JudgeParseError(f"malformed whole-paper figure verdict: {entry!r}")
+        try:
+            figure_number = int(entry["figure_number"])
+        except (TypeError, ValueError) as error:
+            raise JudgeParseError(f"invalid figure number: {entry['figure_number']!r}") from error
+        if figure_number in verdicts_by_number:
+            raise JudgeParseError(f"duplicate verdict for Figure {figure_number}")
+        verdicts_by_number[figure_number] = _verdict_from_payload(entry, figure_number)
+
+    requested = set(figure_numbers)
+    returned = set(verdicts_by_number)
+    if returned != requested:
+        raise JudgeParseError(
+            f"whole-paper verdict figures {sorted(returned)} do not match requested "
+            f"figures {sorted(requested)}"
+        )
+    return tuple(verdicts_by_number[number] for number in figure_numbers)

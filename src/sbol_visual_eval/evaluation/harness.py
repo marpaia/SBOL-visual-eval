@@ -103,6 +103,7 @@ def _evaluate_one(
     judge: FigureJudge,
     rules: list[RubricRule],
     entry: SweepPaper,
+    whole_paper: bool,
 ) -> tuple[dict[str, Any], PaperEvaluation | None]:
     row: dict[str, Any] = {
         "record_id": entry.paper.record_id,
@@ -119,6 +120,7 @@ def _evaluate_one(
             judge,
             rules,
             publication_year=entry.paper.year,
+            whole_paper=whole_paper,
         )
     except Exception as error:  # noqa: BLE001 - one failed paper must not stop the sweep
         row.update(
@@ -142,6 +144,7 @@ def run_sweep(
     *,
     report_stem: str = "evaluator_agreement",
     workers: int = 1,
+    whole_paper: bool = False,
 ) -> dict[str, Any]:
     """Evaluate the given papers and write agreement and verdict reports."""
     rows: list[dict[str, Any]] = []
@@ -149,7 +152,9 @@ def run_sweep(
     verdict_records: list[dict[str, Any]] = []
 
     with ThreadPoolExecutor(max_workers=max(workers, 1)) as pool:
-        results = pool.map(lambda entry: _evaluate_one(layout, judge, rules, entry), papers)
+        results = pool.map(
+            lambda entry: _evaluate_one(layout, judge, rules, entry, whole_paper), papers
+        )
         for entry, (row, evaluation) in zip(papers, results, strict=True):
             rows.append(row)
             if evaluation is None:
@@ -167,6 +172,7 @@ def run_sweep(
         "papers_attempted": len(papers),
         "papers_evaluated": len(pairs),
         "evaluation_errors": len(papers) - len(pairs),
+        "judging_mode": "whole_paper" if whole_paper else "per_figure",
         "agreement": agreement.to_dict(),
         "report_path": f"data/reports/{report_stem}.csv",
     }

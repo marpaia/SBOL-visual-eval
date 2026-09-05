@@ -20,8 +20,32 @@ VERDICT_JSON = json.dumps(
         "findings": [{"rule_key": "compliance:5.2.1", "verdict": "pass", "evidence": "contact"}],
     }
 )
+WHOLE_PAPER_JSON = json.dumps(
+    {
+        "figures": [
+            {"figure_number": 1, "compatible": True, "rationale": "Construct."},
+            {"figure_number": 2, "compatible": False, "rationale": "Plot."},
+        ]
+    }
+)
 
 CONTEXT = FigureContext(figure_number=1, caption_text="Figure 1. Construct.", page_png=b"png-bytes")
+PAPER_CONTEXTS = (
+    FigureContext(
+        figure_number=1,
+        caption_text="Figure 1. Construct.",
+        page_png=b"paper-page",
+        publication_year=2018,
+        page_number=4,
+    ),
+    FigureContext(
+        figure_number=2,
+        caption_text="Figure 2. Plot.",
+        page_png=b"paper-page",
+        publication_year=2018,
+        page_number=4,
+    ),
+)
 EXEMPLAR = CompatibilityExemplar(
     identifier="certain-negative",
     publication_year=2016,
@@ -40,22 +64,23 @@ class _TextBlock:
 
 
 class _StubMessages:
-    def __init__(self) -> None:
+    def __init__(self, reply: str = VERDICT_JSON) -> None:
         self.requests: list[dict[str, Any]] = []
+        self.reply = reply
 
     def create(self, **kwargs: Any) -> Any:
         self.requests.append(kwargs)
 
         class Response:
-            def __init__(self) -> None:
-                self.content = [_TextBlock(type="text", text=VERDICT_JSON)]
+            def __init__(self, reply: str) -> None:
+                self.content = [_TextBlock(type="text", text=reply)]
 
-        return Response()
+        return Response(self.reply)
 
 
 class _StubClient:
-    def __init__(self) -> None:
-        self.messages = _StubMessages()
+    def __init__(self, reply: str = VERDICT_JSON) -> None:
+        self.messages = _StubMessages(reply)
 
 
 def test_anthropic_judge_sends_image_and_prompt_and_parses_verdict() -> None:
@@ -86,6 +111,22 @@ def test_anthropic_judge_sends_image_backed_exemplars_before_target() -> None:
     assert "Figure 1" in target_text["text"]
 
 
+def test_anthropic_judge_sends_each_paper_page_once() -> None:
+    client = _StubClient(WHOLE_PAPER_JSON)
+    judge = AnthropicAPIJudge(RULES, client=client, compatibility_only=True)
+
+    verdicts = judge.judge_paper(PAPER_CONTEXTS)
+
+    assert [verdict.compatible for verdict in verdicts] == [True, False]
+    request = client.messages.requests[0]
+    assert request["max_tokens"] == 32000
+    page_image, page_label, paper_prompt = request["messages"][0]["content"]
+    assert page_image["source"]["data"] == base64.standard_b64encode(b"paper-page").decode()
+    assert page_label["text"] == "Target page containing Figure(s) 1, 2."
+    assert "one consistent historical-review standard" in paper_prompt["text"]
+    assert "COMPLIANCE RULES" not in paper_prompt["text"]
+
+
 def test_claude_cli_judge_writes_image_and_parses_reply() -> None:
     calls: list[tuple[list[str], str, Path]] = []
 
@@ -114,6 +155,24 @@ def test_claude_cli_judge_writes_image_backed_exemplars() -> None:
     judge = ClaudeCLIJudge(RULES, runner=runner, exemplars=(EXEMPLAR,))
 
     assert judge.judge(CONTEXT).compatible
+
+
+def test_claude_cli_judges_all_figures_in_one_call() -> None:
+    calls = []
+
+    def runner(command: list[str], prompt: str, cwd: Path) -> str:
+        calls.append((command, prompt, cwd))
+        assert (cwd / "paper-page-4.png").read_bytes() == b"paper-page"
+        assert "Figure(s) 1, 2" in prompt
+        assert "one consistent historical-review standard" in prompt
+        return WHOLE_PAPER_JSON
+
+    judge = ClaudeCLIJudge(RULES, runner=runner, compatibility_only=True)
+
+    verdicts = judge.judge_paper(PAPER_CONTEXTS)
+
+    assert [verdict.compatible for verdict in verdicts] == [True, False]
+    assert len(calls) == 1
 
 
 def test_claude_cli_judge_retries_unparseable_reply() -> None:

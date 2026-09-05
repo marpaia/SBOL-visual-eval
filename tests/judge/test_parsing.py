@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from sbol_visual_eval.judge.parsing import JudgeParseError, parse_verdict
+from sbol_visual_eval.judge.parsing import JudgeParseError, parse_verdict, parse_verdicts
 from sbol_visual_eval.judge.schema import RuleVerdict
 
 CLEAN_REPLY = """\
@@ -58,3 +58,24 @@ def test_parse_skips_leading_non_verdict_braces() -> None:
     reply = "{not json} " + CLEAN_REPLY
     verdict = parse_verdict(reply, figure_number=2)
     assert verdict.compatible
+
+
+def test_parse_whole_paper_verdicts_in_requested_order() -> None:
+    reply = """{
+      "figures": [
+        {"figure_number": 2, "compatible": false, "rationale": "Plot."},
+        {"figure_number": 1, "compatible": true, "rationale": "Construct."}
+      ]
+    }"""
+
+    verdicts = parse_verdicts(reply, (1, 2))
+
+    assert [verdict.figure_number for verdict in verdicts] == [1, 2]
+    assert [verdict.compatible for verdict in verdicts] == [True, False]
+
+
+def test_parse_whole_paper_rejects_missing_figure() -> None:
+    reply = '{"figures": [{"figure_number": 1, "compatible": true}]}'
+
+    with pytest.raises(JudgeParseError, match="do not match requested"):
+        parse_verdicts(reply, (1, 2))

@@ -249,3 +249,34 @@ def test_compatibility_benchmark_resumes_successful_checkpoint_rows(tmp_path: Pa
     assert summary["resumed_figures"] == 1
     assert len(judge.contexts) == 2
     assert not checkpoint_path.exists()
+
+
+def test_compatibility_benchmark_can_schedule_one_call_per_paper(tmp_path: Path) -> None:
+    layout = _prepare_layout(tmp_path)
+    figures = saturated_figures(layout, saturated_compatibility_papers(layout))
+
+    class RecordingPaperJudge:
+        def __init__(self) -> None:
+            self.calls = []
+
+        def judge(self, context):
+            raise AssertionError("per-figure judging should not be used")
+
+        def judge_paper(self, contexts):
+            self.calls.append(contexts)
+            return tuple(verdict(context.figure_number, compatible=False) for context in contexts)
+
+    judge = RecordingPaperJudge()
+
+    summary = run_compatibility_benchmark(
+        layout,
+        judge,
+        figures,
+        workers=2,
+        report_stem="whole_paper",
+        whole_paper=True,
+    )
+
+    assert summary["judging_mode"] == "whole_paper"
+    assert len(judge.calls) == 2
+    assert sorted(len(call) for call in judge.calls) == [1, 2]

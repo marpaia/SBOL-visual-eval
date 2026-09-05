@@ -42,6 +42,11 @@ def _argument_parser() -> argparse.ArgumentParser:
     score.add_argument("pdf", type=Path)
     score.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
     score.add_argument("--model", help="judge model override")
+    score.add_argument(
+        "--whole-paper",
+        action="store_true",
+        help="judge every figure with one paper-level consistency call",
+    )
     score.add_argument("--output", type=Path, help="write the score JSON here instead of stdout")
 
     census = subparsers.add_parser(
@@ -65,6 +70,11 @@ def _argument_parser() -> argparse.ArgumentParser:
     )
     evaluate.add_argument("--report-stem", default="evaluator_agreement")
     evaluate.add_argument("--workers", type=int, default=1)
+    evaluate.add_argument(
+        "--whole-paper",
+        action="store_true",
+        help="judge each paper's figures together",
+    )
 
     compatibility = subparsers.add_parser(
         "compatibility",
@@ -93,6 +103,11 @@ def _argument_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="resume successful judgments from the report checkpoint",
     )
+    compatibility.add_argument(
+        "--whole-paper",
+        action="store_true",
+        help="judge each saturated paper's figures together",
+    )
 
     cascade = subparsers.add_parser(
         "cascade",
@@ -114,7 +129,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     if args.command == "score":
         rules = load_rubric(layout)
         judge = build_judge(args.judge, rules, args.model)
-        evaluation = evaluate_pdf(args.pdf.resolve(), judge, rules)
+        evaluation = evaluate_pdf(args.pdf.resolve(), judge, rules, whole_paper=args.whole_paper)
         payload = json.dumps(evaluation.to_dict(), indent=2, sort_keys=True)
         if args.output:
             args.output.write_text(payload + "\n", encoding="utf-8")
@@ -143,7 +158,13 @@ def main(argv: Sequence[str] | None = None) -> None:
             print("No evaluable papers matched the sweep filters", file=sys.stderr)
             raise SystemExit(1)
         summary = run_sweep(
-            layout, judge, rules, papers, report_stem=args.report_stem, workers=args.workers
+            layout,
+            judge,
+            rules,
+            papers,
+            report_stem=args.report_stem,
+            workers=args.workers,
+            whole_paper=args.whole_paper,
         )
         agreement = summary["agreement"]
         print(
@@ -173,6 +194,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             workers=args.workers,
             report_stem=args.report_stem,
             resume=args.resume,
+            whole_paper=args.whole_paper,
         )
         print(
             f"Compatibility benchmark: {summary['judged']:,} figures, "
