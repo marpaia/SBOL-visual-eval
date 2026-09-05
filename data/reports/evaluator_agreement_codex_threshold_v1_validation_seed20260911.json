@@ -1,0 +1,294 @@
+{
+  "agreement": {
+    "all_counts_exact": 7,
+    "all_counts_exact_rate": 0.28,
+    "counts": {
+      "figures_best_practices": {
+        "exact": 9,
+        "exact_rate": 0.36,
+        "historical_total": 18,
+        "mean_absolute_error": 0.8,
+        "papers": 25,
+        "predicted_total": 26,
+        "within_one": 21,
+        "within_one_rate": 0.84
+      },
+      "figures_sbol_visual_compatible": {
+        "exact": 18,
+        "exact_rate": 0.72,
+        "historical_total": 43,
+        "mean_absolute_error": 0.32,
+        "papers": 25,
+        "predicted_total": 37,
+        "within_one": 24,
+        "within_one_rate": 0.96
+      },
+      "figures_sbol_visual_compliant": {
+        "exact": 15,
+        "exact_rate": 0.6,
+        "historical_total": 34,
+        "mean_absolute_error": 0.44,
+        "papers": 25,
+        "predicted_total": 33,
+        "within_one": 24,
+        "within_one_rate": 0.96
+      },
+      "figures_total": {
+        "exact": 24,
+        "exact_rate": 0.96,
+        "historical_total": 141,
+        "mean_absolute_error": 0.08,
+        "papers": 25,
+        "predicted_total": 143,
+        "within_one": 24,
+        "within_one_rate": 0.96
+      }
+    },
+    "flags": {
+      "all_compatible_figures_best_practice": {
+        "accuracy": 0.56,
+        "false_negatives": 4,
+        "false_positives": 7,
+        "papers": 25,
+        "precision": 0.4615,
+        "recall": 0.6,
+        "true_negatives": 8,
+        "true_positives": 6
+      },
+      "all_compatible_figures_compliant": {
+        "accuracy": 0.72,
+        "false_negatives": 4,
+        "false_positives": 3,
+        "papers": 25,
+        "precision": 0.8333,
+        "recall": 0.7895,
+        "true_negatives": 3,
+        "true_positives": 15
+      },
+      "has_best_practice_figures": {
+        "accuracy": 0.48,
+        "false_negatives": 5,
+        "false_positives": 8,
+        "papers": 25,
+        "precision": 0.5,
+        "recall": 0.6154,
+        "true_negatives": 4,
+        "true_positives": 8
+      },
+      "has_compatible_figures": {
+        "accuracy": 0.84,
+        "false_negatives": 4,
+        "false_positives": 0,
+        "papers": 25,
+        "precision": 1.0,
+        "recall": 0.84,
+        "true_negatives": 0,
+        "true_positives": 21
+      },
+      "has_compliant_figures": {
+        "accuracy": 0.72,
+        "false_negatives": 4,
+        "false_positives": 3,
+        "papers": 25,
+        "precision": 0.8421,
+        "recall": 0.8,
+        "true_negatives": 2,
+        "true_positives": 16
+      }
+    },
+    "papers": 25,
+    "yearly_totals": {
+      "2012": {
+        "figures_best_practices": {
+          "historical": 0,
+          "predicted": 0
+        },
+        "figures_sbol_visual_compatible": {
+          "historical": 2,
+          "predicted": 2
+        },
+        "figures_sbol_visual_compliant": {
+          "historical": 0,
+          "predicted": 1
+        },
+        "figures_total": {
+          "historical": 5,
+          "predicted": 5
+        }
+      },
+      "2014": {
+        "figures_best_practices": {
+          "historical": 3,
+          "predicted": 4
+        },
+        "figures_sbol_visual_compatible": {
+          "historical": 6,
+          "predicted": 5
+        },
+        "figures_sbol_visual_compliant": {
+          "historical": 4,
+          "predicted": 5
+        },
+        "figures_total": {
+          "historical": 16,
+          "predicted": 16
+        }
+      },
+      "2015": {
+        "figures_best_practices": {
+          "historical": 1,
+          "predicted": 4
+        },
+        "figures_sbol_visual_compatible": {
+          "historical": 6,
+          "predicted": 6
+        },
+        "figures_sbol_visual_compliant": {
+          "historical": 5,
+          "predicted": 6
+        },
+        "figures_total": {
+          "historical": 12,
+          "predicted": 12
+        }
+      },
+      "2016": {
+        "figures_best_practices": {
+          "historical": 3,
+          "predicted": 2
+        },
+        "figures_sbol_visual_compatible": {
+          "historical": 3,
+          "predicted": 2
+        },
+        "figures_sbol_visual_compliant": {
+          "historical": 3,
+          "predicted": 2
+        },
+        "figures_total": {
+          "historical": 9,
+          "predicted": 9
+        }
+      },
+      "2017": {
+        "figures_best_practices": {
+          "historical": 3,
+          "predicted": 4
+        },
+        "figures_sbol_visual_compatible": {
+          "historical": 7,
+          "predicted": 4
+        },
+        "figures_sbol_visual_compliant": {
+          "historical": 7,
+          "predicted": 4
+        },
+        "figures_total": {
+          "historical": 28,
+          "predicted": 28
+        }
+      },
+      "2018": {
+        "figures_best_practices": {
+          "historical": 4,
+          "predicted": 5
+        },
+        "figures_sbol_visual_compatible": {
+          "historical": 6,
+          "predicted": 5
+        },
+        "figures_sbol_visual_compliant": {
+          "historical": 6,
+          "predicted": 5
+        },
+        "figures_total": {
+          "historical": 21,
+          "predicted": 21
+        }
+      },
+      "2021": {
+        "figures_best_practices": {
+          "historical": 1,
+          "predicted": 0
+        },
+        "figures_sbol_visual_compatible": {
+          "historical": 3,
+          "predicted": 2
+        },
+        "figures_sbol_visual_compliant": {
+          "historical": 1,
+          "predicted": 0
+        },
+        "figures_total": {
+          "historical": 8,
+          "predicted": 10
+        }
+      },
+      "2022": {
+        "figures_best_practices": {
+          "historical": 1,
+          "predicted": 2
+        },
+        "figures_sbol_visual_compatible": {
+          "historical": 3,
+          "predicted": 3
+        },
+        "figures_sbol_visual_compliant": {
+          "historical": 1,
+          "predicted": 2
+        },
+        "figures_total": {
+          "historical": 10,
+          "predicted": 10
+        }
+      },
+      "2023": {
+        "figures_best_practices": {
+          "historical": 2,
+          "predicted": 5
+        },
+        "figures_sbol_visual_compatible": {
+          "historical": 7,
+          "predicted": 8
+        },
+        "figures_sbol_visual_compliant": {
+          "historical": 7,
+          "predicted": 8
+        },
+        "figures_total": {
+          "historical": 32,
+          "predicted": 32
+        }
+      }
+    }
+  },
+  "benchmark_definition": {
+    "excluded_reports": [
+      "data/reports/compatibility_full_pool_baseline.csv",
+      "data/reports/cascade_bench_v3.csv",
+      "data/reports/cascade_bench_holdout.csv",
+      "data/reports/evaluator_agreement_pilot.csv",
+      "data/reports/evaluator_agreement_pilot_r2.csv",
+      "data/reports/evaluator_agreement_holdout.csv",
+      "data/reports/evaluator_agreement_holdout_v2.csv",
+      "data/reports/evaluator_agreement_final.csv",
+      "data/reports/evaluator_agreement_codex_era_v3_fresh_seed20260910.csv"
+    ],
+    "sample_papers": 25,
+    "sample_seed": 20260911,
+    "version_of_record_only": true,
+    "years": null
+  },
+  "evaluation_errors": 0,
+  "generated_at": "2026-09-05T16:50:36+00:00",
+  "judge": {
+    "backend": "codex-cli",
+    "model": "gpt-5.6-sol"
+  },
+  "judging_mode": "per_figure",
+  "papers_attempted": 25,
+  "papers_evaluated": 25,
+  "prompt_profile": "historical_2025_era_v3+codex_panel_threshold_v1",
+  "report_path": "data/reports/evaluator_agreement_codex_threshold_v1_validation_seed20260911.csv",
+  "resumed_papers": 0
+}

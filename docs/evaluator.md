@@ -194,6 +194,27 @@ voting on 20 papers / 78 figures leaves the 98.7% figure accuracy and 95.0%
 paper-count exact rate unchanged: five initially borderline figures consume ten
 extra verdicts (+12.8% calls) without changing a call.
 
+**Codex/ChatGPT compatibility stage.** The authenticated `codex-cli` backend
+is evaluated with its default `gpt-5.6-sol` model against the same image and
+prompt contracts. Its paired calibration and paper-disjoint holdout reports are
+provider measurements, not replacements for the lower-bias default:
+
+| Profile and cohort | Accuracy | FP rate | Recall | Net count bias /100 | Paper-count exact |
+|---|---:|---:|---:|---:|---:|
+| Claude era v3, paired calibration | 98.7% | 2.2% | 100.0% | +1.97 | 95.0% |
+| Codex prose, calibration | 80.8% | 10.9% | 68.8% | +6.95 | 70.0% |
+| Codex era v3, calibration | 97.4% | 4.4% | 100.0% | +3.94 | 90.0% |
+| Codex era v3 + boundary-v2 images, calibration | 92.3% | 6.5% | 90.6% | +5.04 | 80.0% |
+| Codex era v3, disjoint holdout | 90.8% | 7.4% | 71.4% | +4.04 | 80.0% |
+
+The 30-paper / 163-figure Codex holdout contains only 14 positives, all in
+2017–2023, after excluding the earlier holdout report. It therefore supports a
+provider fallback but not a claim that era conditioning generalizes across all
+three eras. Whole-paper Codex calls return exactly the same 163 verdicts as
+per-figure calls on this cohort and take longer, so per-figure judging remains
+the operational mode. The image exemplars also regress the paired Codex
+calibration result and remain opt-in.
+
 **Compliance and best-practice stages** (cascade benchmark):
 
 - Compliance needed only the original interpretation notes: on held-out
@@ -210,7 +231,18 @@ extra verdicts (+12.8% calls) without changing a call.
   held-out papers** (baseline 46%), with errors now balanced in both
   directions.
 
-**End-to-end paper agreement** (20 papers, fresh seed, full pipeline,
+Codex full-rubric calls need a provider-specific restatement of the same global
+conspicuous-violation threshold. On the burned 15-figure cascade calibration
+cohort, this leaves compatibility and compliance accuracy at 93.3% while
+raising best-practice accuracy from 73.3% to 93.3%; six diffuse findings across
+five blocking SHOULD rules disappear. On a 34-figure cross-provider transfer
+cohort, before that restatement, Codex reaches 94.1% compatible, 79.4%
+compliant, and 73.5% best-practice accuracy, versus 82.4%, 73.5%, and 82.4%
+for the earlier Claude verdicts. All 39 cascade papers have previously informed
+calibration, so this transfer comparison is diagnostic rather than fresh
+validation.
+
+**Claude end-to-end paper agreement** (20 papers, fresh seed, full pipeline,
 `evaluator_agreement_final.*`):
 
 | Count | Exact | Within one | MAE | Totals (predicted / historical) |
@@ -226,6 +258,24 @@ systematic bias — the aggregate best-practice total matches exactly and the
 other totals sit within a few figures — which is the profile of a system near
 the corpus's own consistency floor. Under the within-one acceptance band the
 stages sit at 100% / 100% / 90% / 95%.
+
+**Codex end-to-end paper agreement** uses 25 VOR papers excluded from every
+earlier evaluator, full-pool compatibility, cascade, and unreinforced Codex
+report (`evaluator_agreement_codex_threshold_v1_validation_seed20260911.*`):
+
+| Count | Exact | Within one | MAE | Totals (predicted / historical) |
+|---|---|---|---|---|
+| `figures_total` | 24/25 | 24/25 | 0.08 | 143 / 141 |
+| `figures_sbol_visual_compatible` | 18/25 | 24/25 | 0.32 | 37 / 43 |
+| `figures_sbol_visual_compliant` | 15/25 | 24/25 | 0.44 | 33 / 34 |
+| `figures_best_practices` | 9/25 | 21/25 | 0.80 | 26 / 18 |
+
+All four counts are exact on 7/25 papers (28%). The full-rubric threshold
+transfers beyond its cascade calibration, but it over-awards eight
+best-practice figures while missing six compatible figures across 141
+historical figures. That directional error fails the near-zero-bias acceptance
+criterion, so `codex-cli` is a functional local substitute and experiment
+backend, not the measured default for headline scoring.
 
 **Known agreement ceiling.** The panel scored near-identical content
 differently across papers (an annotated vector map counted in one paper,
@@ -286,7 +336,7 @@ switches select independently measurable alternatives:
   mode resamples the paper call but replaces only its initially borderline
   verdicts.
 
-Both judge backends implement the same image-reference and whole-paper
+All judge backends implement the same image-reference and whole-paper
 contracts. Compatibility report checkpoints include the prompt profile,
 judging mode, and requested self-consistency sample count, so incompatible
 variants cannot be mixed by `--resume`.

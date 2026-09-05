@@ -77,6 +77,7 @@ def test_codex_cli_judge_attaches_target_and_uses_structured_output() -> None:
     assert command[-1].endswith("target-page.png")
     assert "Attached image 1 is the target manuscript page" in prompt
     assert "compliance:5.2.1" in prompt
+    assert "FINAL HISTORICAL THRESHOLD CHECK" in prompt
 
 
 def test_codex_cli_judge_orders_image_backed_exemplars_before_target() -> None:
@@ -116,6 +117,7 @@ def test_codex_cli_compatibility_schema_supports_borderline() -> None:
         ]
         assert "findings" not in schema["properties"]
         assert 'Set "borderline" to true' in prompt
+        assert "FINAL HISTORICAL THRESHOLD CHECK" not in prompt
         return reply
 
     judge = CodexCLIJudge(

@@ -1,0 +1,74 @@
+{
+  "baseline": {
+    "accuracy": 0.9872,
+    "certain_negative_figures": 46,
+    "certain_positive_figures": 32,
+    "expected_positive_figures": 32,
+    "false_positive_rate": 0.0217,
+    "figures": 78,
+    "judge_errors": 0,
+    "judged": 78,
+    "net_count_bias": 1,
+    "net_count_bias_per_100_corpus_figures": 1.97,
+    "paper_count_agreement": {
+      "exact": 19,
+      "exact_rate": 0.95,
+      "expected_total": 32,
+      "fully_judged_papers": 20,
+      "mae": 0.05,
+      "net_count_bias": 1,
+      "papers": 20,
+      "predicted_total": 33,
+      "within_one": 20,
+      "within_one_rate": 1.0
+    },
+    "precision": 0.9697,
+    "predicted_positive_figures": 33,
+    "recall": 1.0
+  },
+  "baseline_report": "data/reports/compatibility_era_v3_calibration_seed101.csv",
+  "candidate": {
+    "accuracy": 0.9744,
+    "certain_negative_figures": 46,
+    "certain_positive_figures": 32,
+    "expected_positive_figures": 32,
+    "false_positive_rate": 0.0435,
+    "figures": 78,
+    "judge_errors": 0,
+    "judged": 78,
+    "net_count_bias": 2,
+    "net_count_bias_per_100_corpus_figures": 3.94,
+    "paper_count_agreement": {
+      "exact": 18,
+      "exact_rate": 0.9,
+      "expected_total": 32,
+      "fully_judged_papers": 20,
+      "mae": 0.1,
+      "net_count_bias": 2,
+      "papers": 20,
+      "predicted_total": 34,
+      "within_one": 20,
+      "within_one_rate": 1.0
+    },
+    "precision": 0.9412,
+    "predicted_positive_figures": 34,
+    "recall": 1.0
+  },
+  "candidate_report": "data/reports/compatibility_codex_era_v3_calibration_seed101_sample20.csv",
+  "comparison_path": "data/reports/compatibility_claude_vs_codex_era_v3_calibration_seed101_sample20.comparison.json",
+  "figure_transitions": {
+    "fixed": 0,
+    "regressed": 1,
+    "unchanged_correct": 76,
+    "unchanged_incorrect": 1
+  },
+  "figures": 78,
+  "generated_at": "2026-09-05T15:17:53+00:00",
+  "paper_exact_transitions": {
+    "fixed": 0,
+    "regressed": 1,
+    "unchanged_exact": 18,
+    "unchanged_inexact": 1
+  },
+  "papers": 20
+}

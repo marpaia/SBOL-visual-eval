@@ -205,6 +205,7 @@ class CodexCLIJudge:
             publication_year=context.publication_year,
             era_conditioned=self._era_conditioned,
             request_borderline=self._request_borderline,
+            reinforce_historical_threshold=True,
         )
 
     def _paper_prompt(self, contexts: tuple[FigureContext, ...]) -> str:
@@ -219,6 +220,7 @@ class CodexCLIJudge:
             self._rules,
             era_conditioned=self._era_conditioned,
             request_borderline=self._request_borderline,
+            reinforce_historical_threshold=True,
         )
 
     def _reference_images(self, workdir: Path) -> tuple[list[Path], str]:

@@ -35,6 +35,7 @@ from ..evaluation.reconciliation import build_figure_census
 from ..judge.exemplars import load_compatibility_exemplars
 from ..judge.prompt import (
     BORDERLINE_PROMPT_PROFILE,
+    CODEX_THRESHOLD_PROMPT_PROFILE,
     COMPATIBILITY_EXEMPLAR_PROFILE,
     COMPATIBILITY_PROMPT_PROFILE,
     ERA_COMPATIBILITY_PROMPT_PROFILE,
@@ -44,7 +45,7 @@ from .judges import JUDGE_BACKENDS, build_judge
 from .pipeline import evaluate_pdf
 
 
-def _prompt_profile(args: argparse.Namespace) -> str:
+def _prompt_profile(args: argparse.Namespace, *, compatibility_only: bool = False) -> str:
     profile = (
         ERA_COMPATIBILITY_PROMPT_PROFILE if args.era_conditioned else COMPATIBILITY_PROMPT_PROFILE
     )
@@ -52,6 +53,8 @@ def _prompt_profile(args: argparse.Namespace) -> str:
         profile += f"+{COMPATIBILITY_EXEMPLAR_PROFILE}"
     if args.self_consistency > 1:
         profile += f"+{BORDERLINE_PROMPT_PROFILE}"
+    if args.judge == "codex-cli" and not compatibility_only:
+        profile += f"+{CODEX_THRESHOLD_PROMPT_PROFILE}"
     return profile
 
 
@@ -328,7 +331,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             report_stem=args.report_stem,
             resume=args.resume,
             whole_paper=args.whole_paper,
-            prompt_profile=_prompt_profile(args),
+            prompt_profile=_prompt_profile(args, compatibility_only=True),
             benchmark_definition={
                 "partition": args.partition,
                 "sample_papers": args.sample,

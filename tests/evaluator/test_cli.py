@@ -43,6 +43,15 @@ def test_build_judge_can_wrap_self_consistency() -> None:
     assert isinstance(judge, SelfConsistencyJudge)
 
 
+def test_codex_threshold_profile_applies_only_to_full_rubric_commands() -> None:
+    args = cli._argument_parser().parse_args(
+        ["evaluate", "--judge", "codex-cli", "--era-conditioned"]
+    )
+
+    assert cli._prompt_profile(args) == "historical_2025_era_v3+codex_panel_threshold_v1"
+    assert cli._prompt_profile(args, compatibility_only=True) == "historical_2025_era_v3"
+
+
 def test_score_requires_publication_year_for_era_conditioning(tmp_path: Path) -> None:
     with pytest.raises(SystemExit, match="--publication-year is required"):
         cli.main(

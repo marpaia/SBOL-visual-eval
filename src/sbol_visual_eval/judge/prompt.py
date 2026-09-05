@@ -18,6 +18,7 @@ from .schema import CompatibilityExemplar, CompatibilityExemplarSpec, FigureCont
 COMPATIBILITY_PROMPT_PROFILE = "historical_2025_prose_v1"
 ERA_COMPATIBILITY_PROMPT_PROFILE = "historical_2025_era_v3"
 BORDERLINE_PROMPT_PROFILE = "borderline_vote_v1"
+CODEX_THRESHOLD_PROMPT_PROFILE = "codex_panel_threshold_v1"
 
 # These references come only from the calibration side of the paper-level,
 # era-stratified split. Each label follows deductively from a saturated paper
@@ -266,6 +267,19 @@ This publication-era policy overrides the general compatibility definition
 where the two conflict."""
 
 
+HISTORICAL_FAILURE_THRESHOLD_REINFORCEMENT = """\
+FINAL HISTORICAL THRESHOLD CHECK: This review is deliberately not an exhaustive
+specification audit. Before returning findings, change a proposed failure to
+pass or not_applicable unless the violation is visually dominant,
+unambiguous, changes how the biological design is read, and would be noticed
+without zooming or searching for it. Ordinary labeled or color-coded generic
+shapes, simple linear or circular backbones, generic interaction arrows, and
+conventional boundary geometry are understandable historical notation and do
+not fail merely because a more specific RECOMMENDED glyph exists. Do not
+accumulate independent formal nitpicks: multiple failures are appropriate only
+when each one separately crosses this conspicuous-violation bar."""
+
+
 def _compatibility_definition(publication_year: int | None, *, era_conditioned: bool) -> str:
     if not era_conditioned:
         return COMPATIBILITY_DEFINITION
@@ -386,12 +400,18 @@ def build_user_prompt(
     publication_year: int | None = None,
     era_conditioned: bool = False,
     request_borderline: bool = False,
+    reinforce_historical_threshold: bool = False,
 ) -> str:
     compatibility_definition = _compatibility_definition(
         publication_year, era_conditioned=era_conditioned
     )
     borderline_instruction = _borderline_instruction(request_borderline)
     borderline_property = _borderline_property(request_borderline, indent=2)
+    threshold_reinforcement = (
+        f"{HISTORICAL_FAILURE_THRESHOLD_REINFORCEMENT}\n\n"
+        if reinforce_historical_threshold
+        else ""
+    )
     return f"""\
 The attached image is the manuscript page containing Figure {figure_number}.
 Its caption begins: "{caption_text[:600]}"
@@ -417,7 +437,7 @@ single subtle imperfection hunted out of an otherwise well-drawn diagram.
 
 {render_rubric(rules, interpretations=HISTORICAL_INTERPRETATIONS)}
 
-{borderline_instruction}Respond with a single JSON object and nothing else:
+{threshold_reinforcement}{borderline_instruction}Respond with a single JSON object and nothing else:
 {{
   "figure_number": {figure_number},
   "compatible": true or false,
@@ -436,6 +456,7 @@ def build_paper_user_prompt(
     *,
     era_conditioned: bool = False,
     request_borderline: bool = False,
+    reinforce_historical_threshold: bool = False,
 ) -> str:
     """A full-cascade prompt that applies one standard across a paper."""
     figures = _paper_figure_list(contexts)
@@ -445,6 +466,11 @@ def build_paper_user_prompt(
     )
     borderline_instruction = _borderline_instruction(request_borderline)
     borderline_property = _borderline_property(request_borderline, indent=6)
+    threshold_reinforcement = (
+        f"{HISTORICAL_FAILURE_THRESHOLD_REINFORCEMENT}\n\n"
+        if reinforce_historical_threshold
+        else ""
+    )
     return f"""\
 The attached images are the manuscript pages containing these figures:
 {figures}
@@ -472,7 +498,7 @@ subtle imperfection hunted out of an otherwise well-drawn diagram.
 
 {render_rubric(rules, interpretations=HISTORICAL_INTERPRETATIONS)}
 
-{borderline_instruction}Respond with a single JSON object and nothing else:
+{threshold_reinforcement}{borderline_instruction}Respond with a single JSON object and nothing else:
 {{
   "figures": [
     {{
