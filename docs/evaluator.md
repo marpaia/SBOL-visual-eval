@@ -174,6 +174,18 @@ validate, but its false-positive count bias does not. The profile therefore
 remains explicitly selectable with `--era-conditioned`; the default evaluator
 continues to use the lower-bias prose profile.
 
+Image-backed few-shot references also remain opt-in. On the burned 40-paper /
+165-figure calibration cohort, the first reference set reaches 89.7% accuracy, 78.5%
+recall, 3.0% FP rate, +0.72 projected bias per 100, and 72.5% exact paper
+counts. The boundary-v2 set replaces over-broad recent examples with an early
+abstract-topology negative, a recent concrete-plasmid positive, and a native
+target-locus negative. It reaches 93.9% accuracy, 87.7% recall, 2.0% FP rate,
++0.67 projected bias, and 80.0% exact paper counts, fixing nine v1 calls and
+regressing two. Against era v3 without images, however, v2 fixes three calls
+and regresses six while exact paper counts fall from 85.0% to 80.0%. The
+examples improve their predecessor and reduce bias, but do not beat the prose
+era profile, so they are not adopted by default.
+
 Whole-paper and selective-voting modes are rejected by their paired calibration
 benchmarks and remain opt-in. Whole-paper era-v3 judging on 40 papers / 165
 figures lowers accuracy from 95.8% to 92.1%, exact paper counts from 85.0% to

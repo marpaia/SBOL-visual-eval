@@ -1,0 +1,74 @@
+{
+  "baseline": {
+    "accuracy": 0.9576,
+    "certain_negative_figures": 100,
+    "certain_positive_figures": 65,
+    "expected_positive_figures": 65,
+    "false_positive_rate": 0.04,
+    "figures": 165,
+    "judge_errors": 0,
+    "judged": 165,
+    "net_count_bias": 1,
+    "net_count_bias_per_100_corpus_figures": 3.2,
+    "paper_count_agreement": {
+      "exact": 34,
+      "exact_rate": 0.85,
+      "expected_total": 65,
+      "fully_judged_papers": 40,
+      "mae": 0.175,
+      "net_count_bias": 1,
+      "papers": 40,
+      "predicted_total": 66,
+      "within_one": 39,
+      "within_one_rate": 0.975
+    },
+    "precision": 0.9394,
+    "predicted_positive_figures": 66,
+    "recall": 0.9538
+  },
+  "baseline_report": "data/reports/compatibility_era_v3_calibration_seed101.csv",
+  "candidate": {
+    "accuracy": 0.9394,
+    "certain_negative_figures": 100,
+    "certain_positive_figures": 65,
+    "expected_positive_figures": 65,
+    "false_positive_rate": 0.02,
+    "figures": 165,
+    "judge_errors": 0,
+    "judged": 165,
+    "net_count_bias": -6,
+    "net_count_bias_per_100_corpus_figures": 0.67,
+    "paper_count_agreement": {
+      "exact": 32,
+      "exact_rate": 0.8,
+      "expected_total": 65,
+      "fully_judged_papers": 40,
+      "mae": 0.25,
+      "net_count_bias": -6,
+      "papers": 40,
+      "predicted_total": 59,
+      "within_one": 38,
+      "within_one_rate": 0.95
+    },
+    "precision": 0.9661,
+    "predicted_positive_figures": 59,
+    "recall": 0.8769
+  },
+  "candidate_report": "data/reports/compatibility_era_v3_fewshot_v2_calibration_seed101.csv",
+  "comparison_path": "data/reports/compatibility_era_v3_vs_fewshot_v2_calibration_seed101.comparison.json",
+  "figure_transitions": {
+    "fixed": 3,
+    "regressed": 6,
+    "unchanged_correct": 152,
+    "unchanged_incorrect": 4
+  },
+  "figures": 165,
+  "generated_at": "2026-09-05T14:29:10+00:00",
+  "paper_exact_transitions": {
+    "fixed": 2,
+    "regressed": 4,
+    "unchanged_exact": 30,
+    "unchanged_inexact": 4
+  },
+  "papers": 40
+}

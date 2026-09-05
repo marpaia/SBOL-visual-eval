@@ -23,7 +23,7 @@ BORDERLINE_PROMPT_PROFILE = "borderline_vote_v1"
 # era-stratified split. Each label follows deductively from a saturated paper
 # count. Images render from checksum-pinned local corpus PDFs at runtime rather
 # than being copied into the source tree.
-COMPATIBILITY_EXEMPLAR_PROFILE = "boundary_pages_v1"
+COMPATIBILITY_EXEMPLAR_PROFILE = "boundary_pages_v2"
 COMPATIBILITY_EXEMPLAR_SPECS = (
     CompatibilityExemplarSpec(
         identifier="10.1021/acssynbio.5b00124",
@@ -40,49 +40,49 @@ COMPATIBILITY_EXEMPLAR_SPECS = (
         page_number=2,
     ),
     CompatibilityExemplarSpec(
-        identifier="10.1021/acssynbio.6b00009",
-        publication_year=2016,
+        identifier="10.1021/sb300018h",
+        publication_year=2012,
         figure_number=1,
-        caption_text=("Figure 1. Example of a buffered four-domain DNA strand-displacement gate."),
+        caption_text=(
+            "Figure 1. Systematic construction of a transcriptional inverter, repeater, "
+            "and circuits composed of modular switch motifs."
+        ),
         expected_compatible=False,
         rationale=(
-            "The panel excluded this abstract domain-level strand-displacement mechanism "
-            "despite its DNA circuit-design language."
+            "The early panel excluded this abstract switch-topology diagram despite its "
+            "engineered DNA circuit subject."
         ),
-        pdf_path=("data/papers/2016/10.1021__acssynbio.6b00009/publisher/paper.pdf"),
-        pdf_sha256="d71f1b3d5bf85fe65165afb392b59b423d30947aa0ab3433b46c33d0f4e76fcf",
-        page_number=3,
+        pdf_path="data/papers/2012/10.1021__sb300018h/publisher/paper.pdf",
+        pdf_sha256="04b537127afc4847d370f1e68e151fe4542beeb3800d5c1099320cecda0ddd0d",
+        page_number=2,
     ),
     CompatibilityExemplarSpec(
-        identifier="10.1021/acssynbio.3c00375",
-        publication_year=2023,
-        figure_number=2,
-        caption_text=(
-            "Figure 2. Model suggests that differential affinities of scRNA and sgRNA are "
-            "a problem."
-        ),
+        identifier="10.1021/acssynbio.7b00209",
+        publication_year=2018,
+        figure_number=1,
+        caption_text="Figure 1. Scheme of plasmids used in the IIS-alphoid-tetO-HAC system.",
         expected_compatible=True,
         rationale=(
-            "The panel included the visible promoter-reporter circuit design embedded in "
-            "this modeling-and-data figure."
+            "The panel included these concrete engineered carrier and expression plasmid "
+            "designs despite their cloning, selection, and recombination annotations."
         ),
-        pdf_path="data/papers/2023/10.1021__acssynbio.3c00375/pmc/paper.pdf",
-        pdf_sha256="4abb64c13e5988475d07371121e6373d9d4424404f41868c144f2229f9d8259d",
+        pdf_path="data/papers/2018/10.1021__acssynbio.7b00209/paper.pdf",
+        pdf_sha256="cf36654ac6431d84a2b5c15c647b698161afd0d5e410c6a5fde3a7b25dc26a9c",
         page_number=3,
     ),
     CompatibilityExemplarSpec(
-        identifier="10.1021/acssynbio.3c00124",
-        publication_year=2023,
-        figure_number=1,
-        caption_text="Figure 1. Genome-Integration Module Workflow.",
+        identifier="10.1021/acssynbio.5b00249",
+        publication_year=2016,
+        figure_number=2,
+        caption_text="Figure 2. Genome engineering of target genes using DNA-free CRISPR/Cas9.",
         expected_compatible=False,
         rationale=(
-            "The panel excluded this cloning and genome-integration workflow even though "
-            "it depicts plasmid backbones and transcription-unit cassettes."
+            "The panel excluded these annotated native target-locus maps because they mark "
+            "cut sites without specifying an engineered construct's composition."
         ),
-        pdf_path="data/papers/2023/10.1021__acssynbio.3c00124/pmc/paper.pdf",
-        pdf_sha256="72cc92e8795f6777636b445f7744793410d26ebb30f3ad50902028ba2272ba6d",
-        page_number=2,
+        pdf_path="data/papers/2016/10.1021__acssynbio.5b00249/publisher/paper.pdf",
+        pdf_sha256="51703c6672dda8cb0091970c0df2e2227dab3a87982d688dc14eb197a767901b",
+        page_number=3,
     ),
 )
 
