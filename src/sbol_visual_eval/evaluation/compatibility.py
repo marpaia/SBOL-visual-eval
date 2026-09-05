@@ -126,11 +126,36 @@ def assign_era_stratified_partitions(
 def sample_saturated_figures(
     figures: list[SaturatedFigure], sample: int | None, seed: int
 ) -> list[SaturatedFigure]:
-    """Sample whole papers from an already partitioned figure pool."""
+    """Sample whole papers evenly across era and entailed-label strata."""
     dois = sorted({figure.doi for figure in figures})
     if sample is None or sample >= len(dois):
         return figures
-    sampled_dois = set(random.Random(seed).sample(dois, sample))
+
+    stratum_by_doi = {
+        figure.doi: (compatibility_era(figure.year), figure.expected_compatible)
+        for figure in figures
+    }
+    dois_by_stratum: dict[tuple[str, bool], list[str]] = defaultdict(list)
+    for doi in dois:
+        dois_by_stratum[stratum_by_doi[doi]].append(doi)
+    for stratum, stratum_dois in dois_by_stratum.items():
+        random.Random(f"{seed}:{stratum[0]}:{int(stratum[1])}").shuffle(stratum_dois)
+
+    sampled_dois: set[str] = set()
+    offset = 0
+    strata = sorted(dois_by_stratum)
+    while len(sampled_dois) < sample:
+        added = False
+        for stratum in strata:
+            stratum_dois = dois_by_stratum[stratum]
+            if offset < len(stratum_dois):
+                sampled_dois.add(stratum_dois[offset])
+                added = True
+                if len(sampled_dois) == sample:
+                    break
+        if not added:
+            break
+        offset += 1
     return [figure for figure in figures if figure.doi in sampled_dois]
 
 

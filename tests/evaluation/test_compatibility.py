@@ -181,6 +181,35 @@ def test_sampling_keeps_partitioned_papers_intact() -> None:
     assert {figure.benchmark_partition for figure in sampled} == {"holdout"}
 
 
+def test_sampling_balances_era_and_label_strata() -> None:
+    figures = [
+        SaturatedFigure(
+            doi=f"10.1/{year}-{int(label)}-{paper}",
+            year=year,
+            pdf_path="paper.pdf",
+            figure_number=1,
+            caption_text="Figure.",
+            page_number=1,
+            expected_compatible=label,
+            benchmark_partition="calibration",
+        )
+        for year in (2012, 2015, 2020)
+        for label in (False, True)
+        for paper in range(3)
+    ]
+
+    sampled = sample_saturated_figures(figures, 6, seed=23)
+
+    assert {(compatibility_era(figure.year), figure.expected_compatible) for figure in sampled} == {
+        ("2012-2013", False),
+        ("2012-2013", True),
+        ("2014-2016", False),
+        ("2014-2016", True),
+        ("2017-2023", False),
+        ("2017-2023", True),
+    }
+
+
 def test_compatibility_benchmark_reports_boundary_errors(tmp_path: Path) -> None:
     layout = _prepare_layout(tmp_path)
     figures = saturated_figures(layout, saturated_compatibility_papers(layout))
