@@ -47,6 +47,7 @@ COMPATIBILITY_FIELDS = (
     "era",
     "benchmark_partition",
     "judging_mode",
+    "self_consistency_samples",
     "figure_number",
     "expected_compatible",
     "predicted_compatible",
@@ -228,8 +229,13 @@ def _saturated_pool_cache_path(layout: Layout, papers: list[SweepPaper]) -> Path
     return layout.cache / "evaluation" / "compatibility" / f"{fingerprint}.json.gz"
 
 
-def _judge_figure(layout: Layout, judge: FigureJudge, figure: SaturatedFigure) -> dict[str, Any]:
-    row = _base_row(figure, "per_figure")
+def _judge_figure(
+    layout: Layout,
+    judge: FigureJudge,
+    figure: SaturatedFigure,
+    self_consistency_samples: int,
+) -> dict[str, Any]:
+    row = _base_row(figure, "per_figure", self_consistency_samples)
     try:
         context = FigureContext(
             figure_number=figure.figure_number,
@@ -244,13 +250,16 @@ def _judge_figure(layout: Layout, judge: FigureJudge, figure: SaturatedFigure) -
     return _verdict_row(row, verdict.compatible, verdict.rationale, figure)
 
 
-def _base_row(figure: SaturatedFigure, judging_mode: str) -> dict[str, Any]:
+def _base_row(
+    figure: SaturatedFigure, judging_mode: str, self_consistency_samples: int
+) -> dict[str, Any]:
     return {
         "doi": figure.doi,
         "year": figure.year,
         "era": compatibility_era(figure.year),
         "benchmark_partition": figure.benchmark_partition,
         "judging_mode": judging_mode,
+        "self_consistency_samples": self_consistency_samples,
         "figure_number": figure.figure_number,
         "expected_compatible": figure.expected_compatible,
     }
@@ -282,9 +291,12 @@ def _verdict_row(
 
 
 def _judge_paper(
-    layout: Layout, judge: FigureJudge, figures: list[SaturatedFigure]
+    layout: Layout,
+    judge: FigureJudge,
+    figures: list[SaturatedFigure],
+    self_consistency_samples: int,
 ) -> list[dict[str, Any]]:
-    rows = [_base_row(figure, "whole_paper") for figure in figures]
+    rows = [_base_row(figure, "whole_paper", self_consistency_samples) for figure in figures]
     try:
         judge_paper = getattr(judge, "judge_paper", None)
         if not callable(judge_paper):
@@ -362,7 +374,10 @@ def _grouped_summaries(rows: list[dict[str, Any]], field: str) -> dict[str, dict
 
 
 def _checkpoint_rows(
-    path: Path, figures: list[SaturatedFigure], judging_mode: str
+    path: Path,
+    figures: list[SaturatedFigure],
+    judging_mode: str,
+    self_consistency_samples: int,
 ) -> dict[tuple[str, int], dict[str, Any]]:
     if not path.exists():
         return {}
@@ -381,6 +396,7 @@ def _checkpoint_rows(
                 and str(row["era"]) == compatibility_era(figure.year)
                 and str(row["benchmark_partition"]) == figure.benchmark_partition
                 and str(row.get("judging_mode", "per_figure")) == judging_mode
+                and int(row.get("self_consistency_samples", 1)) == self_consistency_samples
                 and bool(row["expected_compatible"]) is figure.expected_compatible
                 and not row.get("judge_error")
             ):
@@ -401,7 +417,20 @@ def run_compatibility_benchmark(
     """Judge each labeled figure with a resumable checkpoint and report accuracy."""
     checkpoint_path = layout.reports / f"{report_stem}.checkpoint.jsonl"
     judging_mode = "whole_paper" if whole_paper else "per_figure"
-    completed = _checkpoint_rows(checkpoint_path, figures, judging_mode) if resume else {}
+    sampling_statistics = getattr(judge, "sampling_statistics", None)
+    self_consistency_samples = (
+        int(sampling_statistics()["samples"]) if callable(sampling_statistics) else 1
+    )
+    completed = (
+        _checkpoint_rows(
+            checkpoint_path,
+            figures,
+            judging_mode,
+            self_consistency_samples,
+        )
+        if resume
+        else {}
+    )
     if not resume:
         checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
         checkpoint_path.write_text("", encoding="utf-8")
@@ -424,7 +453,13 @@ def run_compatibility_benchmark(
                 )
             ]
             futures = {
-                pool.submit(_judge_paper, layout, judge, paper_figures): paper_figures
+                pool.submit(
+                    _judge_paper,
+                    layout,
+                    judge,
+                    paper_figures,
+                    self_consistency_samples,
+                ): paper_figures
                 for paper_figures in remaining_papers
             }
             last_progress = resumed_figures
@@ -446,7 +481,14 @@ def run_compatibility_benchmark(
                 figure for figure in figures if (figure.doi, figure.figure_number) not in completed
             ]
             futures = {
-                pool.submit(_judge_figure, layout, judge, figure): figure for figure in remaining
+                pool.submit(
+                    _judge_figure,
+                    layout,
+                    judge,
+                    figure,
+                    self_consistency_samples,
+                ): figure
+                for figure in remaining
             }
             for completed_count, future in enumerate(as_completed(futures), start=1):
                 figure = futures[future]
@@ -463,6 +505,7 @@ def run_compatibility_benchmark(
     rows = [completed[(figure.doi, figure.figure_number)] for figure in figures]
     for row in rows:
         row.setdefault("judging_mode", judging_mode)
+        row.setdefault("self_consistency_samples", self_consistency_samples)
 
     summary = {
         "generated_at": utc_now(),
@@ -474,6 +517,8 @@ def run_compatibility_benchmark(
         "by_partition": _grouped_summaries(rows, "benchmark_partition"),
         "report_path": f"data/reports/{report_stem}.csv",
     }
+    if callable(sampling_statistics):
+        summary["self_consistency"] = sampling_statistics()
     write_csv(layout.reports / f"{report_stem}.csv", rows, COMPATIBILITY_FIELDS)
     write_json(layout.reports / f"{report_stem}.json", summary)
     checkpoint_path.unlink(missing_ok=True)

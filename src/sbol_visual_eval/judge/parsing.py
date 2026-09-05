@@ -56,6 +56,7 @@ def _verdict_from_payload(payload: dict[str, Any], figure_number: int) -> Figure
         compatible=bool(payload["compatible"]),
         rationale=str(payload.get("rationale", "")),
         findings=tuple(findings),
+        borderline=bool(payload.get("borderline", False)),
     )
 
 

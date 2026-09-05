@@ -6,6 +6,7 @@ from ..judge import AnthropicAPIJudge, ClaudeCLIJudge
 from ..judge.protocol import FigureJudge
 from ..judge.rubric import RubricRule
 from ..judge.schema import CompatibilityExemplar
+from ..judge.voting import SelfConsistencyJudge
 
 JUDGE_BACKENDS = ("anthropic", "claude-cli")
 
@@ -17,21 +18,26 @@ def build_judge(
     *,
     compatibility_only: bool = False,
     exemplars: tuple[CompatibilityExemplar, ...] = (),
+    self_consistency_samples: int = 1,
 ) -> FigureJudge:
     if backend == "anthropic":
         keywords = {"model": model} if model else {}
-        return AnthropicAPIJudge(
+        judge: FigureJudge = AnthropicAPIJudge(
             rules,
             compatibility_only=compatibility_only,
             exemplars=exemplars,
             **keywords,
         )
-    if backend == "claude-cli":
+    elif backend == "claude-cli":
         keywords = {"model": model} if model else {}
-        return ClaudeCLIJudge(
+        judge = ClaudeCLIJudge(
             rules,
             compatibility_only=compatibility_only,
             exemplars=exemplars,
             **keywords,
         )
-    raise ValueError(f"unknown judge backend {backend!r}; expected one of {JUDGE_BACKENDS}")
+    else:
+        raise ValueError(f"unknown judge backend {backend!r}; expected one of {JUDGE_BACKENDS}")
+    if self_consistency_samples == 1:
+        return judge
+    return SelfConsistencyJudge(judge, samples=self_consistency_samples)

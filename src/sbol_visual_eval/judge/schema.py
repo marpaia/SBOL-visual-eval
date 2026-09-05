@@ -39,6 +39,7 @@ class FigureVerdict:
     compatible: bool
     rationale: str
     findings: tuple[RuleFinding, ...]
+    borderline: bool = False
 
     def _category_clean(self, rules: list[RubricRule], category: str) -> bool:
         keys = {rule.rule_key for rule in rules if rule.category == category}

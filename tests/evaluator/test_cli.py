@@ -8,6 +8,7 @@ import pytest
 from sbol_visual_eval.evaluator import cli
 from sbol_visual_eval.evaluator.judges import build_judge
 from sbol_visual_eval.judge import ClaudeCLIJudge
+from sbol_visual_eval.judge.voting import SelfConsistencyJudge
 
 from ..figures.helpers import build_fixture_pdf
 from ..judge.helpers import RULES
@@ -27,6 +28,12 @@ def test_build_judge_claude_cli_backend() -> None:
     judge = build_judge("claude-cli", RULES, model="opus")
     assert isinstance(judge, ClaudeCLIJudge)
     assert judge.command()[:4] == ["claude", "-p", "--model", "opus"]
+
+
+def test_build_judge_can_wrap_self_consistency() -> None:
+    judge = build_judge("claude-cli", RULES, self_consistency_samples=3)
+
+    assert isinstance(judge, SelfConsistencyJudge)
 
 
 def test_score_command_writes_historical_format_json(tmp_path: Path, monkeypatch) -> None:

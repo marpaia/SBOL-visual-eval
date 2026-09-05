@@ -42,6 +42,7 @@ def _argument_parser() -> argparse.ArgumentParser:
     score.add_argument("pdf", type=Path)
     score.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
     score.add_argument("--model", help="judge model override")
+    score.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     score.add_argument(
         "--whole-paper",
         action="store_true",
@@ -60,6 +61,7 @@ def _argument_parser() -> argparse.ArgumentParser:
     )
     evaluate.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
     evaluate.add_argument("--model", help="judge model override")
+    evaluate.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     evaluate.add_argument("--sample", type=int, help="evaluate a seeded random sample")
     evaluate.add_argument("--seed", type=int, default=7)
     evaluate.add_argument("--years", type=int, nargs="*")
@@ -82,6 +84,7 @@ def _argument_parser() -> argparse.ArgumentParser:
     )
     compatibility.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
     compatibility.add_argument("--model", help="judge model override")
+    compatibility.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     compatibility.add_argument("--sample", type=int, help="benchmark a seeded random sample")
     compatibility.add_argument("--seed", type=int, default=7)
     compatibility.add_argument("--workers", type=int, default=4)
@@ -115,6 +118,7 @@ def _argument_parser() -> argparse.ArgumentParser:
     )
     cascade.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
     cascade.add_argument("--model", help="judge model override")
+    cascade.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     cascade.add_argument("--sample", type=int, help="benchmark a seeded random sample")
     cascade.add_argument("--seed", type=int, default=7)
     cascade.add_argument("--workers", type=int, default=4)
@@ -128,7 +132,12 @@ def main(argv: Sequence[str] | None = None) -> None:
 
     if args.command == "score":
         rules = load_rubric(layout)
-        judge = build_judge(args.judge, rules, args.model)
+        judge = build_judge(
+            args.judge,
+            rules,
+            args.model,
+            self_consistency_samples=args.self_consistency,
+        )
         evaluation = evaluate_pdf(args.pdf.resolve(), judge, rules, whole_paper=args.whole_paper)
         payload = json.dumps(evaluation.to_dict(), indent=2, sort_keys=True)
         if args.output:
@@ -147,7 +156,12 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
     elif args.command == "evaluate":
         rules = load_rubric(layout)
-        judge = build_judge(args.judge, rules, args.model)
+        judge = build_judge(
+            args.judge,
+            rules,
+            args.model,
+            self_consistency_samples=args.self_consistency,
+        )
         papers = sweep_papers(
             layout,
             version_of_record_only=not args.include_other_editions,
@@ -173,7 +187,13 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
     elif args.command == "compatibility":
         rules = load_rubric(layout)
-        judge = build_judge(args.judge, rules, args.model, compatibility_only=True)
+        judge = build_judge(
+            args.judge,
+            rules,
+            args.model,
+            compatibility_only=True,
+            self_consistency_samples=args.self_consistency,
+        )
         papers = saturated_compatibility_papers(layout)
         papers = sample_papers(papers, args.sample, args.seed)
         figures = saturated_figures(layout, papers)
@@ -203,7 +223,12 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
     elif args.command == "cascade":
         rules = load_rubric(layout)
-        judge = build_judge(args.judge, rules, args.model)
+        judge = build_judge(
+            args.judge,
+            rules,
+            args.model,
+            self_consistency_samples=args.self_consistency,
+        )
         papers = sample_papers(cascade_papers(layout), args.sample, args.seed)
         figures = cascade_figures(layout, papers)
         if not figures:

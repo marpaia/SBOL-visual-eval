@@ -23,6 +23,7 @@ def verdict(
     compatible: bool,
     failed_rules: tuple[str, ...] = (),
     passed_rules: tuple[str, ...] = (),
+    borderline: bool = False,
 ) -> FigureVerdict:
     findings = [RuleFinding(key, RuleVerdict.PASS, "") for key in passed_rules]
     findings += [RuleFinding(key, RuleVerdict.FAIL, "") for key in failed_rules]
@@ -31,4 +32,5 @@ def verdict(
         compatible=compatible,
         rationale="scripted",
         findings=tuple(findings),
+        borderline=borderline,
     )

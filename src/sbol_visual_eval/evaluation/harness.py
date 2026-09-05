@@ -176,6 +176,9 @@ def run_sweep(
         "agreement": agreement.to_dict(),
         "report_path": f"data/reports/{report_stem}.csv",
     }
+    sampling_statistics = getattr(judge, "sampling_statistics", None)
+    if callable(sampling_statistics):
+        summary["self_consistency"] = sampling_statistics()
 
     write_csv(layout.reports / f"{report_stem}.csv", rows, EVALUATOR_AGREEMENT_FIELDS)
     write_json(layout.reports / f"{report_stem}.json", summary)

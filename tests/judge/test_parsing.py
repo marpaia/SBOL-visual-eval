@@ -30,9 +30,13 @@ def test_parse_reply_with_surrounding_prose_and_fences() -> None:
 
 
 def test_parse_incompatible_reply_without_findings() -> None:
-    reply = '{"figure_number": 1, "compatible": false, "rationale": "Data plot only."}'
+    reply = (
+        '{"figure_number": 1, "compatible": false, "borderline": true, '
+        '"rationale": "Data plot only."}'
+    )
     verdict = parse_verdict(reply, figure_number=1)
     assert not verdict.compatible
+    assert verdict.borderline
     assert verdict.findings == ()
 
 
