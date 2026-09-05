@@ -14,6 +14,7 @@ def test_default_prompt_does_not_add_publication_era_guidance() -> None:
     prompt = build_compatibility_prompt(1, "Figure 1. Construct.", publication_year=2013)
 
     assert "PUBLICATION ERA" not in prompt
+    assert '"borderline":' not in prompt
 
 
 def test_early_era_prompt_uses_measured_conventional_boundary() -> None:
@@ -58,3 +59,14 @@ def test_recent_whole_paper_prompt_rejects_early_cartography_exception() -> None
 
     assert "PUBLICATION ERA: 2022 (2017-2023)" in prompt
     assert "Do not import the earlier panel's exception" in prompt
+
+
+def test_voting_prompt_requests_an_explicit_borderline_flag() -> None:
+    prompt = build_compatibility_prompt(
+        1,
+        "Figure 1. Construct.",
+        request_borderline=True,
+    )
+
+    assert 'Set "borderline" to true only' in prompt
+    assert '"borderline": true or false,' in prompt

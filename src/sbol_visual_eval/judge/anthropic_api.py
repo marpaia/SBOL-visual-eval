@@ -37,6 +37,7 @@ class AnthropicAPIJudge:
         compatibility_only: bool = False,
         exemplars: tuple[CompatibilityExemplar, ...] = (),
         era_conditioned: bool = False,
+        request_borderline: bool = False,
     ) -> None:
         if client is None:
             import anthropic
@@ -49,6 +50,7 @@ class AnthropicAPIJudge:
         self._compatibility_only = compatibility_only
         self._exemplars = exemplars
         self._era_conditioned = era_conditioned
+        self._request_borderline = request_borderline
 
     def _prompt(self, context: FigureContext) -> str:
         if self._compatibility_only:
@@ -57,6 +59,7 @@ class AnthropicAPIJudge:
                 context.caption_text,
                 publication_year=context.publication_year,
                 era_conditioned=self._era_conditioned,
+                request_borderline=self._request_borderline,
             )
         return build_user_prompt(
             context.figure_number,
@@ -64,12 +67,22 @@ class AnthropicAPIJudge:
             self._rules,
             publication_year=context.publication_year,
             era_conditioned=self._era_conditioned,
+            request_borderline=self._request_borderline,
         )
 
     def _paper_prompt(self, contexts: tuple[FigureContext, ...]) -> str:
         if self._compatibility_only:
-            return build_compatibility_paper_prompt(contexts, era_conditioned=self._era_conditioned)
-        return build_paper_user_prompt(contexts, self._rules, era_conditioned=self._era_conditioned)
+            return build_compatibility_paper_prompt(
+                contexts,
+                era_conditioned=self._era_conditioned,
+                request_borderline=self._request_borderline,
+            )
+        return build_paper_user_prompt(
+            contexts,
+            self._rules,
+            era_conditioned=self._era_conditioned,
+            request_borderline=self._request_borderline,
+        )
 
     def judge(self, context: FigureContext) -> FigureVerdict:
         content = self._exemplar_content()

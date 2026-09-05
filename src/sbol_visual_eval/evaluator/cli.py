@@ -26,6 +26,7 @@ from ..evaluation.harness import run_sweep, sample_papers, sweep_papers
 from ..evaluation.reconciliation import build_figure_census
 from ..judge.exemplars import load_compatibility_exemplars
 from ..judge.prompt import (
+    BORDERLINE_PROMPT_PROFILE,
     COMPATIBILITY_EXEMPLAR_PROFILE,
     COMPATIBILITY_PROMPT_PROFILE,
     ERA_COMPATIBILITY_PROMPT_PROFILE,
@@ -272,6 +273,7 @@ def main(argv: Sequence[str] | None = None) -> None:
                     else COMPATIBILITY_PROMPT_PROFILE
                 )
                 + (f"+{COMPATIBILITY_EXEMPLAR_PROFILE}" if args.few_shot else "")
+                + (f"+{BORDERLINE_PROMPT_PROFILE}" if args.self_consistency > 1 else "")
             ),
         )
         print(

@@ -72,6 +72,7 @@ class ClaudeCLIJudge:
         compatibility_only: bool = False,
         exemplars: tuple[CompatibilityExemplar, ...] = (),
         era_conditioned: bool = False,
+        request_borderline: bool = False,
     ) -> None:
         self._rules = rules
         self._model = model
@@ -79,6 +80,7 @@ class ClaudeCLIJudge:
         self._compatibility_only = compatibility_only
         self._exemplars = exemplars
         self._era_conditioned = era_conditioned
+        self._request_borderline = request_borderline
 
     def command(self) -> list[str]:
         return ["claude", "-p", "--model", self._model, "--allowed-tools", "Read"]
@@ -90,6 +92,7 @@ class ClaudeCLIJudge:
                 context.caption_text,
                 publication_year=context.publication_year,
                 era_conditioned=self._era_conditioned,
+                request_borderline=self._request_borderline,
             )
         return build_user_prompt(
             context.figure_number,
@@ -97,12 +100,22 @@ class ClaudeCLIJudge:
             self._rules,
             publication_year=context.publication_year,
             era_conditioned=self._era_conditioned,
+            request_borderline=self._request_borderline,
         )
 
     def _paper_prompt(self, contexts: tuple[FigureContext, ...]) -> str:
         if self._compatibility_only:
-            return build_compatibility_paper_prompt(contexts, era_conditioned=self._era_conditioned)
-        return build_paper_user_prompt(contexts, self._rules, era_conditioned=self._era_conditioned)
+            return build_compatibility_paper_prompt(
+                contexts,
+                era_conditioned=self._era_conditioned,
+                request_borderline=self._request_borderline,
+            )
+        return build_paper_user_prompt(
+            contexts,
+            self._rules,
+            era_conditioned=self._era_conditioned,
+            request_borderline=self._request_borderline,
+        )
 
     def _reference_prompt(self, workdir: Path) -> str:
         reference_prompts = []

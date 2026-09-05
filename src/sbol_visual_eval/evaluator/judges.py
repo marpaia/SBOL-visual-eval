@@ -28,6 +28,7 @@ def build_judge(
             compatibility_only=compatibility_only,
             exemplars=exemplars,
             era_conditioned=era_conditioned,
+            request_borderline=self_consistency_samples > 1,
             **keywords,
         )
     elif backend == "claude-cli":
@@ -37,6 +38,7 @@ def build_judge(
             compatibility_only=compatibility_only,
             exemplars=exemplars,
             era_conditioned=era_conditioned,
+            request_borderline=self_consistency_samples > 1,
             **keywords,
         )
     else:

@@ -17,6 +17,7 @@ from .schema import CompatibilityExemplar, CompatibilityExemplarSpec, FigureCont
 
 COMPATIBILITY_PROMPT_PROFILE = "historical_2025_prose_v1"
 ERA_COMPATIBILITY_PROMPT_PROFILE = "historical_2025_era_v2"
+BORDERLINE_PROMPT_PROFILE = "borderline_vote_v1"
 
 # These references come only from the calibration side of the paper-level,
 # era-stratified split. Each label follows deductively from a saturated paper
@@ -267,6 +268,23 @@ def _compatibility_definition(publication_year: int | None, *, era_conditioned: 
     return f"{COMPATIBILITY_DEFINITION}\n\n{guidance}" if guidance else COMPATIBILITY_DEFINITION
 
 
+def _borderline_instruction(request_borderline: bool) -> str:
+    if not request_borderline:
+        return ""
+    return """\
+Set "borderline" to true only when two reasonable applications of the
+historical boundary or conspicuous-violation threshold could reverse the
+compatible verdict or a rule finding. Set it to false for confident calls.
+
+"""
+
+
+def _borderline_property(request_borderline: bool, *, indent: int) -> str:
+    if not request_borderline:
+        return ""
+    return f'{" " * indent}"borderline": true or false,\n'
+
+
 def render_compatibility_exemplar(exemplar: CompatibilityExemplar) -> str:
     """Render the historical label paired with one reference image."""
     expected = "COMPATIBLE" if exemplar.expected_compatible else "NOT compatible"
@@ -284,11 +302,14 @@ def build_compatibility_prompt(
     *,
     publication_year: int | None = None,
     era_conditioned: bool = False,
+    request_borderline: bool = False,
 ) -> str:
     """A compatibility-only prompt for cheap, large-scale boundary calibration."""
     compatibility_definition = _compatibility_definition(
         publication_year, era_conditioned=era_conditioned
     )
+    borderline_instruction = _borderline_instruction(request_borderline)
+    borderline_property = _borderline_property(request_borderline, indent=2)
     return f"""\
 The attached image is the manuscript page containing Figure {figure_number}.
 Its caption begins: "{caption_text[:600]}"
@@ -297,11 +318,11 @@ Evaluate Figure {figure_number} only, considering every panel that belongs to it
 
 {compatibility_definition}
 
-Respond with a single JSON object and nothing else:
+{borderline_instruction}Respond with a single JSON object and nothing else:
 {{
   "figure_number": {figure_number},
   "compatible": true or false,
-  "rationale": "one or two sentences"
+{borderline_property}  "rationale": "one or two sentences"
 }}"""
 
 
@@ -316,7 +337,10 @@ def _paper_figure_list(contexts: Sequence[FigureContext]) -> str:
 
 
 def build_compatibility_paper_prompt(
-    contexts: Sequence[FigureContext], *, era_conditioned: bool = False
+    contexts: Sequence[FigureContext],
+    *,
+    era_conditioned: bool = False,
+    request_borderline: bool = False,
 ) -> str:
     """A compatibility-only prompt that applies one standard across a paper."""
     figures = _paper_figure_list(contexts)
@@ -324,6 +348,8 @@ def build_compatibility_paper_prompt(
     compatibility_definition = _compatibility_definition(
         publication_year, era_conditioned=era_conditioned
     )
+    borderline_instruction = _borderline_instruction(request_borderline)
+    borderline_property = _borderline_property(request_borderline, indent=6)
     return f"""\
 The attached images are the manuscript pages containing these figures:
 {figures}
@@ -334,13 +360,13 @@ separate verdict and rationale for each figure.
 
 {compatibility_definition}
 
-Respond with a single JSON object and nothing else:
+{borderline_instruction}Respond with a single JSON object and nothing else:
 {{
   "figures": [
     {{
       "figure_number": integer,
       "compatible": true or false,
-      "rationale": "one or two sentences"
+{borderline_property}      "rationale": "one or two sentences"
     }}
     ... one entry for every listed figure, in listed order ...
   ]
@@ -354,10 +380,13 @@ def build_user_prompt(
     *,
     publication_year: int | None = None,
     era_conditioned: bool = False,
+    request_borderline: bool = False,
 ) -> str:
     compatibility_definition = _compatibility_definition(
         publication_year, era_conditioned=era_conditioned
     )
+    borderline_instruction = _borderline_instruction(request_borderline)
+    borderline_property = _borderline_property(request_borderline, indent=2)
     return f"""\
 The attached image is the manuscript page containing Figure {figure_number}.
 Its caption begins: "{caption_text[:600]}"
@@ -383,11 +412,11 @@ single subtle imperfection hunted out of an otherwise well-drawn diagram.
 
 {render_rubric(rules, interpretations=HISTORICAL_INTERPRETATIONS)}
 
-Respond with a single JSON object and nothing else:
+{borderline_instruction}Respond with a single JSON object and nothing else:
 {{
   "figure_number": {figure_number},
   "compatible": true or false,
-  "rationale": "one or two sentences",
+{borderline_property}  "rationale": "one or two sentences",
   "findings": [
     {{"rule_key": "compliance:5.1.0", "verdict": "pass" | "fail" | "not_applicable",
       "evidence": "short justification"}},
@@ -401,6 +430,7 @@ def build_paper_user_prompt(
     rules: list[RubricRule],
     *,
     era_conditioned: bool = False,
+    request_borderline: bool = False,
 ) -> str:
     """A full-cascade prompt that applies one standard across a paper."""
     figures = _paper_figure_list(contexts)
@@ -408,6 +438,8 @@ def build_paper_user_prompt(
     compatibility_definition = _compatibility_definition(
         publication_year, era_conditioned=era_conditioned
     )
+    borderline_instruction = _borderline_instruction(request_borderline)
+    borderline_property = _borderline_property(request_borderline, indent=6)
     return f"""\
 The attached images are the manuscript pages containing these figures:
 {figures}
@@ -435,13 +467,13 @@ subtle imperfection hunted out of an otherwise well-drawn diagram.
 
 {render_rubric(rules, interpretations=HISTORICAL_INTERPRETATIONS)}
 
-Respond with a single JSON object and nothing else:
+{borderline_instruction}Respond with a single JSON object and nothing else:
 {{
   "figures": [
     {{
       "figure_number": integer,
       "compatible": true or false,
-      "rationale": "one or two sentences",
+{borderline_property}      "rationale": "one or two sentences",
       "findings": [
         {{"rule_key": "compliance:5.1.0",
           "verdict": "pass" | "fail" | "not_applicable",
