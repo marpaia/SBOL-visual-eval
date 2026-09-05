@@ -12,8 +12,12 @@ measurable and tunable.
 from __future__ import annotations
 
 import csv
-from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass
+import json
+import random
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass, replace
+from pathlib import Path
 from typing import Any
 
 from ..corpus.layout import Layout
@@ -33,12 +37,20 @@ CORPUS_POSITIVE_SHARE = 274 / (2674 + 274)
 COMPATIBILITY_FIELDS = (
     "doi",
     "year",
+    "era",
+    "benchmark_partition",
     "figure_number",
     "expected_compatible",
     "predicted_compatible",
     "correct",
     "rationale",
     "judge_error",
+)
+
+COMPATIBILITY_ERAS = (
+    (2012, 2013),
+    (2014, 2016),
+    (2017, 2023),
 )
 
 
@@ -53,6 +65,49 @@ class SaturatedFigure:
     caption_text: str
     page_number: int
     expected_compatible: bool
+    benchmark_partition: str = "unassigned"
+
+
+def compatibility_era(year: int) -> str:
+    """Return the historical-review era containing a publication year."""
+    for first_year, last_year in COMPATIBILITY_ERAS:
+        if first_year <= year <= last_year:
+            return f"{first_year}-{last_year}"
+    return str(year)
+
+
+def assign_era_stratified_partitions(
+    figures: list[SaturatedFigure],
+    *,
+    holdout_fraction: float = 0.2,
+    seed: int = 20260904,
+) -> list[SaturatedFigure]:
+    """Assign whole papers to calibration or holdout within era and label strata."""
+    if not 0 <= holdout_fraction < 1:
+        raise ValueError("holdout_fraction must be in [0, 1)")
+
+    papers_by_stratum: dict[tuple[str, bool], set[str]] = defaultdict(set)
+    for figure in figures:
+        papers_by_stratum[(compatibility_era(figure.year), figure.expected_compatible)].add(
+            figure.doi
+        )
+
+    holdout_dois: set[str] = set()
+    for stratum, doi_set in sorted(papers_by_stratum.items()):
+        dois = sorted(doi_set)
+        random.Random(f"{seed}:{stratum[0]}:{int(stratum[1])}").shuffle(dois)
+        holdout_count = round(len(dois) * holdout_fraction)
+        if holdout_fraction and len(dois) > 1:
+            holdout_count = max(1, min(len(dois) - 1, holdout_count))
+        holdout_dois.update(dois[:holdout_count])
+
+    return [
+        replace(
+            figure,
+            benchmark_partition="holdout" if figure.doi in holdout_dois else "calibration",
+        )
+        for figure in figures
+    ]
 
 
 def saturated_compatibility_papers(
@@ -118,6 +173,8 @@ def _judge_figure(layout: Layout, judge: FigureJudge, figure: SaturatedFigure) -
     row: dict[str, Any] = {
         "doi": figure.doi,
         "year": figure.year,
+        "era": compatibility_era(figure.year),
+        "benchmark_partition": figure.benchmark_partition,
         "figure_number": figure.figure_number,
         "expected_compatible": figure.expected_compatible,
     }
@@ -126,6 +183,7 @@ def _judge_figure(layout: Layout, judge: FigureJudge, figure: SaturatedFigure) -
             figure_number=figure.figure_number,
             caption_text=figure.caption_text,
             page_png=render_page_png(layout.root / figure.pdf_path, figure.page_number),
+            publication_year=figure.year,
         )
         verdict = judge.judge(context)
     except Exception as error:  # noqa: BLE001 - one failed figure must not stop the sweep
@@ -184,6 +242,37 @@ def _summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def _grouped_summaries(rows: list[dict[str, Any]], field: str) -> dict[str, dict[str, Any]]:
+    values = sorted({str(row[field]) for row in rows})
+    return {value: _summary([row for row in rows if str(row[field]) == value]) for value in values}
+
+
+def _checkpoint_rows(
+    path: Path, figures: list[SaturatedFigure]
+) -> dict[tuple[str, int], dict[str, Any]]:
+    if not path.exists():
+        return {}
+    requested = {(figure.doi, figure.figure_number): figure for figure in figures}
+    rows: dict[tuple[str, int], dict[str, Any]] = {}
+    with path.open(encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            key = (str(row["doi"]), int(row["figure_number"]))
+            figure = requested.get(key)
+            if (
+                figure is not None
+                and int(row["year"]) == figure.year
+                and str(row["era"]) == compatibility_era(figure.year)
+                and str(row["benchmark_partition"]) == figure.benchmark_partition
+                and bool(row["expected_compatible"]) is figure.expected_compatible
+                and not row.get("judge_error")
+            ):
+                rows[key] = row
+    return rows
+
+
 def run_compatibility_benchmark(
     layout: Layout,
     judge: FigureJudge,
@@ -191,16 +280,48 @@ def run_compatibility_benchmark(
     *,
     workers: int = 4,
     report_stem: str = "compatibility_benchmark",
+    resume: bool = False,
 ) -> dict[str, Any]:
-    """Judge each labeled figure and report compatibility-stage accuracy."""
-    with ThreadPoolExecutor(max_workers=workers) as pool:
-        rows = list(pool.map(lambda figure: _judge_figure(layout, judge, figure), figures))
+    """Judge each labeled figure with a resumable checkpoint and report accuracy."""
+    checkpoint_path = layout.reports / f"{report_stem}.checkpoint.jsonl"
+    completed = _checkpoint_rows(checkpoint_path, figures) if resume else {}
+    if not resume:
+        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        checkpoint_path.write_text("", encoding="utf-8")
+
+    remaining = [
+        figure for figure in figures if (figure.doi, figure.figure_number) not in completed
+    ]
+    progress_interval = max(1, len(figures) // 100)
+    with (
+        checkpoint_path.open("a", encoding="utf-8") as checkpoint,
+        ThreadPoolExecutor(max_workers=max(workers, 1)) as pool,
+    ):
+        futures = {
+            pool.submit(_judge_figure, layout, judge, figure): figure for figure in remaining
+        }
+        for completed_count, future in enumerate(as_completed(futures), start=1):
+            figure = futures[future]
+            row = future.result()
+            completed[(figure.doi, figure.figure_number)] = row
+            checkpoint.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            checkpoint.flush()
+            total_complete = len(figures) - len(remaining) + completed_count
+            if total_complete % progress_interval == 0 or total_complete == len(figures):
+                print(f"compatibility progress: {total_complete:,}/{len(figures):,}", flush=True)
+
+    rows = [completed[(figure.doi, figure.figure_number)] for figure in figures]
 
     summary = {
         "generated_at": utc_now(),
         **_summary(rows),
+        "resumed_figures": len(figures) - len(remaining),
+        "by_year": _grouped_summaries(rows, "year"),
+        "by_era": _grouped_summaries(rows, "era"),
+        "by_partition": _grouped_summaries(rows, "benchmark_partition"),
         "report_path": f"data/reports/{report_stem}.csv",
     }
     write_csv(layout.reports / f"{report_stem}.csv", rows, COMPATIBILITY_FIELDS)
     write_json(layout.reports / f"{report_stem}.json", summary)
+    checkpoint_path.unlink(missing_ok=True)
     return summary

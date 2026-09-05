@@ -42,10 +42,11 @@ def test_evaluate_pdf_runs_census_render_judge_and_aggregation(tmp_path: Path) -
             2: verdict(2, compatible=False),
         }
     )
-    evaluation = evaluate_pdf(pdf_path, judge, RULES)
+    evaluation = evaluate_pdf(pdf_path, judge, RULES, publication_year=2018)
 
     assert evaluation.score == PaperScore(2, 1, 1, 1)
     assert [context.figure_number for context in judge.contexts] == [1, 2]
+    assert {context.publication_year for context in judge.contexts} == {2018}
     assert judge.contexts[0].caption_text.startswith("Figure 1.")
     assert judge.contexts[0].page_png.startswith(b"\x89PNG")
 

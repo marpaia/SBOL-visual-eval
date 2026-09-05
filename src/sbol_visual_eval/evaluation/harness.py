@@ -114,7 +114,12 @@ def _evaluate_one(
     for field in HISTORICAL_COUNT_FIELDS:
         row[f"historical_{field}"] = getattr(entry.paper.score, field)
     try:
-        evaluation = evaluate_pdf(layout.root / entry.pdf_path, judge, rules)
+        evaluation = evaluate_pdf(
+            layout.root / entry.pdf_path,
+            judge,
+            rules,
+            publication_year=entry.paper.year,
+        )
     except Exception as error:  # noqa: BLE001 - one failed paper must not stop the sweep
         row.update(
             {f"predicted_{field}": "" for field in HISTORICAL_COUNT_FIELDS},

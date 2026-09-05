@@ -15,3 +15,5 @@ data/figures/
 # Interrupted downloads.
 *.part
 
+# Resumable evaluator checkpoints contain incomplete generated reports.
+*.checkpoint.jsonl

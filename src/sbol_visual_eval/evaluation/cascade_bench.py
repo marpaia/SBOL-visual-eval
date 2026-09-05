@@ -147,6 +147,7 @@ def _judge_figure(
             figure_number=figure.figure_number,
             caption_text=figure.caption_text,
             page_png=render_page_png(layout.root / figure.pdf_path, figure.page_number),
+            publication_year=figure.year,
         )
         verdict = judge.judge(context)
     except Exception as error:  # noqa: BLE001 - one failed figure must not stop the sweep

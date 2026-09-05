@@ -16,6 +16,7 @@ from pathlib import Path
 from ..corpus.layout import Layout
 from ..evaluation.cascade_bench import cascade_figures, cascade_papers, run_cascade_benchmark
 from ..evaluation.compatibility import (
+    assign_era_stratified_partitions,
     run_compatibility_benchmark,
     saturated_compatibility_papers,
     saturated_figures,
@@ -75,6 +76,23 @@ def _argument_parser() -> argparse.ArgumentParser:
     compatibility.add_argument("--seed", type=int, default=7)
     compatibility.add_argument("--workers", type=int, default=4)
     compatibility.add_argument("--report-stem", default="compatibility_benchmark")
+    compatibility.add_argument(
+        "--holdout-fraction",
+        type=float,
+        default=0.2,
+        help="paper-level holdout fraction within each era and label stratum",
+    )
+    compatibility.add_argument("--split-seed", type=int, default=20260904)
+    compatibility.add_argument(
+        "--partition",
+        choices=("all", "calibration", "holdout"),
+        default="all",
+    )
+    compatibility.add_argument(
+        "--resume",
+        action="store_true",
+        help="resume successful judgments from the report checkpoint",
+    )
 
     cascade = subparsers.add_parser(
         "cascade",
@@ -138,6 +156,13 @@ def main(argv: Sequence[str] | None = None) -> None:
         papers = saturated_compatibility_papers(layout)
         papers = sample_papers(papers, args.sample, args.seed)
         figures = saturated_figures(layout, papers)
+        figures = assign_era_stratified_partitions(
+            figures,
+            holdout_fraction=args.holdout_fraction,
+            seed=args.split_seed,
+        )
+        if args.partition != "all":
+            figures = [figure for figure in figures if figure.benchmark_partition == args.partition]
         if not figures:
             print("No saturated figures matched the benchmark filters", file=sys.stderr)
             raise SystemExit(1)
@@ -147,6 +172,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             figures,
             workers=args.workers,
             report_stem=args.report_stem,
+            resume=args.resume,
         )
         print(
             f"Compatibility benchmark: {summary['judged']:,} figures, "

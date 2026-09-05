@@ -75,6 +75,7 @@ def evaluate_pdf(
     rules: list[RubricRule],
     *,
     scope: PageScope | None = None,
+    publication_year: int | None = None,
 ) -> PaperEvaluation:
     """Evaluate one manuscript PDF through the full cascade."""
     census = census_pdf(pdf_path, scope if scope is not None else scope_for_pdf(pdf_path))
@@ -84,6 +85,7 @@ def evaluate_pdf(
             figure_number=caption.figure_number,
             caption_text=caption.text,
             page_png=render_page_png(pdf_path, caption.page_number),
+            publication_year=publication_year,
         )
         verdicts.append(judge.judge(context))
     return PaperEvaluation(

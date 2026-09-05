@@ -6,6 +6,9 @@ from pathlib import Path
 
 from sbol_visual_eval.corpus.layout import Layout
 from sbol_visual_eval.evaluation.compatibility import (
+    SaturatedFigure,
+    assign_era_stratified_partitions,
+    compatibility_era,
     run_compatibility_benchmark,
     saturated_compatibility_papers,
     saturated_figures,
@@ -101,6 +104,45 @@ def test_saturated_figures_label_every_figure_and_skip_census_drift(tmp_path: Pa
     assert all(figure.expected_compatible for figure in figures if figure.doi == "10.1/pos")
 
 
+def test_era_stratified_partitions_keep_whole_papers_together() -> None:
+    figures = [
+        SaturatedFigure(
+            doi=f"10.1/{era}-{label}-{paper}",
+            year=year,
+            pdf_path="paper.pdf",
+            figure_number=figure_number,
+            caption_text="Figure.",
+            page_number=1,
+            expected_compatible=label,
+        )
+        for era, year in (("early", 2012), ("middle", 2015), ("recent", 2020))
+        for label in (False, True)
+        for paper in range(4)
+        for figure_number in (1, 2)
+    ]
+
+    partitioned = assign_era_stratified_partitions(figures, holdout_fraction=0.25, seed=42)
+
+    partitions_by_doi: dict[str, set[str]] = {}
+    for figure in partitioned:
+        partitions_by_doi.setdefault(figure.doi, set()).add(figure.benchmark_partition)
+    assert all(len(partitions) == 1 for partitions in partitions_by_doi.values())
+    for era in ("2012-2013", "2014-2016", "2017-2023"):
+        for label in (False, True):
+            assert {
+                figure.benchmark_partition
+                for figure in partitioned
+                if compatibility_era(figure.year) == era and figure.expected_compatible is label
+            } == {"calibration", "holdout"}
+
+
+def test_era_stratified_partitions_validate_fraction() -> None:
+    import pytest
+
+    with pytest.raises(ValueError, match="holdout_fraction"):
+        assign_era_stratified_partitions([], holdout_fraction=1.0)
+
+
 def test_compatibility_benchmark_reports_boundary_errors(tmp_path: Path) -> None:
     layout = _prepare_layout(tmp_path)
     figures = saturated_figures(layout, saturated_compatibility_papers(layout))
@@ -116,6 +158,8 @@ def test_compatibility_benchmark_reports_boundary_errors(tmp_path: Path) -> None
     assert summary["recall"] == 1.0
     assert summary["false_positive_rate"] == 1.0
     assert summary["accuracy"] == round(1 / 3, 4)
+    assert set(summary["by_era"]) == {"2014-2016"}
+    assert set(summary["by_year"]) == {"2015", "2016"}
 
     with (layout.reports / "compatibility_benchmark.csv").open(
         newline="", encoding="utf-8"
@@ -153,3 +197,41 @@ def test_net_count_bias_is_negative_when_over_rejecting(tmp_path: Path) -> None:
 
     assert summary["net_count_bias"] == -1
     assert summary["net_count_bias_per_100_corpus_figures"] < 0
+
+
+def test_compatibility_benchmark_resumes_successful_checkpoint_rows(tmp_path: Path) -> None:
+    layout = _prepare_layout(tmp_path)
+    figures = saturated_figures(layout, saturated_compatibility_papers(layout))
+    checkpoint_path = layout.reports / "resumed.checkpoint.jsonl"
+    checkpoint_path.write_text(
+        json.dumps(
+            {
+                "doi": "10.1/neg",
+                "year": 2015,
+                "era": "2014-2016",
+                "benchmark_partition": "unassigned",
+                "figure_number": 2,
+                "expected_compatible": False,
+                "predicted_compatible": False,
+                "correct": True,
+                "rationale": "checkpointed",
+                "judge_error": "",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    judge = ScriptedJudge({1: verdict(1, compatible=False)})
+
+    summary = run_compatibility_benchmark(
+        layout,
+        judge,
+        figures,
+        workers=1,
+        report_stem="resumed",
+        resume=True,
+    )
+
+    assert summary["resumed_figures"] == 1
+    assert len(judge.contexts) == 2
+    assert not checkpoint_path.exists()
