@@ -111,6 +111,15 @@ def test_anthropic_judge_sends_image_backed_exemplars_before_target() -> None:
     assert "Figure 1" in target_text["text"]
 
 
+def test_anthropic_judge_passes_publication_year_to_era_prompt() -> None:
+    client = _StubClient()
+    judge = AnthropicAPIJudge(RULES, client=client, era_conditioned=True)
+
+    assert judge.judge(PAPER_CONTEXTS[0]).compatible
+    prompt = client.messages.requests[0]["messages"][0]["content"][-1]["text"]
+    assert "PUBLICATION ERA: 2018 (2017-2023)" in prompt
+
+
 def test_anthropic_judge_sends_each_paper_page_once() -> None:
     client = _StubClient(WHOLE_PAPER_JSON)
     judge = AnthropicAPIJudge(RULES, client=client, compatibility_only=True)

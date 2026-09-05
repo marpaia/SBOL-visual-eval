@@ -71,25 +71,38 @@ class ClaudeCLIJudge:
         runner: Runner | None = None,
         compatibility_only: bool = False,
         exemplars: tuple[CompatibilityExemplar, ...] = (),
+        era_conditioned: bool = False,
     ) -> None:
         self._rules = rules
         self._model = model
         self._runner = _run_claude if runner is None else runner
         self._compatibility_only = compatibility_only
         self._exemplars = exemplars
+        self._era_conditioned = era_conditioned
 
     def command(self) -> list[str]:
         return ["claude", "-p", "--model", self._model, "--allowed-tools", "Read"]
 
     def _prompt(self, context: FigureContext) -> str:
         if self._compatibility_only:
-            return build_compatibility_prompt(context.figure_number, context.caption_text)
-        return build_user_prompt(context.figure_number, context.caption_text, self._rules)
+            return build_compatibility_prompt(
+                context.figure_number,
+                context.caption_text,
+                publication_year=context.publication_year,
+                era_conditioned=self._era_conditioned,
+            )
+        return build_user_prompt(
+            context.figure_number,
+            context.caption_text,
+            self._rules,
+            publication_year=context.publication_year,
+            era_conditioned=self._era_conditioned,
+        )
 
     def _paper_prompt(self, contexts: tuple[FigureContext, ...]) -> str:
         if self._compatibility_only:
-            return build_compatibility_paper_prompt(contexts)
-        return build_paper_user_prompt(contexts, self._rules)
+            return build_compatibility_paper_prompt(contexts, era_conditioned=self._era_conditioned)
+        return build_paper_user_prompt(contexts, self._rules, era_conditioned=self._era_conditioned)
 
     def _reference_prompt(self, workdir: Path) -> str:
         reference_prompts = []

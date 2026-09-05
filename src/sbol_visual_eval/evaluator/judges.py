@@ -19,6 +19,7 @@ def build_judge(
     compatibility_only: bool = False,
     exemplars: tuple[CompatibilityExemplar, ...] = (),
     self_consistency_samples: int = 1,
+    era_conditioned: bool = False,
 ) -> FigureJudge:
     if backend == "anthropic":
         keywords = {"model": model} if model else {}
@@ -26,6 +27,7 @@ def build_judge(
             rules,
             compatibility_only=compatibility_only,
             exemplars=exemplars,
+            era_conditioned=era_conditioned,
             **keywords,
         )
     elif backend == "claude-cli":
@@ -34,6 +36,7 @@ def build_judge(
             rules,
             compatibility_only=compatibility_only,
             exemplars=exemplars,
+            era_conditioned=era_conditioned,
             **keywords,
         )
     else:

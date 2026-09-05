@@ -25,7 +25,11 @@ from ..evaluation.compatibility import (
 from ..evaluation.harness import run_sweep, sample_papers, sweep_papers
 from ..evaluation.reconciliation import build_figure_census
 from ..judge.exemplars import load_compatibility_exemplars
-from ..judge.prompt import COMPATIBILITY_EXEMPLAR_PROFILE, COMPATIBILITY_PROMPT_PROFILE
+from ..judge.prompt import (
+    COMPATIBILITY_EXEMPLAR_PROFILE,
+    COMPATIBILITY_PROMPT_PROFILE,
+    ERA_COMPATIBILITY_PROMPT_PROFILE,
+)
 from ..judge.rubric import load_rubric
 from .judges import JUDGE_BACKENDS, build_judge
 from .pipeline import evaluate_pdf
@@ -48,6 +52,10 @@ def _argument_parser() -> argparse.ArgumentParser:
     score.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     score.add_argument("--few-shot", action="store_true", help="use calibrated image references")
     score.add_argument(
+        "--era-conditioned", action="store_true", help="apply publication-era policy"
+    )
+    score.add_argument("--publication-year", type=int, help="paper year for era conditioning")
+    score.add_argument(
         "--whole-paper",
         action="store_true",
         help="judge every figure with one paper-level consistency call",
@@ -67,6 +75,9 @@ def _argument_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--model", help="judge model override")
     evaluate.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     evaluate.add_argument("--few-shot", action="store_true", help="use calibrated image references")
+    evaluate.add_argument(
+        "--era-conditioned", action="store_true", help="apply publication-era policy"
+    )
     evaluate.add_argument("--sample", type=int, help="evaluate a seeded random sample")
     evaluate.add_argument("--seed", type=int, default=7)
     evaluate.add_argument("--years", type=int, nargs="*")
@@ -92,6 +103,9 @@ def _argument_parser() -> argparse.ArgumentParser:
     compatibility.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     compatibility.add_argument(
         "--few-shot", action="store_true", help="use calibrated image references"
+    )
+    compatibility.add_argument(
+        "--era-conditioned", action="store_true", help="apply publication-era policy"
     )
     compatibility.add_argument("--sample", type=int, help="benchmark a seeded random sample")
     compatibility.add_argument("--seed", type=int, default=7)
@@ -128,6 +142,9 @@ def _argument_parser() -> argparse.ArgumentParser:
     cascade.add_argument("--model", help="judge model override")
     cascade.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     cascade.add_argument("--few-shot", action="store_true", help="use calibrated image references")
+    cascade.add_argument(
+        "--era-conditioned", action="store_true", help="apply publication-era policy"
+    )
     cascade.add_argument("--sample", type=int, help="benchmark a seeded random sample")
     cascade.add_argument("--seed", type=int, default=7)
     cascade.add_argument("--workers", type=int, default=4)
@@ -147,6 +164,8 @@ def main(argv: Sequence[str] | None = None) -> None:
     layout = Layout(args.root.resolve())
 
     if args.command == "score":
+        if args.era_conditioned and args.publication_year is None:
+            raise SystemExit("--publication-year is required with --era-conditioned")
         rules = load_rubric(layout)
         exemplars = load_compatibility_exemplars(layout) if args.few_shot else ()
         judge = build_judge(
@@ -155,8 +174,15 @@ def main(argv: Sequence[str] | None = None) -> None:
             args.model,
             exemplars=exemplars,
             self_consistency_samples=args.self_consistency,
+            era_conditioned=args.era_conditioned,
         )
-        evaluation = evaluate_pdf(args.pdf.resolve(), judge, rules, whole_paper=args.whole_paper)
+        evaluation = evaluate_pdf(
+            args.pdf.resolve(),
+            judge,
+            rules,
+            publication_year=args.publication_year,
+            whole_paper=args.whole_paper,
+        )
         payload = json.dumps(evaluation.to_dict(), indent=2, sort_keys=True)
         if args.output:
             args.output.write_text(payload + "\n", encoding="utf-8")
@@ -181,6 +207,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             args.model,
             exemplars=exemplars,
             self_consistency_samples=args.self_consistency,
+            era_conditioned=args.era_conditioned,
         )
         papers = sweep_papers(
             layout,
@@ -215,6 +242,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             compatibility_only=True,
             exemplars=exemplars,
             self_consistency_samples=args.self_consistency,
+            era_conditioned=args.era_conditioned,
         )
         papers = saturated_compatibility_papers(layout)
         papers = sample_papers(papers, args.sample, args.seed)
@@ -238,9 +266,12 @@ def main(argv: Sequence[str] | None = None) -> None:
             resume=args.resume,
             whole_paper=args.whole_paper,
             prompt_profile=(
-                f"{COMPATIBILITY_PROMPT_PROFILE}+{COMPATIBILITY_EXEMPLAR_PROFILE}"
-                if args.few_shot
-                else COMPATIBILITY_PROMPT_PROFILE
+                (
+                    ERA_COMPATIBILITY_PROMPT_PROFILE
+                    if args.era_conditioned
+                    else COMPATIBILITY_PROMPT_PROFILE
+                )
+                + (f"+{COMPATIBILITY_EXEMPLAR_PROFILE}" if args.few_shot else "")
             ),
         )
         print(
@@ -257,6 +288,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             args.model,
             exemplars=exemplars,
             self_consistency_samples=args.self_consistency,
+            era_conditioned=args.era_conditioned,
         )
         papers = sample_papers(cascade_papers(layout), args.sample, args.seed)
         figures = cascade_figures(layout, papers)

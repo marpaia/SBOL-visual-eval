@@ -16,6 +16,7 @@ from .rubric import RubricRule, render_rubric
 from .schema import CompatibilityExemplar, CompatibilityExemplarSpec, FigureContext
 
 COMPATIBILITY_PROMPT_PROFILE = "historical_2025_prose_v1"
+ERA_COMPATIBILITY_PROMPT_PROFILE = "historical_2025_era_v2"
 
 # These references come only from the calibration side of the paper-level,
 # era-stratified split. Each label follows deductively from a saturated paper
@@ -206,6 +207,66 @@ build (compatible), or annotate a sequence, document a cloning product, or
 decorate another structure's nodes (not compatible)."""
 
 
+def era_compatibility_guidance(publication_year: int | None) -> str:
+    """Render the historical compatibility boundary for one publication era."""
+    if publication_year is None:
+        return ""
+    if publication_year <= 2013:
+        policy = """\
+For 2012-2013 papers, reproduce the early panel's visually conventional
+boundary rather than asking only whether a modern SBOL rendering is possible:
+
+- Count a conventional plasmid, vector, genome, locus, cloning, mutagenesis,
+  or assembly diagram when that physical cartography is a central subject of
+  the figure, even when its labels are restriction sites, primers, markers,
+  origins, homology arms, or insertion points.
+- Do not count abstract gene-circuit topology, strand/domain interaction
+  diagrams, protein-fusion block diagrams, or small construct sketches
+  embedded in data or mechanism panels merely because they could be
+  translated into SBOL Visual.
+- Primary-purpose still controls: a small plasmid or construct inset in a
+  micrograph or plot does not become compatible under the cartography rule."""
+        era = "2012-2013"
+    elif publication_year <= 2016:
+        policy = """\
+For 2014-2016 papers, reproduce the panel's visually conventional boundary:
+
+- Count a conventional plasmid, vector, genome, locus, cloning, genome-editing,
+  or assembly diagram when that physical cartography or construction process
+  is a central subject of the figure, even when it emphasizes restriction
+  sites, primers, markers, origins, homology arms, or insertion points.
+- Do not count abstract gene-circuit or model topology, DNA
+  strand-displacement domain diagrams, or small construct schematics embedded
+  in plots or mechanisms merely because they describe engineered material or
+  could be translated into SBOL Visual.
+- Primary-purpose still controls: an incidental construct inset does not
+  become compatible under the cartography rule."""
+        era = "2014-2016"
+    elif publication_year <= 2023:
+        policy = """\
+For 2017-2023 papers, apply the design-specification boundary above directly.
+Do not import the earlier panel's exception for conventional cloning and
+physical cartography."""
+        era = "2017-2023"
+    else:
+        policy = "Apply the design-specification boundary above directly."
+        era = f"post-2023 ({publication_year})"
+    return f"""\
+PUBLICATION ERA: {publication_year} ({era}).
+
+{policy}
+
+This publication-era policy overrides the general compatibility definition
+where the two conflict."""
+
+
+def _compatibility_definition(publication_year: int | None, *, era_conditioned: bool) -> str:
+    if not era_conditioned:
+        return COMPATIBILITY_DEFINITION
+    guidance = era_compatibility_guidance(publication_year)
+    return f"{COMPATIBILITY_DEFINITION}\n\n{guidance}" if guidance else COMPATIBILITY_DEFINITION
+
+
 def render_compatibility_exemplar(exemplar: CompatibilityExemplar) -> str:
     """Render the historical label paired with one reference image."""
     expected = "COMPATIBLE" if exemplar.expected_compatible else "NOT compatible"
@@ -217,15 +278,24 @@ def render_compatibility_exemplar(exemplar: CompatibilityExemplar) -> str:
     )
 
 
-def build_compatibility_prompt(figure_number: int, caption_text: str) -> str:
+def build_compatibility_prompt(
+    figure_number: int,
+    caption_text: str,
+    *,
+    publication_year: int | None = None,
+    era_conditioned: bool = False,
+) -> str:
     """A compatibility-only prompt for cheap, large-scale boundary calibration."""
+    compatibility_definition = _compatibility_definition(
+        publication_year, era_conditioned=era_conditioned
+    )
     return f"""\
 The attached image is the manuscript page containing Figure {figure_number}.
 Its caption begins: "{caption_text[:600]}"
 
 Evaluate Figure {figure_number} only, considering every panel that belongs to it.
 
-{COMPATIBILITY_DEFINITION}
+{compatibility_definition}
 
 Respond with a single JSON object and nothing else:
 {{
@@ -245,9 +315,15 @@ def _paper_figure_list(contexts: Sequence[FigureContext]) -> str:
     return "\n".join(lines)
 
 
-def build_compatibility_paper_prompt(contexts: Sequence[FigureContext]) -> str:
+def build_compatibility_paper_prompt(
+    contexts: Sequence[FigureContext], *, era_conditioned: bool = False
+) -> str:
     """A compatibility-only prompt that applies one standard across a paper."""
     figures = _paper_figure_list(contexts)
+    publication_year = contexts[0].publication_year if contexts else None
+    compatibility_definition = _compatibility_definition(
+        publication_year, era_conditioned=era_conditioned
+    )
     return f"""\
 The attached images are the manuscript pages containing these figures:
 {figures}
@@ -256,7 +332,7 @@ Evaluate every listed figure, considering every panel that belongs to it. Apply
 one consistent historical-review standard across the paper, while returning a
 separate verdict and rationale for each figure.
 
-{COMPATIBILITY_DEFINITION}
+{compatibility_definition}
 
 Respond with a single JSON object and nothing else:
 {{
@@ -271,14 +347,24 @@ Respond with a single JSON object and nothing else:
 }}"""
 
 
-def build_user_prompt(figure_number: int, caption_text: str, rules: list[RubricRule]) -> str:
+def build_user_prompt(
+    figure_number: int,
+    caption_text: str,
+    rules: list[RubricRule],
+    *,
+    publication_year: int | None = None,
+    era_conditioned: bool = False,
+) -> str:
+    compatibility_definition = _compatibility_definition(
+        publication_year, era_conditioned=era_conditioned
+    )
     return f"""\
 The attached image is the manuscript page containing Figure {figure_number}.
 Its caption begins: "{caption_text[:600]}"
 
 Evaluate Figure {figure_number} only, considering every panel that belongs to it.
 
-{COMPATIBILITY_DEFINITION}
+{compatibility_definition}
 
 If and only if the figure is compatible, evaluate every rule below against the
 figure's genetic-design content. Mark a rule "not_applicable" when the figure
@@ -310,9 +396,18 @@ Respond with a single JSON object and nothing else:
 }}"""
 
 
-def build_paper_user_prompt(contexts: Sequence[FigureContext], rules: list[RubricRule]) -> str:
+def build_paper_user_prompt(
+    contexts: Sequence[FigureContext],
+    rules: list[RubricRule],
+    *,
+    era_conditioned: bool = False,
+) -> str:
     """A full-cascade prompt that applies one standard across a paper."""
     figures = _paper_figure_list(contexts)
+    publication_year = contexts[0].publication_year if contexts else None
+    compatibility_definition = _compatibility_definition(
+        publication_year, era_conditioned=era_conditioned
+    )
     return f"""\
 The attached images are the manuscript pages containing these figures:
 {figures}
@@ -321,7 +416,7 @@ Evaluate every listed figure, considering every panel that belongs to it. Apply
 one consistent historical-review standard across the paper, while returning a
 separate verdict and rationale for each figure.
 
-{COMPATIBILITY_DEFINITION}
+{compatibility_definition}
 
 If and only if a figure is compatible, evaluate every rule below against that
 figure's genetic-design content. Mark a rule "not_applicable" when the figure

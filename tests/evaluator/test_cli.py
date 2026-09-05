@@ -36,6 +36,19 @@ def test_build_judge_can_wrap_self_consistency() -> None:
     assert isinstance(judge, SelfConsistencyJudge)
 
 
+def test_score_requires_publication_year_for_era_conditioning(tmp_path: Path) -> None:
+    with pytest.raises(SystemExit, match="--publication-year is required"):
+        cli.main(
+            [
+                "--root",
+                str(tmp_path),
+                "score",
+                str(tmp_path / "paper.pdf"),
+                "--era-conditioned",
+            ]
+        )
+
+
 def test_score_command_writes_historical_format_json(tmp_path: Path, monkeypatch) -> None:
     processed = tmp_path / "data" / "processed"
     processed.mkdir(parents=True)
