@@ -102,6 +102,7 @@ def _argument_parser() -> argparse.ArgumentParser:
     )
     evaluate.add_argument("--report-stem", default="evaluator_agreement")
     evaluate.add_argument("--workers", type=int, default=1)
+    evaluate.add_argument("--resume", action="store_true", help="resume successful papers")
     evaluate.add_argument(
         "--whole-paper",
         action="store_true",
@@ -249,6 +250,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             workers=args.workers,
             whole_paper=args.whole_paper,
             prompt_profile=_prompt_profile(args),
+            resume=args.resume,
         )
         agreement = summary["agreement"]
         print(

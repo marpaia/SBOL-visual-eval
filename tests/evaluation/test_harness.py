@@ -112,3 +112,44 @@ def test_run_sweep_scores_and_writes_reports(tmp_path: Path) -> None:
 
     payload = json.loads((layout.reports / "evaluator_agreement.json").read_text())
     assert payload["papers_attempted"] == 2
+
+
+def test_run_sweep_resumes_only_successful_papers(tmp_path: Path) -> None:
+    layout = _prepare_layout(tmp_path)
+    papers = sweep_papers(layout, version_of_record_only=False)
+
+    class OnePaperFails:
+        def judge(self, context):
+            if "Micrograph" in context.caption_text:
+                raise RuntimeError("temporary judge failure")
+            return verdict(context.figure_number, compatible=context.figure_number == 1)
+
+    first = run_sweep(
+        layout,
+        OnePaperFails(),
+        RULES,
+        papers,
+        report_stem="resumable_agreement",
+        workers=1,
+    )
+
+    assert first["papers_evaluated"] == 1
+    assert first["evaluation_errors"] == 1
+    assert (layout.reports / "resumable_agreement.checkpoint.jsonl").exists()
+
+    replacement = ScriptedJudge({1: verdict(1, compatible=False)})
+    second = run_sweep(
+        layout,
+        replacement,
+        RULES,
+        papers,
+        report_stem="resumable_agreement",
+        workers=1,
+        resume=True,
+    )
+
+    assert second["resumed_papers"] == 1
+    assert second["papers_evaluated"] == 2
+    assert second["evaluation_errors"] == 0
+    assert len(replacement.contexts) == 1
+    assert not (layout.reports / "resumable_agreement.checkpoint.jsonl").exists()
