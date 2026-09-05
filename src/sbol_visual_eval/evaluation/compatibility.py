@@ -16,12 +16,19 @@ import json
 import random
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass, replace
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any
 
 from ..corpus.layout import Layout
-from ..corpus.util.storage import utc_now, write_csv, write_json
+from ..corpus.util.storage import (
+    canonical_json_sha256,
+    read_gzip_json,
+    utc_now,
+    write_csv,
+    write_gzip_json,
+    write_json,
+)
 from ..figures import census_pdf, render_page_png, scope_for_pdf
 from ..judge.protocol import FigureJudge
 from ..judge.schema import FigureContext
@@ -52,6 +59,8 @@ COMPATIBILITY_ERAS = (
     (2014, 2016),
     (2017, 2023),
 )
+
+COMPATIBILITY_POOL_CACHE_VERSION = 1
 
 
 @dataclass(frozen=True)
@@ -143,6 +152,15 @@ def saturated_figures(layout: Layout, papers: list[SweepPaper]) -> list[Saturate
     figure set is not the set the reviewers scored, so their entailed labels
     are not trustworthy.
     """
+    cache_path = _saturated_pool_cache_path(layout, papers)
+    if cache_path.exists():
+        try:
+            payload = read_gzip_json(cache_path)
+            if payload.get("cache_version") == COMPATIBILITY_POOL_CACHE_VERSION:
+                return [SaturatedFigure(**row) for row in payload["figures"]]
+        except (KeyError, OSError, TypeError, ValueError):
+            pass
+
     figures = []
     for entry in papers:
         pdf_path = layout.root / entry.pdf_path
@@ -166,7 +184,47 @@ def saturated_figures(layout: Layout, papers: list[SweepPaper]) -> list[Saturate
                     expected_compatible=expected,
                 )
             )
+    write_gzip_json(
+        cache_path,
+        {
+            "cache_version": COMPATIBILITY_POOL_CACHE_VERSION,
+            "figures": [asdict(figure) for figure in figures],
+        },
+    )
     return figures
+
+
+def _saturated_pool_cache_path(layout: Layout, papers: list[SweepPaper]) -> Path:
+    paper_inputs = []
+    for entry in papers:
+        pdf_path = layout.root / entry.pdf_path
+        try:
+            stat = pdf_path.stat()
+            pdf_state: dict[str, int | None] = {
+                "size": stat.st_size,
+                "mtime_ns": stat.st_mtime_ns,
+            }
+        except OSError:
+            pdf_state = {"size": None, "mtime_ns": None}
+        paper_inputs.append(
+            {
+                "doi": entry.paper.doi,
+                "year": entry.paper.year,
+                "pdf_path": entry.pdf_path,
+                "figures_total": entry.paper.score.figures_total,
+                "figures_sbol_visual_compatible": (
+                    entry.paper.score.figures_sbol_visual_compatible
+                ),
+                **pdf_state,
+            }
+        )
+    fingerprint = canonical_json_sha256(
+        {
+            "cache_version": COMPATIBILITY_POOL_CACHE_VERSION,
+            "papers": paper_inputs,
+        }
+    )
+    return layout.cache / "evaluation" / "compatibility" / f"{fingerprint}.json.gz"
 
 
 def _judge_figure(layout: Layout, judge: FigureJudge, figure: SaturatedFigure) -> dict[str, Any]:

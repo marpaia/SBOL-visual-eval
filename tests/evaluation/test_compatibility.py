@@ -104,6 +104,20 @@ def test_saturated_figures_label_every_figure_and_skip_census_drift(tmp_path: Pa
     assert all(figure.expected_compatible for figure in figures if figure.doi == "10.1/pos")
 
 
+def test_saturated_figures_reuse_the_local_pool_cache(tmp_path: Path, monkeypatch) -> None:
+    layout = _prepare_layout(tmp_path)
+    papers = saturated_compatibility_papers(layout)
+    expected = saturated_figures(layout, papers)
+
+    monkeypatch.setattr(
+        "sbol_visual_eval.evaluation.compatibility.census_pdf",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("census should be cached")),
+    )
+
+    assert saturated_figures(layout, papers) == expected
+    assert len(list((layout.cache / "evaluation" / "compatibility").glob("*.json.gz"))) == 1
+
+
 def test_era_stratified_partitions_keep_whole_papers_together() -> None:
     figures = [
         SaturatedFigure(
