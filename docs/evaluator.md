@@ -247,7 +247,9 @@ cohort, before that restatement, Codex reaches 94.1% compatible, 79.4%
 compliant, and 73.5% best-practice accuracy, versus 82.4%, 73.5%, and 82.4%
 for the earlier Claude verdicts. All 39 cascade papers have previously informed
 calibration, so this transfer comparison is diagnostic rather than fresh
-validation.
+validation. Whole-paper Codex judging on the 15-figure calibration cohort
+changes the per-figure 93.3% / 93.3% / 93.3% result to 93.3% / 73.3% / 40.0%:
+the calls become more internally uniform but less historically accurate.
 
 **Claude end-to-end paper agreement** (20 papers, fresh seed, full pipeline,
 `evaluator_agreement_final.*`):
@@ -300,6 +302,7 @@ uv run sbol-visual-eval compatibility --workers 6 --resume
 uv run sbol-visual-eval compatibility --partition calibration --sample 40
 uv run sbol-visual-eval compatibility --partition holdout
 uv run sbol-visual-eval cascade --sample 20 --resume
+uv run sbol-visual-eval cascade --sample 20 --whole-paper
 ```
 
 `compatibility` (`evaluation/compatibility.py`) draws on papers whose

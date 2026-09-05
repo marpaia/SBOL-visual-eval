@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import csv
 import json
+from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
@@ -24,7 +25,7 @@ from ..figures import census_pdf, render_page_png, scope_for_pdf
 from ..judge.prompt import COMPATIBILITY_PROMPT_PROFILE
 from ..judge.protocol import FigureJudge
 from ..judge.rubric import RubricRule
-from ..judge.schema import FigureContext
+from ..judge.schema import FigureContext, FigureVerdict
 from .groundtruth import ground_truth_by_doi, load_ground_truth
 from .harness import SweepPaper
 
@@ -32,6 +33,7 @@ CASCADE_FIELDS = (
     "doi",
     "year",
     "prompt_profile",
+    "judging_mode",
     "self_consistency_samples",
     "figure_number",
     "expected_compatible",
@@ -144,16 +146,7 @@ def _judge_figure(
     prompt_profile: str,
     self_consistency_samples: int,
 ) -> dict[str, Any]:
-    row: dict[str, Any] = {
-        "doi": figure.doi,
-        "year": figure.year,
-        "prompt_profile": prompt_profile,
-        "self_consistency_samples": self_consistency_samples,
-        "figure_number": figure.figure_number,
-        "expected_compatible": figure.expected_compatible,
-        "expected_compliant": figure.expected_compliant,
-        "expected_best_practice": figure.expected_best_practice,
-    }
+    row = _base_row(figure, "per_figure", prompt_profile, self_consistency_samples)
     try:
         context = FigureContext(
             figure_number=figure.figure_number,
@@ -164,17 +157,49 @@ def _judge_figure(
         )
         verdict = judge.judge(context)
     except Exception as error:  # noqa: BLE001 - one failed figure must not stop the sweep
-        row.update(
-            predicted_compatible="",
-            predicted_compliant="",
-            predicted_best_practice="",
-            compatible_correct=False,
-            compliant_correct=False,
-            best_practice_correct=False,
-            failed_rules="",
-            judge_error=f"{type(error).__name__}: {error}",
-        )
-        return row
+        return _error_row(row, error)
+    return _verdict_row(row, verdict, figure, rules)
+
+
+def _base_row(
+    figure: CascadeFigure,
+    judging_mode: str,
+    prompt_profile: str,
+    self_consistency_samples: int,
+) -> dict[str, Any]:
+    return {
+        "doi": figure.doi,
+        "year": figure.year,
+        "prompt_profile": prompt_profile,
+        "judging_mode": judging_mode,
+        "self_consistency_samples": self_consistency_samples,
+        "figure_number": figure.figure_number,
+        "expected_compatible": figure.expected_compatible,
+        "expected_compliant": figure.expected_compliant,
+        "expected_best_practice": figure.expected_best_practice,
+    }
+
+
+def _error_row(row: dict[str, Any], error: Exception) -> dict[str, Any]:
+    row.update(
+        predicted_compatible="",
+        predicted_compliant="",
+        predicted_best_practice="",
+        compatible_correct=False,
+        compliant_correct=False,
+        best_practice_correct=False,
+        failed_rules="",
+        judge_error=f"{type(error).__name__}: {error}",
+    )
+    return row
+
+
+def _verdict_row(
+    row: dict[str, Any],
+    verdict: FigureVerdict,
+    figure: CascadeFigure,
+    rules: list[RubricRule],
+) -> dict[str, Any]:
     compliant = verdict.compliant(rules)
     best_practice = verdict.best_practice(rules)
     row.update(
@@ -190,6 +215,50 @@ def _judge_figure(
         judge_error="",
     )
     return row
+
+
+def _judge_paper(
+    layout: Layout,
+    judge: FigureJudge,
+    rules: list[RubricRule],
+    figures: list[CascadeFigure],
+    prompt_profile: str,
+    self_consistency_samples: int,
+) -> list[dict[str, Any]]:
+    rows = [
+        _base_row(figure, "whole_paper", prompt_profile, self_consistency_samples)
+        for figure in figures
+    ]
+    try:
+        judge_paper = getattr(judge, "judge_paper", None)
+        if not callable(judge_paper):
+            raise TypeError("judge does not support whole-paper evaluation")
+        rendered_pages: dict[int, bytes] = {}
+        contexts = []
+        for figure in figures:
+            if figure.page_number not in rendered_pages:
+                rendered_pages[figure.page_number] = render_page_png(
+                    layout.root / figure.pdf_path, figure.page_number
+                )
+            contexts.append(
+                FigureContext(
+                    figure_number=figure.figure_number,
+                    caption_text=figure.caption_text,
+                    page_png=rendered_pages[figure.page_number],
+                    publication_year=figure.year,
+                    page_number=figure.page_number,
+                )
+            )
+        verdicts = judge_paper(tuple(contexts))
+        expected_numbers = [figure.figure_number for figure in figures]
+        if [verdict.figure_number for verdict in verdicts] != expected_numbers:
+            raise ValueError("judge returned figures that do not match the paper census")
+    except Exception as error:  # noqa: BLE001 - one failed paper must not stop the sweep
+        return [_error_row(row, error) for row in rows]
+    return [
+        _verdict_row(row, verdict, figure, rules)
+        for row, verdict, figure in zip(rows, verdicts, figures, strict=True)
+    ]
 
 
 def _stage_accuracy(rows: list[dict[str, Any]], stage: str) -> float:
@@ -223,6 +292,7 @@ def _checkpoint_rows(
     figures: list[CascadeFigure],
     *,
     prompt_profile: str,
+    judging_mode: str,
     self_consistency_samples: int,
 ) -> dict[tuple[str, int], dict[str, Any]]:
     if not path.exists():
@@ -240,6 +310,7 @@ def _checkpoint_rows(
                 figure is not None
                 and int(row["year"]) == figure.year
                 and str(row.get("prompt_profile", COMPATIBILITY_PROMPT_PROFILE)) == prompt_profile
+                and str(row.get("judging_mode", "per_figure")) == judging_mode
                 and int(row.get("self_consistency_samples", 1)) == self_consistency_samples
                 and bool(row["expected_compatible"]) is figure.expected_compatible
                 and bool(row["expected_compliant"]) is figure.expected_compliant
@@ -260,9 +331,11 @@ def run_cascade_benchmark(
     report_stem: str = "cascade_benchmark",
     prompt_profile: str = COMPATIBILITY_PROMPT_PROFILE,
     resume: bool = False,
+    whole_paper: bool = False,
 ) -> dict[str, Any]:
-    """Judge each labeled figure and report per-stage accuracy and blocking rules."""
+    """Judge labeled figures and report per-stage accuracy and blocking rules."""
     checkpoint_path = layout.reports / f"{report_stem}.checkpoint.jsonl"
+    judging_mode = "whole_paper" if whole_paper else "per_figure"
     sampling_statistics = getattr(judge, "sampling_statistics", None)
     self_consistency_samples = (
         int(sampling_statistics()["samples"]) if callable(sampling_statistics) else 1
@@ -272,6 +345,7 @@ def run_cascade_benchmark(
             checkpoint_path,
             figures,
             prompt_profile=prompt_profile,
+            judging_mode=judging_mode,
             self_consistency_samples=self_consistency_samples,
         )
         if resume
@@ -281,33 +355,65 @@ def run_cascade_benchmark(
         checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
         checkpoint_path.write_text("", encoding="utf-8")
     resumed_figures = len(completed)
-    remaining = [
-        figure for figure in figures if (figure.doi, figure.figure_number) not in completed
-    ]
     with (
         checkpoint_path.open("a", encoding="utf-8") as checkpoint,
         ThreadPoolExecutor(max_workers=max(workers, 1)) as pool,
     ):
-        futures = {
-            pool.submit(
-                _judge_figure,
-                layout,
-                judge,
-                rules,
-                figure,
-                prompt_profile,
-                self_consistency_samples,
-            ): figure
-            for figure in remaining
-        }
-        for future in as_completed(futures):
-            figure = futures[future]
-            row = future.result()
-            completed[(figure.doi, figure.figure_number)] = row
-            checkpoint.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
-            checkpoint.flush()
+        if whole_paper:
+            paper_groups: dict[str, list[CascadeFigure]] = defaultdict(list)
+            for figure in figures:
+                paper_groups[figure.doi].append(figure)
+            remaining_papers = [
+                paper_figures
+                for paper_figures in paper_groups.values()
+                if not all(
+                    (figure.doi, figure.figure_number) in completed for figure in paper_figures
+                )
+            ]
+            futures = {
+                pool.submit(
+                    _judge_paper,
+                    layout,
+                    judge,
+                    rules,
+                    paper_figures,
+                    prompt_profile,
+                    self_consistency_samples,
+                ): paper_figures
+                for paper_figures in remaining_papers
+            }
+            for future in as_completed(futures):
+                for row in future.result():
+                    key = (str(row["doi"]), int(row["figure_number"]))
+                    completed[key] = row
+                    checkpoint.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+                checkpoint.flush()
+        else:
+            remaining = [
+                figure for figure in figures if (figure.doi, figure.figure_number) not in completed
+            ]
+            futures = {
+                pool.submit(
+                    _judge_figure,
+                    layout,
+                    judge,
+                    rules,
+                    figure,
+                    prompt_profile,
+                    self_consistency_samples,
+                ): figure
+                for figure in remaining
+            }
+            for future in as_completed(futures):
+                figure = futures[future]
+                row = future.result()
+                completed[(figure.doi, figure.figure_number)] = row
+                checkpoint.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+                checkpoint.flush()
 
     rows = [completed[(figure.doi, figure.figure_number)] for figure in figures]
+    for row in rows:
+        row.setdefault("judging_mode", judging_mode)
 
     judged = [row for row in rows if not row["judge_error"]]
     summary = {
@@ -317,6 +423,7 @@ def run_cascade_benchmark(
         "judge_errors": len(rows) - len(judged),
         "resumed_figures": resumed_figures,
         "prompt_profile": prompt_profile,
+        "judging_mode": judging_mode,
         "compatible_accuracy": _stage_accuracy(judged, "compatible"),
         "compliant_accuracy": _stage_accuracy(judged, "compliant"),
         "best_practice_accuracy": _stage_accuracy(judged, "best_practice"),

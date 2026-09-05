@@ -139,6 +139,49 @@ def test_cascade_benchmark_reports_blocking_rules(tmp_path: Path) -> None:
     assert payload["judge_errors"] == 0
 
 
+def test_cascade_benchmark_judges_each_paper_in_one_call(tmp_path: Path) -> None:
+    layout = _prepare_layout(tmp_path)
+    figures = cascade_figures(layout, cascade_papers(layout))
+
+    class PaperJudge:
+        def __init__(self) -> None:
+            self.batches = []
+
+        def judge_paper(self, contexts):
+            self.batches.append(contexts)
+            return tuple(
+                verdict(
+                    context.figure_number,
+                    compatible=True,
+                    failed_rules=("best_practice:5.1.2",)
+                    if "Plain" in context.caption_text
+                    else (),
+                )
+                for context in contexts
+            )
+
+    judge = PaperJudge()
+    summary = run_cascade_benchmark(
+        layout,
+        judge,
+        RULES,
+        figures,
+        workers=1,
+        report_stem="whole_paper_cascade",
+        whole_paper=True,
+    )
+
+    assert summary["judging_mode"] == "whole_paper"
+    assert summary["compatible_accuracy"] == 1.0
+    assert summary["compliant_accuracy"] == 1.0
+    assert summary["best_practice_accuracy"] == 1.0
+    assert sorted(len(batch) for batch in judge.batches) == [1, 2]
+
+    with (layout.reports / "whole_paper_cascade.csv").open(newline="", encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+    assert {row["judging_mode"] for row in rows} == {"whole_paper"}
+
+
 def test_cascade_benchmark_resumes_successful_figures(tmp_path: Path) -> None:
     layout = _prepare_layout(tmp_path)
     figures = cascade_figures(layout, cascade_papers(layout))
