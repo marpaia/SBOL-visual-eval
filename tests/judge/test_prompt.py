@@ -92,3 +92,16 @@ def test_cascade_exemplar_reports_only_entailed_stage_labels() -> None:
 
     assert "COMPATIBLE; COMPLIANT; DOES NOT FOLLOW ALL BEST PRACTICES" in rendered
     assert "No individual failed rule is supplied" in rendered
+
+
+def test_downstream_prompt_does_not_revisit_compatibility() -> None:
+    prompt = build_user_prompt(
+        1,
+        "Figure 1. Construct.",
+        RULES,
+        assume_compatible=True,
+    )
+
+    assert "already classified this figure as compatible" in prompt
+    assert 'Set "compatible" to true' in prompt
+    assert "omit all when not compatible" not in prompt

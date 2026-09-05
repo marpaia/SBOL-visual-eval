@@ -17,6 +17,7 @@ from .parsing import JudgeParseError, parse_verdict
 from .protocol import FigureJudge
 from .rubric import RubricRule, best_practice_rules, compliance_rules, load_rubric, render_rubric
 from .schema import FigureContext, FigureVerdict, RuleFinding, RuleVerdict
+from .staged import StagedCascadeJudge
 
 __all__ = [
     "AnthropicAPIJudge",
@@ -29,6 +30,7 @@ __all__ = [
     "RubricRule",
     "RuleFinding",
     "RuleVerdict",
+    "StagedCascadeJudge",
     "best_practice_rules",
     "compliance_rules",
     "load_rubric",

@@ -38,6 +38,7 @@ class AnthropicAPIJudge:
         exemplars: tuple[CompatibilityExemplar, ...] = (),
         era_conditioned: bool = False,
         request_borderline: bool = False,
+        assume_compatible: bool = False,
     ) -> None:
         if client is None:
             import anthropic
@@ -51,6 +52,7 @@ class AnthropicAPIJudge:
         self._exemplars = exemplars
         self._era_conditioned = era_conditioned
         self._request_borderline = request_borderline
+        self._assume_compatible = assume_compatible
 
     def metadata(self) -> dict[str, str]:
         """Identify the provider and pinned model used in benchmark reports."""
@@ -72,6 +74,7 @@ class AnthropicAPIJudge:
             publication_year=context.publication_year,
             era_conditioned=self._era_conditioned,
             request_borderline=self._request_borderline,
+            assume_compatible=self._assume_compatible,
         )
 
     def _paper_prompt(self, contexts: tuple[FigureContext, ...]) -> str:
@@ -86,6 +89,7 @@ class AnthropicAPIJudge:
             self._rules,
             era_conditioned=self._era_conditioned,
             request_borderline=self._request_borderline,
+            assume_compatible=self._assume_compatible,
         )
 
     def judge(self, context: FigureContext) -> FigureVerdict:

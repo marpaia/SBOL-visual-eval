@@ -19,6 +19,7 @@ COMPATIBILITY_PROMPT_PROFILE = "historical_2025_prose_v1"
 ERA_COMPATIBILITY_PROMPT_PROFILE = "historical_2025_era_v3"
 BORDERLINE_PROMPT_PROFILE = "borderline_vote_v1"
 CODEX_THRESHOLD_PROMPT_PROFILE = "codex_panel_threshold_v1"
+STAGED_CASCADE_PROMPT_PROFILE = "staged_cascade_v1"
 
 # These references come only from the calibration side of the paper-level,
 # era-stratified split. Each label follows deductively from a saturated paper
@@ -461,6 +462,7 @@ def build_user_prompt(
     era_conditioned: bool = False,
     request_borderline: bool = False,
     reinforce_historical_threshold: bool = False,
+    assume_compatible: bool = False,
 ) -> str:
     compatibility_definition = _compatibility_definition(
         publication_year, era_conditioned=era_conditioned
@@ -472,6 +474,27 @@ def build_user_prompt(
         if reinforce_historical_threshold
         else ""
     )
+    rule_scope_instruction = (
+        """\
+A dedicated first-stage review already classified this figure as compatible.
+Set "compatible" to true, do not revisit that decision, and evaluate every
+rule below against the figure's genetic-design content. Mark a rule
+"not_applicable" when the figure contains no element the rule governs, "pass"
+when the governed elements satisfy it, and "fail" when any governed element
+violates it. Honor every reviewer exception noted under a rule."""
+        if assume_compatible
+        else """\
+If and only if the figure is compatible, evaluate every rule below against the
+figure's genetic-design content. Mark a rule "not_applicable" when the figure
+contains no element the rule governs, "pass" when the governed elements satisfy
+it, and "fail" when any governed element violates it. Honor every reviewer
+exception noted under a rule."""
+    )
+    findings_instruction = (
+        "... one entry for every rule listed above ..."
+        if assume_compatible
+        else "... one entry for every rule listed above (omit all when not compatible) ..."
+    )
     return f"""\
 The attached image is the manuscript page containing Figure {figure_number}.
 Its caption begins: "{caption_text[:600]}"
@@ -480,11 +503,7 @@ Evaluate Figure {figure_number} only, considering every panel that belongs to it
 
 {compatibility_definition}
 
-If and only if the figure is compatible, evaluate every rule below against the
-figure's genetic-design content. Mark a rule "not_applicable" when the figure
-contains no element the rule governs, "pass" when the governed elements satisfy
-it, and "fail" when any governed element violates it. Honor every reviewer
-exception noted under a rule.
+{rule_scope_instruction}
 
 Calibrate your failure threshold to the historical panel's. The panel failed a
 rule only on a clear violation that an experienced reviewer would flag on a
@@ -505,7 +524,7 @@ single subtle imperfection hunted out of an otherwise well-drawn diagram.
   "findings": [
     {{"rule_key": "compliance:5.1.0", "verdict": "pass" | "fail" | "not_applicable",
       "evidence": "short justification"}},
-    ... one entry for every rule listed above (omit all when not compatible) ...
+    {findings_instruction}
   ]
 }}"""
 
@@ -517,6 +536,7 @@ def build_paper_user_prompt(
     era_conditioned: bool = False,
     request_borderline: bool = False,
     reinforce_historical_threshold: bool = False,
+    assume_compatible: bool = False,
 ) -> str:
     """A full-cascade prompt that applies one standard across a paper."""
     figures = _paper_figure_list(contexts)
@@ -531,6 +551,28 @@ def build_paper_user_prompt(
         if reinforce_historical_threshold
         else ""
     )
+    rule_scope_instruction = (
+        """\
+A dedicated first-stage review already classified every listed figure as
+compatible. Set "compatible" to true for every figure, do not revisit those
+decisions, and evaluate every rule below against each figure's genetic-design
+content. Mark a rule "not_applicable" when the figure contains no element the
+rule governs, "pass" when the governed elements satisfy it, and "fail" when any
+governed element violates it. Honor every reviewer exception noted under a
+rule."""
+        if assume_compatible
+        else """\
+If and only if a figure is compatible, evaluate every rule below against that
+figure's genetic-design content. Mark a rule "not_applicable" when the figure
+contains no element the rule governs, "pass" when the governed elements satisfy
+it, and "fail" when any governed element violates it. Honor every reviewer
+exception noted under a rule."""
+    )
+    findings_instruction = (
+        "... one entry for every rule listed above ..."
+        if assume_compatible
+        else "... one entry for every rule listed above (omit all when not compatible) ..."
+    )
     return f"""\
 The attached images are the manuscript pages containing these figures:
 {figures}
@@ -541,11 +583,7 @@ separate verdict and rationale for each figure.
 
 {compatibility_definition}
 
-If and only if a figure is compatible, evaluate every rule below against that
-figure's genetic-design content. Mark a rule "not_applicable" when the figure
-contains no element the rule governs, "pass" when the governed elements satisfy
-it, and "fail" when any governed element violates it. Honor every reviewer
-exception noted under a rule.
+{rule_scope_instruction}
 
 Calibrate your failure threshold to the historical panel's. The panel failed a
 rule only on a clear violation that an experienced reviewer would flag on a
@@ -569,7 +607,7 @@ subtle imperfection hunted out of an otherwise well-drawn diagram.
         {{"rule_key": "compliance:5.1.0",
           "verdict": "pass" | "fail" | "not_applicable",
           "evidence": "short justification"}}
-        ... one entry for every rule listed above (omit all when not compatible) ...
+        {findings_instruction}
       ]
     }}
     ... one entry for every listed figure, in listed order ...

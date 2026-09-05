@@ -42,6 +42,7 @@ from ..judge.prompt import (
     COMPATIBILITY_EXEMPLAR_SPECS,
     COMPATIBILITY_PROMPT_PROFILE,
     ERA_COMPATIBILITY_PROMPT_PROFILE,
+    STAGED_CASCADE_PROMPT_PROFILE,
 )
 from ..judge.rubric import load_rubric
 from .judges import JUDGE_BACKENDS, build_judge
@@ -60,6 +61,8 @@ def _prompt_profile(args: argparse.Namespace, *, compatibility_only: bool = Fals
         profile += f"+{BORDERLINE_PROMPT_PROFILE}"
     if args.judge == "codex-cli" and not compatibility_only:
         profile += f"+{CODEX_THRESHOLD_PROMPT_PROFILE}"
+    if not compatibility_only and getattr(args, "staged", False):
+        profile += f"+{STAGED_CASCADE_PROMPT_PROFILE}"
     return profile
 
 
@@ -95,6 +98,11 @@ def _argument_parser() -> argparse.ArgumentParser:
         help="use exact downstream-stage image references",
     )
     score.add_argument(
+        "--staged",
+        action="store_true",
+        help="judge compatibility before the downstream rubric",
+    )
+    score.add_argument(
         "--era-conditioned", action="store_true", help="apply publication-era policy"
     )
     score.add_argument("--publication-year", type=int, help="paper year for era conditioning")
@@ -122,6 +130,11 @@ def _argument_parser() -> argparse.ArgumentParser:
         "--cascade-few-shot",
         action="store_true",
         help="use exact downstream-stage image references",
+    )
+    evaluate.add_argument(
+        "--staged",
+        action="store_true",
+        help="judge compatibility before the downstream rubric",
     )
     evaluate.add_argument(
         "--era-conditioned", action="store_true", help="apply publication-era policy"
@@ -211,6 +224,11 @@ def _argument_parser() -> argparse.ArgumentParser:
         help="use exact downstream-stage image references",
     )
     cascade.add_argument(
+        "--staged",
+        action="store_true",
+        help="judge compatibility before the downstream rubric",
+    )
+    cascade.add_argument(
         "--era-conditioned", action="store_true", help="apply publication-era policy"
     )
     cascade.add_argument("--sample", type=int, help="benchmark a seeded random sample")
@@ -257,6 +275,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             exemplars=exemplars,
             self_consistency_samples=args.self_consistency,
             era_conditioned=args.era_conditioned,
+            staged=args.staged,
         )
         evaluation = evaluate_pdf(
             args.pdf.resolve(),
@@ -290,6 +309,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             exemplars=exemplars,
             self_consistency_samples=args.self_consistency,
             era_conditioned=args.era_conditioned,
+            staged=args.staged,
         )
         papers = sweep_papers(
             layout,
@@ -391,6 +411,7 @@ def main(argv: Sequence[str] | None = None) -> None:
             exemplars=exemplars,
             self_consistency_samples=args.self_consistency,
             era_conditioned=args.era_conditioned,
+            staged=args.staged,
         )
         papers = sample_papers(cascade_papers(layout), args.sample, args.seed)
         figures = cascade_figures(layout, papers)

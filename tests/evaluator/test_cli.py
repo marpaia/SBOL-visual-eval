@@ -7,7 +7,7 @@ import pytest
 
 from sbol_visual_eval.evaluator import cli
 from sbol_visual_eval.evaluator.judges import build_judge
-from sbol_visual_eval.judge import ClaudeCLIJudge, CodexCLIJudge
+from sbol_visual_eval.judge import ClaudeCLIJudge, CodexCLIJudge, StagedCascadeJudge
 from sbol_visual_eval.judge.voting import SelfConsistencyJudge
 
 from ..figures.helpers import build_fixture_pdf
@@ -43,6 +43,12 @@ def test_build_judge_can_wrap_self_consistency() -> None:
     assert isinstance(judge, SelfConsistencyJudge)
 
 
+def test_build_judge_can_separate_compatibility_from_the_rubric() -> None:
+    judge = build_judge("codex-cli", RULES, staged=True)
+
+    assert isinstance(judge, StagedCascadeJudge)
+
+
 def test_codex_threshold_profile_applies_only_to_full_rubric_commands() -> None:
     args = cli._argument_parser().parse_args(
         ["evaluate", "--judge", "codex-cli", "--era-conditioned"]
@@ -52,11 +58,18 @@ def test_codex_threshold_profile_applies_only_to_full_rubric_commands() -> None:
     assert cli._prompt_profile(args, compatibility_only=True) == "historical_2025_era_v3"
 
     few_shot_args = cli._argument_parser().parse_args(
-        ["cascade", "--judge", "codex-cli", "--few-shot", "--cascade-few-shot"]
+        [
+            "cascade",
+            "--judge",
+            "codex-cli",
+            "--few-shot",
+            "--cascade-few-shot",
+            "--staged",
+        ]
     )
     assert cli._prompt_profile(few_shot_args) == (
         "historical_2025_prose_v1+boundary_pages_v2+"
-        "cascade_boundary_pages_v1+codex_panel_threshold_v1"
+        "cascade_boundary_pages_v1+codex_panel_threshold_v1+staged_cascade_v1"
     )
     assert cli._prompt_profile(few_shot_args, compatibility_only=True) == (
         "historical_2025_prose_v1+boundary_pages_v2"

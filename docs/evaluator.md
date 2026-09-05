@@ -255,7 +255,11 @@ the calls become more internally uniform but less historically accurate.
 Two full-cascade image references selected from different exact-label papers
 also fail to transfer to this cohort: compatibility and compliance remain at
 93.3%, while best-practice accuracy falls to 66.7%. They remain available only
-through the experimental `--cascade-few-shot` switch.
+through the experimental `--cascade-few-shot` switch. A staged pipeline that
+runs the dedicated compatibility prompt before a compatibility-preclassified
+rubric call produces the same 93.3% / 93.3% / 66.7% result. It neither recovers
+the remaining compatibility miss nor preserves best-practice accuracy, so
+`--staged` also remains experimental.
 
 **Claude end-to-end paper agreement** (20 papers, fresh seed, full pipeline,
 `evaluator_agreement_final.*`):
@@ -349,6 +353,10 @@ switches select independently measurable alternatives:
   entail their compatible, compliant, and best-practice labels. It supplies no
   invented rule-level failure label and remains disabled by default because
   the transfer benchmark regresses.
+- `--staged` runs the compatibility-only prompt first, skips the rubric call
+  for negatives, and treats positives as preclassified when applying all 31
+  rules. The cascade transfer benchmark regresses, so the single-call cascade
+  remains the default.
 - `--whole-paper` sends every unique page image and caption from one paper in
   one request and requires one verdict per censused figure.
 - `--self-consistency 3` asks for an explicit borderline flag and draws two

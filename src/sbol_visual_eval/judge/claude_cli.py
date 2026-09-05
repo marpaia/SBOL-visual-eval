@@ -80,6 +80,7 @@ class ClaudeCLIJudge:
         exemplars: tuple[CompatibilityExemplar, ...] = (),
         era_conditioned: bool = False,
         request_borderline: bool = False,
+        assume_compatible: bool = False,
     ) -> None:
         self._rules = rules
         self._model = model
@@ -88,6 +89,7 @@ class ClaudeCLIJudge:
         self._exemplars = exemplars
         self._era_conditioned = era_conditioned
         self._request_borderline = request_borderline
+        self._assume_compatible = assume_compatible
 
     def metadata(self) -> dict[str, str]:
         """Identify the provider and pinned model used in benchmark reports."""
@@ -112,6 +114,7 @@ class ClaudeCLIJudge:
             publication_year=context.publication_year,
             era_conditioned=self._era_conditioned,
             request_borderline=self._request_borderline,
+            assume_compatible=self._assume_compatible,
         )
 
     def _paper_prompt(self, contexts: tuple[FigureContext, ...]) -> str:
@@ -126,6 +129,7 @@ class ClaudeCLIJudge:
             self._rules,
             era_conditioned=self._era_conditioned,
             request_borderline=self._request_borderline,
+            assume_compatible=self._assume_compatible,
         )
 
     def _reference_prompt(self, workdir: Path) -> str:

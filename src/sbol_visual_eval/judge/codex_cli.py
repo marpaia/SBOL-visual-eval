@@ -144,6 +144,7 @@ class CodexCLIJudge:
         exemplars: tuple[CompatibilityExemplar, ...] = (),
         era_conditioned: bool = False,
         request_borderline: bool = False,
+        assume_compatible: bool = False,
     ) -> None:
         self._rules = rules
         self._model = model
@@ -152,6 +153,7 @@ class CodexCLIJudge:
         self._exemplars = exemplars
         self._era_conditioned = era_conditioned
         self._request_borderline = request_borderline
+        self._assume_compatible = assume_compatible
 
     @property
     def model(self) -> str:
@@ -206,6 +208,7 @@ class CodexCLIJudge:
             era_conditioned=self._era_conditioned,
             request_borderline=self._request_borderline,
             reinforce_historical_threshold=True,
+            assume_compatible=self._assume_compatible,
         )
 
     def _paper_prompt(self, contexts: tuple[FigureContext, ...]) -> str:
@@ -221,6 +224,7 @@ class CodexCLIJudge:
             era_conditioned=self._era_conditioned,
             request_borderline=self._request_borderline,
             reinforce_historical_threshold=True,
+            assume_compatible=self._assume_compatible,
         )
 
     def _reference_images(self, workdir: Path) -> tuple[list[Path], str]:
