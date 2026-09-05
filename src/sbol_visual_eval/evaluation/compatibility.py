@@ -123,6 +123,17 @@ def assign_era_stratified_partitions(
     ]
 
 
+def sample_saturated_figures(
+    figures: list[SaturatedFigure], sample: int | None, seed: int
+) -> list[SaturatedFigure]:
+    """Sample whole papers from an already partitioned figure pool."""
+    dois = sorted({figure.doi for figure in figures})
+    if sample is None or sample >= len(dois):
+        return figures
+    sampled_dois = set(random.Random(seed).sample(dois, sample))
+    return [figure for figure in figures if figure.doi in sampled_dois]
+
+
 def saturated_compatibility_papers(
     layout: Layout, *, expected: bool | None = None
 ) -> list[SweepPaper]:

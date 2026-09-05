@@ -10,6 +10,7 @@ from sbol_visual_eval.evaluation.compatibility import (
     assign_era_stratified_partitions,
     compatibility_era,
     run_compatibility_benchmark,
+    sample_saturated_figures,
     saturated_compatibility_papers,
     saturated_figures,
 )
@@ -155,6 +156,29 @@ def test_era_stratified_partitions_validate_fraction() -> None:
 
     with pytest.raises(ValueError, match="holdout_fraction"):
         assign_era_stratified_partitions([], holdout_fraction=1.0)
+
+
+def test_sampling_keeps_partitioned_papers_intact() -> None:
+    figures = [
+        SaturatedFigure(
+            doi=f"10.1/{paper}",
+            year=2015,
+            pdf_path="paper.pdf",
+            figure_number=figure_number,
+            caption_text="Figure.",
+            page_number=1,
+            expected_compatible=False,
+            benchmark_partition="holdout",
+        )
+        for paper in range(5)
+        for figure_number in (1, 2)
+    ]
+
+    sampled = sample_saturated_figures(figures, 2, seed=17)
+
+    assert len({figure.doi for figure in sampled}) == 2
+    assert len(sampled) == 4
+    assert {figure.benchmark_partition for figure in sampled} == {"holdout"}
 
 
 def test_compatibility_benchmark_reports_boundary_errors(tmp_path: Path) -> None:

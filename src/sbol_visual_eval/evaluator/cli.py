@@ -19,6 +19,7 @@ from ..evaluation.cascade_bench import cascade_figures, cascade_papers, run_casc
 from ..evaluation.compatibility import (
     assign_era_stratified_partitions,
     run_compatibility_benchmark,
+    sample_saturated_figures,
     saturated_compatibility_papers,
     saturated_figures,
 )
@@ -246,7 +247,6 @@ def main(argv: Sequence[str] | None = None) -> None:
             era_conditioned=args.era_conditioned,
         )
         papers = saturated_compatibility_papers(layout)
-        papers = sample_papers(papers, args.sample, args.seed)
         figures = saturated_figures(layout, papers)
         figures = assign_era_stratified_partitions(
             figures,
@@ -255,6 +255,7 @@ def main(argv: Sequence[str] | None = None) -> None:
         )
         if args.partition != "all":
             figures = [figure for figure in figures if figure.benchmark_partition == args.partition]
+        figures = sample_saturated_figures(figures, args.sample, args.seed)
         if not figures:
             print("No saturated figures matched the benchmark filters", file=sys.stderr)
             raise SystemExit(1)
