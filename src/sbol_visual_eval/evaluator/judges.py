@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from ..judge import AnthropicAPIJudge, ClaudeCLIJudge
+from ..judge import AnthropicAPIJudge, ClaudeCLIJudge, CodexCLIJudge
 from ..judge.protocol import FigureJudge
 from ..judge.rubric import RubricRule
 from ..judge.schema import CompatibilityExemplar
 from ..judge.voting import SelfConsistencyJudge
 
-JUDGE_BACKENDS = ("anthropic", "claude-cli")
+JUDGE_BACKENDS = ("anthropic", "claude-cli", "codex-cli")
 
 
 def build_judge(
@@ -34,6 +34,16 @@ def build_judge(
     elif backend == "claude-cli":
         keywords = {"model": model} if model else {}
         judge = ClaudeCLIJudge(
+            rules,
+            compatibility_only=compatibility_only,
+            exemplars=exemplars,
+            era_conditioned=era_conditioned,
+            request_borderline=self_consistency_samples > 1,
+            **keywords,
+        )
+    elif backend == "codex-cli":
+        keywords = {"model": model} if model else {}
+        judge = CodexCLIJudge(
             rules,
             compatibility_only=compatibility_only,
             exemplars=exemplars,

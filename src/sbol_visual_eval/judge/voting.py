@@ -71,6 +71,13 @@ class SelfConsistencyJudge:
                 "extra_paper_calls": self._extra_paper_calls,
             }
 
+    def metadata(self) -> dict[str, str]:
+        """Preserve the wrapped provider identity in benchmark reports."""
+        metadata = getattr(self._judge, "metadata", None)
+        if not callable(metadata):
+            return {"backend": type(self._judge).__name__, "model": "unknown"}
+        return metadata()
+
 
 def _majority_verdict(verdicts: list[FigureVerdict]) -> FigureVerdict:
     figure_numbers = {verdict.figure_number for verdict in verdicts}

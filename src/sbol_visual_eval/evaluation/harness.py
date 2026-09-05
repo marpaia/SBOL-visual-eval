@@ -270,6 +270,9 @@ def run_sweep(
     sampling_statistics = getattr(judge, "sampling_statistics", None)
     if callable(sampling_statistics):
         summary["self_consistency"] = sampling_statistics()
+    judge_metadata = getattr(judge, "metadata", None)
+    if callable(judge_metadata):
+        summary["judge"] = judge_metadata()
 
     write_csv(layout.reports / f"{report_stem}.csv", rows, EVALUATOR_AGREEMENT_FIELDS)
     write_json(layout.reports / f"{report_stem}.json", summary)

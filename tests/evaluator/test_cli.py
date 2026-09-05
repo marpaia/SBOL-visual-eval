@@ -7,7 +7,7 @@ import pytest
 
 from sbol_visual_eval.evaluator import cli
 from sbol_visual_eval.evaluator.judges import build_judge
-from sbol_visual_eval.judge import ClaudeCLIJudge
+from sbol_visual_eval.judge import ClaudeCLIJudge, CodexCLIJudge
 from sbol_visual_eval.judge.voting import SelfConsistencyJudge
 
 from ..figures.helpers import build_fixture_pdf
@@ -28,6 +28,13 @@ def test_build_judge_claude_cli_backend() -> None:
     judge = build_judge("claude-cli", RULES, model="opus")
     assert isinstance(judge, ClaudeCLIJudge)
     assert judge.command()[:4] == ["claude", "-p", "--model", "opus"]
+
+
+def test_build_judge_codex_cli_backend() -> None:
+    judge = build_judge("codex-cli", RULES, model="gpt-5.6-sol")
+
+    assert isinstance(judge, CodexCLIJudge)
+    assert judge.model == "gpt-5.6-sol"
 
 
 def test_build_judge_can_wrap_self_consistency() -> None:

@@ -665,6 +665,9 @@ def run_compatibility_benchmark(
     }
     if callable(sampling_statistics):
         summary["self_consistency"] = sampling_statistics()
+    judge_metadata = getattr(judge, "metadata", None)
+    if callable(judge_metadata):
+        summary["judge"] = judge_metadata()
     if benchmark_definition is not None:
         summary["benchmark_definition"] = benchmark_definition
     write_csv(report_path, rows, COMPATIBILITY_FIELDS)

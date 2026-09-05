@@ -52,6 +52,10 @@ class AnthropicAPIJudge:
         self._era_conditioned = era_conditioned
         self._request_borderline = request_borderline
 
+    def metadata(self) -> dict[str, str]:
+        """Identify the provider and pinned model used in benchmark reports."""
+        return {"backend": "anthropic", "model": self._model}
+
     def _prompt(self, context: FigureContext) -> str:
         if self._compatibility_only:
             return build_compatibility_prompt(

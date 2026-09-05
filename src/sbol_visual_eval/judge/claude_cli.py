@@ -89,6 +89,10 @@ class ClaudeCLIJudge:
         self._era_conditioned = era_conditioned
         self._request_borderline = request_borderline
 
+    def metadata(self) -> dict[str, str]:
+        """Identify the provider and pinned model used in benchmark reports."""
+        return {"backend": "claude-cli", "model": self._model}
+
     def command(self) -> list[str]:
         return ["claude", "-p", "--model", self._model, "--allowed-tools", "Read"]
 

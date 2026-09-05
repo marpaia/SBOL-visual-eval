@@ -9,6 +9,7 @@ format of the historical study: the four paper-level counts (`figures_total`,
 ```bash
 uv run sbol-visual-eval score paper.pdf                      # Claude API judge
 uv run sbol-visual-eval score paper.pdf --judge claude-cli   # authenticated Claude Code CLI
+uv run sbol-visual-eval score paper.pdf --judge codex-cli    # authenticated Codex/ChatGPT CLI
 ```
 
 ## Architecture: a cascade mirroring the historical review
@@ -32,8 +33,12 @@ uv run sbol-visual-eval score paper.pdf --judge claude-cli   # authenticated Cla
    model's own summary judgment.
 
 Judge backends: `anthropic` (Claude API through the Anthropic SDK; credentials
-from the environment) and `claude-cli` (headless `claude -p` against an
-authenticated Claude Code installation).
+from the environment), `claude-cli` (headless `claude -p` against an
+authenticated Claude Code installation), and `codex-cli` (sandboxed,
+noninteractive `codex exec` against the local OpenAI/ChatGPT authentication).
+The Codex backend attaches page images directly, constrains the final response
+with JSON Schema, runs ephemerally with a read-only sandbox, and defaults to
+`gpt-5.6-sol`; `--model` selects another locally available model.
 
 ## Supervision strategy
 
@@ -83,8 +88,8 @@ verdicts for audit). Papers whose historical counts are internally
 inconsistent (`requires_adjudication`, the 2020 invariant violation) are
 excluded from scoring, matching `GroundTruthPaper.scoreable`.
 
-Every judge-backed sweep records its prompt profile and judging mode in the
-JSON summary. End-to-end, compatibility, and cascade sweeps write append-only
+Every judge-backed sweep records its prompt profile, judging mode, backend, and
+model in the JSON summary. End-to-end, compatibility, and cascade sweeps write append-only
 ignored checkpoints while they run; `--resume` reuses only successful rows
 whose paper identity, entailed labels, prompt profile, and judging mode still
 match. An error-free report removes its checkpoint; an error-bearing report
