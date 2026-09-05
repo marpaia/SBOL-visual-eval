@@ -1,0 +1,88 @@
+{
+  "baseline_report": "data/reports/cascade_codex_threshold_v1_calibration_seed55_sample5.csv",
+  "candidate_report": "data/reports/cascade_codex_astra_threshold_v1_calibration_seed55_sample5.csv",
+  "comparison_path": "data/reports/cascade_codex_sol_vs_astra_threshold_v1_calibration_seed55_sample5.comparison.json",
+  "figures": 15,
+  "generated_at": "2026-09-05T17:52:03+00:00",
+  "papers": 5,
+  "stages": {
+    "best_practice": {
+      "baseline": {
+        "accuracy": 0.9333,
+        "expected_positive_figures": 9,
+        "net_count_bias": -1,
+        "predicted_positive_figures": 8
+      },
+      "candidate": {
+        "accuracy": 0.6,
+        "expected_positive_figures": 9,
+        "net_count_bias": 4,
+        "predicted_positive_figures": 13
+      },
+      "figure_transitions": {
+        "fixed": 0,
+        "regressed": 5,
+        "unchanged_correct": 9,
+        "unchanged_incorrect": 1
+      },
+      "paper_exact_transitions": {
+        "fixed": 0,
+        "regressed": 2,
+        "unchanged_exact": 2,
+        "unchanged_inexact": 1
+      }
+    },
+    "compatible": {
+      "baseline": {
+        "accuracy": 0.9333,
+        "expected_positive_figures": 15,
+        "net_count_bias": -1,
+        "predicted_positive_figures": 14
+      },
+      "candidate": {
+        "accuracy": 0.9333,
+        "expected_positive_figures": 15,
+        "net_count_bias": -1,
+        "predicted_positive_figures": 14
+      },
+      "figure_transitions": {
+        "fixed": 0,
+        "regressed": 0,
+        "unchanged_correct": 14,
+        "unchanged_incorrect": 1
+      },
+      "paper_exact_transitions": {
+        "fixed": 0,
+        "regressed": 0,
+        "unchanged_exact": 4,
+        "unchanged_inexact": 1
+      }
+    },
+    "compliant": {
+      "baseline": {
+        "accuracy": 0.9333,
+        "expected_positive_figures": 15,
+        "net_count_bias": -1,
+        "predicted_positive_figures": 14
+      },
+      "candidate": {
+        "accuracy": 0.9333,
+        "expected_positive_figures": 15,
+        "net_count_bias": -1,
+        "predicted_positive_figures": 14
+      },
+      "figure_transitions": {
+        "fixed": 0,
+        "regressed": 0,
+        "unchanged_correct": 14,
+        "unchanged_incorrect": 1
+      },
+      "paper_exact_transitions": {
+        "fixed": 0,
+        "regressed": 0,
+        "unchanged_exact": 4,
+        "unchanged_inexact": 1
+      }
+    }
+  }
+}

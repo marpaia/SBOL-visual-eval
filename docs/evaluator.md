@@ -385,6 +385,17 @@ uv run sbol-visual-eval compare-compatibility \
 The comparison JSON reports fixed and regressed figure calls, saturated-paper
 exact transitions, MAE, and net count bias for the shared paper set.
 
+Exact-label cascade reports use the corresponding stage-aware comparator:
+
+```bash
+uv run sbol-visual-eval compare-cascade \
+  data/reports/cascade_baseline.csv \
+  data/reports/cascade_candidate.csv
+```
+
+Its JSON reports figure-level and paper-count transitions, accuracy, and net
+count bias independently for compatibility, compliance, and best practice.
+
 ## Expert adjudication layer
 
 `adjudicate` builds a local HTML gallery for exact-label compatibility
@@ -417,6 +428,9 @@ gitignored because source-paper licenses vary.
    figures become a new, separately layered figure-level ground truth. This is
    also the only way past the cross-paper consistency ceiling.
 
-Calibration seeds are burned once used: paper-level seed 7, compatibility
-seeds 101 and 777, and cascade seed 55 have all influenced prompt text.
-Headline numbers must come from seeds that never did.
+Calibration and opened validation seeds are burned once used. Paper-level
+seeds 7, 21, 314, 20260910, and 20260911; compatibility seeds 101, 777,
+20260905, and 20260906; and cascade seeds 55 and 20260967 cannot supply future
+headline numbers. Compatibility seed 20260905 is burned because its partial
+image-exemplar verdicts were inspected after a provider limit. Headline numbers
+must come from a cohort that has not influenced prompt or provider selection.

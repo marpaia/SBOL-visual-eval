@@ -16,6 +16,7 @@ from pathlib import Path
 from ..corpus.layout import Layout
 from ..evaluation.adjudication import build_compatibility_adjudication
 from ..evaluation.cascade_bench import cascade_figures, cascade_papers, run_cascade_benchmark
+from ..evaluation.cascade_compare import compare_cascade_reports
 from ..evaluation.compatibility import (
     assign_era_stratified_partitions,
     exclude_reported_papers,
@@ -256,6 +257,14 @@ def _argument_parser() -> argparse.ArgumentParser:
     compare.add_argument("baseline", type=Path)
     compare.add_argument("candidate", type=Path)
     compare.add_argument("--output", type=Path)
+
+    compare_cascade = subparsers.add_parser(
+        "compare-cascade",
+        help="compare paired exact-label cascade benchmark reports",
+    )
+    compare_cascade.add_argument("baseline", type=Path)
+    compare_cascade.add_argument("candidate", type=Path)
+    compare_cascade.add_argument("--output", type=Path)
     return parser
 
 
@@ -475,4 +484,30 @@ def main(argv: Sequence[str] | None = None) -> None:
         print(
             f"Compatibility comparison: {summary['figures']:,} figures; saturated-paper "
             f"exact rate {baseline_exact:.1%} -> {candidate_exact:.1%}"
+        )
+    elif args.command == "compare-cascade":
+        baseline_path = (
+            args.baseline if args.baseline.is_absolute() else layout.root / args.baseline
+        )
+        candidate_path = (
+            args.candidate if args.candidate.is_absolute() else layout.root / args.candidate
+        )
+        output_path = args.output
+        if output_path is not None and not output_path.is_absolute():
+            output_path = layout.root / output_path
+        summary = compare_cascade_reports(
+            layout,
+            baseline_path,
+            candidate_path,
+            output_path=output_path,
+        )
+        stages = summary["stages"]
+        print(
+            f"Cascade comparison: {summary['figures']:,} figures; accuracy "
+            f"compatible {stages['compatible']['baseline']['accuracy']:.1%} -> "
+            f"{stages['compatible']['candidate']['accuracy']:.1%}, compliant "
+            f"{stages['compliant']['baseline']['accuracy']:.1%} -> "
+            f"{stages['compliant']['candidate']['accuracy']:.1%}, best practice "
+            f"{stages['best_practice']['baseline']['accuracy']:.1%} -> "
+            f"{stages['best_practice']['candidate']['accuracy']:.1%}"
         )
