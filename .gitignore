@@ -12,6 +12,10 @@ data/cache/
 data/papers/
 data/figures/
 
+# Review galleries derive local page images from heterogeneously licensed PDFs.
+data/adjudicated/*/images/
+data/adjudicated/*/index.html
+
 # Interrupted downloads.
 *.part
 

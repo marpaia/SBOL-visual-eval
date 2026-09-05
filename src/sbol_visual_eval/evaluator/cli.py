@@ -14,6 +14,7 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from ..corpus.layout import Layout
+from ..evaluation.adjudication import build_compatibility_adjudication
 from ..evaluation.cascade_bench import cascade_figures, cascade_papers, run_cascade_benchmark
 from ..evaluation.compatibility import (
     assign_era_stratified_partitions,
@@ -123,6 +124,13 @@ def _argument_parser() -> argparse.ArgumentParser:
     cascade.add_argument("--seed", type=int, default=7)
     cascade.add_argument("--workers", type=int, default=4)
     cascade.add_argument("--report-stem", default="cascade_benchmark")
+
+    adjudicate = subparsers.add_parser(
+        "adjudicate",
+        help="build an expert-review gallery from exact compatibility disagreements",
+    )
+    adjudicate.add_argument("report", type=Path, help="compatibility benchmark CSV")
+    adjudicate.add_argument("--output-dir", type=Path)
     return parser
 
 
@@ -247,4 +255,18 @@ def main(argv: Sequence[str] | None = None) -> None:
             f"compatible {summary['compatible_accuracy']:.1%}, "
             f"compliant {summary['compliant_accuracy']:.1%}, "
             f"best practice {summary['best_practice_accuracy']:.1%}"
+        )
+    elif args.command == "adjudicate":
+        report_path = args.report if args.report.is_absolute() else layout.root / args.report
+        output_dir = args.output_dir
+        if output_dir is not None and not output_dir.is_absolute():
+            output_dir = layout.root / output_dir
+        summary = build_compatibility_adjudication(
+            layout,
+            report_path,
+            output_dir=output_dir,
+        )
+        print(
+            f"Adjudication artifact: {summary['disagreements']:,} disagreements at "
+            f"{summary['review_path']}"
         )
