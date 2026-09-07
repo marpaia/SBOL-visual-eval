@@ -46,7 +46,7 @@ from ..judge.prompt import (
     STAGED_CASCADE_PROMPT_PROFILE,
 )
 from ..judge.rubric import load_rubric
-from .judges import JUDGE_BACKENDS, build_judge
+from .judges import DEFAULT_JUDGE_BACKEND, JUDGE_BACKENDS, build_judge
 from .pipeline import evaluate_pdf
 
 
@@ -77,6 +77,14 @@ def _load_exemplars(layout: Layout, args: argparse.Namespace, *, compatibility_o
     return load_compatibility_exemplars(layout, specs)
 
 
+def _score_output_path(pdf_path: Path, requested_path: Path | None) -> Path | None:
+    if requested_path == Path("-"):
+        return None
+    if requested_path is not None:
+        return requested_path
+    return pdf_path.with_suffix(".sbol-visual-eval.json")
+
+
 def _argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -89,7 +97,7 @@ def _argument_parser() -> argparse.ArgumentParser:
 
     score = subparsers.add_parser("score", help="score one manuscript PDF in the historical format")
     score.add_argument("pdf", type=Path)
-    score.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
+    score.add_argument("--judge", choices=JUDGE_BACKENDS, default=DEFAULT_JUDGE_BACKEND)
     score.add_argument("--model", help="judge model override")
     score.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     score.add_argument("--few-shot", action="store_true", help="use calibrated image references")
@@ -112,7 +120,11 @@ def _argument_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="judge every figure with one paper-level consistency call",
     )
-    score.add_argument("--output", type=Path, help="write the score JSON here instead of stdout")
+    score.add_argument(
+        "--output",
+        type=Path,
+        help="output path (default: <pdf>.sbol-visual-eval.json; use - for stdout)",
+    )
 
     census = subparsers.add_parser(
         "census", help="reconcile the figure census against historical figure totals"
@@ -123,7 +135,7 @@ def _argument_parser() -> argparse.ArgumentParser:
     evaluate = subparsers.add_parser(
         "evaluate", help="run the evaluator over local papers and score agreement"
     )
-    evaluate.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
+    evaluate.add_argument("--judge", choices=JUDGE_BACKENDS, default=DEFAULT_JUDGE_BACKEND)
     evaluate.add_argument("--model", help="judge model override")
     evaluate.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     evaluate.add_argument("--few-shot", action="store_true", help="use calibrated image references")
@@ -168,7 +180,7 @@ def _argument_parser() -> argparse.ArgumentParser:
         "compatibility",
         help="benchmark the compatibility stage on figures labeled by saturated counts",
     )
-    compatibility.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
+    compatibility.add_argument("--judge", choices=JUDGE_BACKENDS, default=DEFAULT_JUDGE_BACKEND)
     compatibility.add_argument("--model", help="judge model override")
     compatibility.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     compatibility.add_argument(
@@ -215,7 +227,7 @@ def _argument_parser() -> argparse.ArgumentParser:
         "cascade",
         help="benchmark compliance and best practice on fully entailed cascade figures",
     )
-    cascade.add_argument("--judge", choices=JUDGE_BACKENDS, default="anthropic")
+    cascade.add_argument("--judge", choices=JUDGE_BACKENDS, default=DEFAULT_JUDGE_BACKEND)
     cascade.add_argument("--model", help="judge model override")
     cascade.add_argument("--self-consistency", type=int, choices=(1, 3), default=1)
     cascade.add_argument("--few-shot", action="store_true", help="use calibrated image references")
@@ -275,6 +287,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     if args.command == "score":
         if args.era_conditioned and args.publication_year is None:
             raise SystemExit("--publication-year is required with --era-conditioned")
+        pdf_path = args.pdf.resolve()
         rules = load_rubric(layout)
         exemplars = _load_exemplars(layout, args)
         judge = build_judge(
@@ -287,17 +300,19 @@ def main(argv: Sequence[str] | None = None) -> None:
             staged=args.staged,
         )
         evaluation = evaluate_pdf(
-            args.pdf.resolve(),
+            pdf_path,
             judge,
             rules,
             publication_year=args.publication_year,
             whole_paper=args.whole_paper,
         )
         payload = json.dumps(evaluation.to_dict(), indent=2, sort_keys=True)
-        if args.output:
-            args.output.write_text(payload + "\n", encoding="utf-8")
-        else:
+        output_path = _score_output_path(pdf_path, args.output)
+        if output_path is None:
             print(payload)
+        else:
+            output_path.write_text(payload + "\n", encoding="utf-8")
+            print(f"Score written to {output_path}", file=sys.stderr)
     elif args.command == "census":
         if args.workers < 1:
             raise SystemExit("--workers must be at least 1")

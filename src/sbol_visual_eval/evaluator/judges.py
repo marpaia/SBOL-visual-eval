@@ -9,6 +9,7 @@ from ..judge.schema import CompatibilityExemplar
 from ..judge.voting import SelfConsistencyJudge
 
 JUDGE_BACKENDS = ("anthropic", "claude-cli", "codex-cli")
+DEFAULT_JUDGE_BACKEND = "claude-cli"
 
 
 def _build_backend(

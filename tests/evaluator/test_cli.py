@@ -49,6 +49,24 @@ def test_build_judge_can_separate_compatibility_from_the_rubric() -> None:
     assert isinstance(judge, StagedCascadeJudge)
 
 
+@pytest.mark.parametrize(
+    "arguments",
+    (["score", "paper.pdf"], ["evaluate"], ["compatibility"], ["cascade"]),
+)
+def test_judge_backed_commands_default_to_claude_cli(arguments: list[str]) -> None:
+    args = cli._argument_parser().parse_args(arguments)
+
+    assert args.judge == "claude-cli"
+
+
+def test_score_output_path_defaults_beside_the_pdf() -> None:
+    pdf_path = Path("/papers/example.pdf")
+
+    assert cli._score_output_path(pdf_path, None) == Path("/papers/example.sbol-visual-eval.json")
+    assert cli._score_output_path(pdf_path, Path("custom.json")) == Path("custom.json")
+    assert cli._score_output_path(pdf_path, Path("-")) is None
+
+
 def test_codex_threshold_profile_applies_only_to_full_rubric_commands() -> None:
     args = cli._argument_parser().parse_args(
         ["evaluate", "--judge", "codex-cli", "--era-conditioned"]
@@ -89,7 +107,9 @@ def test_score_requires_publication_year_for_era_conditioning(tmp_path: Path) ->
         )
 
 
-def test_score_command_writes_historical_format_json(tmp_path: Path, monkeypatch) -> None:
+def test_score_command_uses_defaults_and_writes_historical_format_json(
+    tmp_path: Path, monkeypatch
+) -> None:
     processed = tmp_path / "data" / "processed"
     processed.mkdir(parents=True)
     (processed / "rubric.csv").write_text(RUBRIC_CSV, encoding="utf-8")
@@ -97,7 +117,7 @@ def test_score_command_writes_historical_format_json(tmp_path: Path, monkeypatch
         tmp_path / "paper.pdf",
         [[(72, 300, "Figure 1. A genetic circuit.", True)]],
     )
-    output_path = tmp_path / "score.json"
+    output_path = pdf_path.with_suffix(".sbol-visual-eval.json")
 
     def fake_runner(command: list[str], prompt: str, cwd: Path) -> str:
         return json.dumps(
@@ -116,10 +136,6 @@ def test_score_command_writes_historical_format_json(tmp_path: Path, monkeypatch
             str(tmp_path),
             "score",
             str(pdf_path),
-            "--judge",
-            "claude-cli",
-            "--output",
-            str(output_path),
         ]
     )
 

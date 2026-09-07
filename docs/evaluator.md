@@ -7,10 +7,14 @@ format of the historical study: the four paper-level counts (`figures_total`,
 `data/processed/papers.csv`.
 
 ```bash
-uv run sbol-visual-eval score paper.pdf                      # Claude API judge
-uv run sbol-visual-eval score paper.pdf --judge claude-cli   # authenticated Claude Code CLI
-uv run sbol-visual-eval score paper.pdf --judge codex-cli    # authenticated Codex/ChatGPT CLI
+uv run sbol-visual-eval score paper.pdf                     # Claude CLI judge
+uv run sbol-visual-eval score paper.pdf --judge codex-cli   # authenticated Codex/ChatGPT CLI
+uv run sbol-visual-eval score paper.pdf --judge anthropic   # Anthropic API judge
 ```
+
+The default command uses the authenticated Claude Code CLI and writes
+`paper.sbol-visual-eval.json` beside the PDF. `--output PATH` chooses another
+file, and `--output -` writes JSON to stdout.
 
 ## Architecture: a cascade mirroring the historical review
 

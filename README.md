@@ -42,6 +42,10 @@ Scoring a paper (PDF in, historical-format validation score out):
 uv run sbol-visual-eval score paper.pdf
 ```
 
+This uses the authenticated Claude Code CLI by default and writes
+`paper.sbol-visual-eval.json` beside the input PDF. Use `--judge codex-cli` for
+the local Codex/ChatGPT backend, or `--output -` to write JSON to stdout.
+
 ## Documentation
 
 - [The learned evaluator](docs/evaluator.md) — the census → judge → aggregate cascade, supervision strategy, and how the evaluator is scored against the historical record
